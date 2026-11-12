@@ -1,0 +1,12 @@
+Salut <%= @registration.name %>,
+
+Mauvaise nouvelle : « <%= @webinar.title %> », prévu <%= l @starts_at, format: :day_time, locale: :fr %> (heure de Paris), est annulé.
+
+Si tu l'avais ajouté à ton agenda, tu peux l'en retirer. Avec ton lien d'agenda perso, il disparaît tout seul.
+
+Les prochains cafés sont sur <%= series_url %>
+
+Tu reçois ce mail parce que tu as confirmé ton inscription.
+
+À bientôt,
+— Le Café IA · <%= series_host %>

@@ -1,0 +1,52 @@
+<%# Journal des envois de ce webinaire : cible, objet, corps, auteur, nombre
+    de destinataires, horodatage, avancement de la remise. Les mails restés
+    sans nouvelles (job en échec, processus tombé) sont signalés et se
+    relancent par « Reprendre l'envoi ». Un co-animateur n'y voit que les
+    envois aux inscrits, et l'adresse des autres auteurs lui est masquée. %>
+<% content_for :title, "Journal" %>
+<%= render "breadcrumb", webinar: @webinar %>
+<h1>Journal des envois — <%= @webinar.title %></h1>
+
+<div class="live-actions">
+  <% if @permission.audiences.any? %>
+    <%= link_to "Envoyer un message", new_webinar_announcement_path(@webinar), class: "btn" %>
+  <% end %>
+  <%= link_to "Régie", webinar_regie_path(@webinar), class: "btn btn--discret" %>
+</div>
+
+<% if @announcements.any? %>
+  <ol class="envoi-journal">
+    <% @announcements.each do |announcement| %>
+      <% progress = @progress.fetch(announcement.id) %>
+      <li class="envoi-entree" data-announcement-id="<%= announcement.id %>">
+        <p class="envoi-entree-tete">
+          <strong><%= announcement.subject %></strong>
+          <span class="aide"><%= l(announcement.created_at, format: :short) %> ·
+            <span data-role="journal-author"><%= announcement_author_label(announcement, @permission) %></span></span>
+        </p>
+        <p class="aide">
+          <%= announcement_audience_label(announcement.audience) %> ·
+          <span data-role="journal-count"><%= recipients_label(announcement.recipients_count) %></span> ·
+          <span data-role="journal-progress">remis <%= progress.delivered %>, écartés <%= progress.skipped %>,
+            en cours <%= progress.in_flight %></span>
+        </p>
+        <% if progress.silent.positive? || progress.pending.positive? %>
+          <p class="etat etat--ecart" data-role="journal-silent">
+            <strong><%= progress.silent + progress.pending %></strong> sans nouvelles : jamais partis, ou partis en file
+            sans remise depuis plus de <%= AnnouncementDelivery::SILENT_AFTER.in_minutes.to_i %> minutes.
+          </p>
+        <% end %>
+        <details>
+          <summary>Message</summary>
+          <div class="envoi-apercu-corps"><%= announcement.body %></div>
+        </details>
+        <% if progress.resumable? && @permission.audiences.include?(announcement.audience) %>
+          <%= button_to "Reprendre l'envoi", resume_webinar_announcement_path(@webinar, announcement),
+                        class: "btn btn--secondary", data: { role: "announcement-resume" } %>
+        <% end %>
+      </li>
+    <% end %>
+  </ol>
+<% else %>
+  <p class="vide"><span class="quoi">Aucun envoi pour ce webinaire.</span></p>
+<% end %>

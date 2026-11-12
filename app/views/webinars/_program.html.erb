@@ -1,0 +1,18 @@
+<%# Programme annoncé d'un café (Webinar::Program) sur les pages publiques :
+    page du webinaire et inscription. Texte brut, échappé. Rien sans programme.
+    Local : `webinar`. %>
+<% if webinar.program_announced? %>
+  <section data-role="webinar-program" aria-label="Programme">
+    <% if webinar.topic %>
+      <h2 data-role="program-topic"><%= webinar.topic %></h2>
+      <% if webinar.topic_summary %>
+        <p data-role="program-topic-summary"><%= webinar.topic_summary %></p>
+      <% end %>
+    <% end %>
+    <% if webinar.announced_speakers.any? || webinar.lead_host_name %>
+      <dl class="live-meta">
+        <%= render "webinars/program_people", webinar: webinar %>
+      </dl>
+    <% end %>
+  </section>
+<% end %>

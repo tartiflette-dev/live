@@ -1,0 +1,19 @@
+Salut <%= @registration.name %>,
+
+C'est demain ! « <%= @webinar.title %> », <%= l @webinar.starts_at, format: :day_time, locale: :fr %> (heure de Paris).
+
+<%= render "registration_mailer/program", webinar: @webinar -%>
+Ton lien pour entrer :
+
+<%= @access_url %>
+
+Ce lien est à toi : ne le fais pas tourner. Quelqu'un veut venir ? Envoie-lui plutôt <%= series_url %>
+
+Le fichier joint ajoute le café à ton agenda.
+
+Tu peux juste écouter, caméra coupée. Ou poser une question. Ou montrer ton truc.
+
+Tu reçois ce mail parce que tu as confirmé ton inscription.
+
+Prépare ton café,
+— Le Café IA · <%= series_host %>

@@ -1,0 +1,12 @@
+Bonjour,
+
+<% if @restored -%>
+Le transcripteur est revenu dans la salle du direct « <%= @webinar.title %> » à <%= @until %> (heure de Paris) : la transcription reprend.
+<% else -%>
+La captation du direct « <%= @webinar.title %> » s'est arrêtée à <%= @until %> (heure de Paris), le plus souvent à la fin du direct, sans que le transcripteur revienne.
+<% end -%>
+Ce qui s'est dit d'environ <%= @since %> à <%= @until %> n'est pas dans le transcript.
+
+Régie : <%= @regie_url %>
+
+— <%= Brand.host %>

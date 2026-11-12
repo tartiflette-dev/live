@@ -1,0 +1,31 @@
+# Publication des épisodes dans Nextcloud : une
+# entrée par série (Webinar#kind). Une série absente d'ici ne publie rien.
+# Chaque épisode reçoit son dossier `<date>-<slug>` (convention existante :
+# 2026-10-01-cafe-ia-003) dans chacun des deux dossiers de la série, tels
+# que les voit le compte NEXTCLOUD_USERNAME :
+#
+# - `folder` : dossier partagé avec les intervenants (Cafe-IA/ : partage
+#   fédéré à un co-organisateur). Caméras, micros, assemblages, transcription.
+# - `review_folder` : dossier de RELECTURE des vidéos qui peuvent montrer un
+#   écran partagé (composite, pistes d'écran). HORS de
+#   `folder` : un partage de dossier couvre tous ses sous-dossiers. Avant
+#   chaque dépôt, le job vérifie qu'aucun partage n'est posé sur lui, sur ses
+#   parents ni sur rien en dessous, et qu'il est dans l'espace du compte ;
+#   sinon il s'arrête.
+# - `reviewers` : comptes Nextcloud qui peuvent recevoir un partage
+#   utilisateur du dossier de relecture, SANS droit de repartage (le compte
+#   de dépôt n'est pas un relecteur : chacun relit par ce partage). Lus dans
+#   EPISODE_REVIEWERS (identifiants séparés par des virgules), posée par le
+#   déploiement ; sans elle, aucun relecteur. Tout autre partage bloque le
+#   dépôt ; la vérification est refaite avant et juste après chaque vidéo
+#   déposée en relecture.
+shared:
+  cafe_ia:
+    folder: Cafe-IA
+    review_folder: Relecture/Cafe-IA
+    reviewers: <%= ENV.fetch("EPISODE_REVIEWERS", "").split(",").map(&:strip).reject(&:empty?).to_json %>
+
+# Relecteur fictif des tests, indépendant de l'environnement du poste.
+test:
+  cafe_ia:
+    reviewers: [ relecteur ]

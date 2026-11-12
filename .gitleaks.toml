@@ -1,0 +1,15 @@
+# Allowlist gitleaks de l'application
+# useDefault = true OBLIGATOIRE : sans lui, ce fichier remplace les règles
+# par un jeu vide (gitleaks 8.28.0) et le job ne détecte plus rien.
+# Faux positifs examinés, un par valeur exacte :
+#   - test/controllers/api/tokens_controller_test.rb:10 (generic-api-key), test/controllers/invitations_controller_test.rb:7 (generic-api-key), test/system/shared_invitation_test.rb:10 (generic-api-key) … (13 occurrences)
+title = "live"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Faux positifs examinés"
+regexes = [
+  '''^sekret\-32bytes\-long\-enough\-abcdef$''',
+]

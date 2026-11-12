@@ -1,0 +1,38 @@
+<%# Formulaire du programme d'un café (Webinar::Program), envoyé à
+    WebinarProgramsController : écran du programme (toute l'animation) et écran
+    d'édition du propriétaire. Toujours ANNOUNCED_SPEAKERS_MAX champs
+    d'intervenant : les vides tombent. Trousse charte : .champ, .aide, .btn.
+    Local : `webinar`. %>
+<%= form_with model: webinar, url: webinar_program_path(webinar), method: :patch, local: true,
+              class: "live-form", data: { role: "webinar-program" } do |f| %>
+  <div class="champ">
+    <%= f.label :topic, "Sujet" %>
+    <%= f.text_field :topic, maxlength: Webinar::Program::TOPIC_MAX %>
+    <span class="aide">Un titre court. Affiché sur la page publique, l’agenda, tartiflette.dev et le rappel de la veille.</span>
+  </div>
+
+  <div class="champ">
+    <%= f.label :topic_summary, "Présentation du sujet" %>
+    <%= f.text_area :topic_summary, rows: 3, maxlength: Webinar::Program::TOPIC_SUMMARY_MAX %>
+    <span class="aide">Une ou deux phrases.</span>
+  </div>
+
+  <% Webinar::Program::ANNOUNCED_SPEAKERS_MAX.times do |index| %>
+    <div class="champ">
+      <%= label_tag "webinar_announced_speakers_#{index}", "Intervenant annoncé #{index + 1}" %>
+      <%= text_field_tag "webinar[announced_speakers][]", webinar.announced_speakers[index],
+                         id: "webinar_announced_speakers_#{index}", maxlength: Webinar::Program::NAME_MAX, autocomplete: "off" %>
+    </div>
+  <% end %>
+  <span class="aide">Les noms affichés, dans l’ordre de passage, trois au plus. Les annoncer n’envoie aucun lien d’intervenant.</span>
+
+  <div class="champ">
+    <%= f.label :lead_host_name, "Animateur du jour" %>
+    <%= f.text_field :lead_host_name, maxlength: Webinar::Program::NAME_MAX, autocomplete: "off" %>
+    <span class="aide">Qui mène, pas forcément la personne qui a créé le webinaire : le rôle tourne.</span>
+  </div>
+
+  <div class="live-actions">
+    <%= f.submit "Enregistrer le programme", class: "btn" %>
+  </div>
+<% end %>

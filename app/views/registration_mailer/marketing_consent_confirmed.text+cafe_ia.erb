@@ -1,0 +1,14 @@
+Salut <%= @registration.name %>,
+
+C'est noté : <%= Brand.organization %> peut te recontacter au sujet de ses activités,
+suite à ton inscription à « <%= @webinar.title %> ».
+
+Tu changes d'avis ? Un clic suffit, quand tu veux. Ce lien sera aussi
+dans chaque mail qu'on t'enverra dans ce cadre :
+
+<%= @withdrawal_url %>
+
+Tu peux aussi écrire à <%= Brand.support_email %>.
+
+Merci, et à très vite au café,
+— Le Café IA · <%= series_host %>

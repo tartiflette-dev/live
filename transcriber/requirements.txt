@@ -1,0 +1,8 @@
+# Transcriber LiveKit (worker Agents, Whisper, archive signée).
+# Épinglé par version mineure, pas par SHA : les paquets livekit-agents
+# bougent vite, un bump mesuré en même temps que les tests sera plus sain
+# qu'un hash figé qui bloquerait silencieusement.
+livekit-agents[codecs]==0.12.21
+livekit-plugins-silero==0.7.5
+PyJWT~=2.15.1
+httpx==0.28.1

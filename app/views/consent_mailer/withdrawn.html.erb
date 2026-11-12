@@ -1,0 +1,18 @@
+<p>Bonjour,</p>
+
+<p>
+  <%= @person %> a retiré son accord à l'image pour <strong><%= @webinar.title %></strong>,
+  le <%= I18n.l(@withdrawn_at.to_date, format: :long) %> à <%= @withdrawn_at.strftime("%-H:%M") %>, depuis la salle.
+</p>
+
+<p>À faire (procédure : docs/depublication.md, dans le dépôt de l'application) :</p>
+<ul>
+  <li>d'ici le <%= @excerpts_by %> : retirer les extraits et shorts où cette personne apparaît<% if (co_organizers = Brand.series.co_organizers.presence) %>, et demander aux
+      co-organisateurs de la série (<%= co_organizers %>) d'en faire autant<% end %> ;</li>
+  <li>d'ici le <%= @replay_by %> : retirer ses passages du replay publié (coupés ou masqués).</li>
+</ul>
+
+<p>
+  Ses pistes séparées ne sont plus enregistrées. La page des enregistrements et le tableau des accords du dossier
+  d'épisode indiquent « accord retiré » : <%= link_to @recordings_url, @recordings_url %>
+</p>

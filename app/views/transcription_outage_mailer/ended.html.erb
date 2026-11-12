@@ -1,0 +1,14 @@
+<p>Bonjour,</p>
+
+<p>
+  <% if @restored %>
+    Le transcripteur est revenu dans la salle du direct <strong><%= @webinar.title %></strong> à <%= @until %>
+    (heure de Paris) : la transcription reprend.
+  <% else %>
+    La captation du direct <strong><%= @webinar.title %></strong> s'est arrêtée à <%= @until %> (heure de Paris),
+    le plus souvent à la fin du direct, sans que le transcripteur revienne.
+  <% end %>
+  Ce qui s'est dit d'environ <%= @since %> à <%= @until %> n'est pas dans le transcript.
+</p>
+
+<p>Régie : <%= link_to @regie_url, @regie_url %></p>

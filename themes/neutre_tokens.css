@@ -1,0 +1,265 @@
+/* Jetons neutres de Live : le repli d'un pack de thème sans tokens.css (docs/theme-pack.md).
+   Couvrent tout le contrat (docs/theme-contract.md, vérifié par theme_contract_test.rb),
+   en clair et en sombre, sans police à télécharger.
+
+   Noms imposés par l'app : --orange-* est la rampe de l'accent et --cyan-500 la couleur
+   de tension, quelle que soit leur teinte (ici un bleu et une sarcelle). */
+
+:root {
+  --gray-50: #E8EBEF;
+  --gray-75: #E1E5EA;
+  --gray-100: #D9DEE4;
+  --gray-200: #C8CED6;
+  --gray-300: #B4BBC4;
+  --gray-350: #A7AFB9;
+  --gray-400: #929BA6;
+  --gray-450: #858E9A;
+  --gray-500: #7B8591;
+  --gray-600: #626B76;
+  --gray-700: #48505A;
+  --gray-800: #333A42;
+  --gray-850: #272D34;
+  --gray-900: #1C2127;
+  --gray-925: #111418;
+  --gray-canvas: #F2F4F7;
+
+  --orange-50: #EAF2FF;
+  --orange-100: #D6E5FF;
+  --orange-200: #B4D0FF;
+  --orange-300: #8FB9FF;
+  --orange-400: #6EA8FE;
+  --orange-500: #4A8FF0;
+  --orange-600: #2F74D6;
+  --orange-700: #1F5FBF;
+  --orange-800: #17478F;
+  --orange-900: #0F2E5C;
+
+  --cyan-500: #1E8C96;
+
+  --status-success-light: #1E6B3A;
+  --status-success-dark: #7FD6A0;
+  --status-warning-light: #8A5A00;
+  --status-warning-dark: #F2C94C;
+  --status-critical-light: #B3261E;
+  --status-critical-dark: #F2867E;
+  --status-info-light: #1F5FBF;
+  --status-info-dark: #8FB9FF;
+  --status-pending-light: #6A3FBF;
+  --status-pending-dark: #C9A6F5;
+
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-display: var(--font-sans);
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Mono", "DejaVu Sans Mono", Menlo, Consolas, monospace;
+
+  --type-nombre-size: clamp(72px, 10vw, 104px);
+  --type-nombre-size-px: 104px;
+  --type-nombre-weight: 700;
+  --type-nombre-leading: 0.9;
+  --type-nombre-tracking: -0.02em;
+  --type-display-size: clamp(40px, 7vw, 72px);
+  --type-display-size-px: 72px;
+  --type-display-weight: 700;
+  --type-display-leading: 1;
+  --type-display-tracking: -0.02em;
+  --type-h1-size: clamp(30px, 4.5vw, 44px);
+  --type-h1-size-px: 44px;
+  --type-h1-weight: 700;
+  --type-h1-leading: 1.1;
+  --type-h1-tracking: -0.01em;
+  --type-h2-size: 28px;
+  --type-h2-size-px: 28px;
+  --type-h2-weight: 700;
+  --type-h2-leading: 1.2;
+  --type-h2-tracking: -0.01em;
+  --type-h3-size: 20px;
+  --type-h3-size-px: 20px;
+  --type-h3-weight: 600;
+  --type-h3-leading: 1.25;
+  --type-h3-tracking: 0em;
+  --type-body-size: 16px;
+  --type-body-size-px: 16px;
+  --type-body-weight: 400;
+  --type-body-leading: 1.5;
+  --type-body-tracking: 0em;
+  --type-body-strong-size: 16px;
+  --type-body-strong-size-px: 16px;
+  --type-body-strong-weight: 600;
+  --type-body-strong-leading: 1.5;
+  --type-body-strong-tracking: 0em;
+  --type-small-size: 14px;
+  --type-small-size-px: 14px;
+  --type-small-weight: 400;
+  --type-small-leading: 1.45;
+  --type-small-tracking: 0em;
+  --type-cotation-size: 13px;
+  --type-cotation-size-px: 13px;
+  --type-cotation-weight: 500;
+  --type-cotation-leading: 1.4;
+  --type-cotation-tracking: 0em;
+  --type-ref-size: 12px;
+  --type-ref-size-px: 12px;
+  --type-ref-weight: 500;
+  --type-ref-leading: 1.4;
+  --type-ref-tracking: 0.04em;
+  --type-etat-size: 12px;
+  --type-etat-size-px: 12px;
+  --type-etat-weight: 600;
+  --type-etat-leading: 1.4;
+  --type-etat-tracking: 0.02em;
+  --type-legende-size: 12px;
+  --type-legende-size-px: 12px;
+  --type-legende-weight: 400;
+  --type-legende-leading: 1.4;
+  --type-legende-tracking: 0em;
+  --type-ui-compact-size: 13px;
+  --type-ui-compact-size-px: 13px;
+  --type-ui-compact-weight: 600;
+  --type-ui-compact-leading: 1.3;
+  --type-ui-compact-tracking: 0em;
+  --type-terminal-size: 13px;
+  --type-terminal-size-px: 13px;
+  --type-terminal-weight: 400;
+  --type-terminal-leading: 1.4;
+  --type-terminal-tracking: 0em;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-24: 96px;
+
+  --radius-0: 0px;
+  --radius-4: 4px;
+  --radius-8: 8px;
+  --radius-16: 16px;
+  --radius-none: 0px;
+  --radius-interactive: 8px;
+  --radius-card: 12px;
+  --radius-window: 16px;
+  --radius-pill: 999px;
+
+  --border-width-1: 1px;
+  --border-width-2: 2px;
+  --border-width-3: 3px;
+  --border-width-hairline: 1px;
+  --border-width-strong: 2px;
+  --border-width-frame: 3px;
+
+  --square-dot: 0.17em;
+  --square-bullet: 8px;
+  --square-marker: 40px;
+  --square-tick: 6px;
+
+  --breakpoint-telephone: 375px;
+  --breakpoint-volet: 640px;
+  --breakpoint-poste: 960px;
+  --breakpoint-large: 1280px;
+  --breakpoint-mur: 1680px;
+
+  --motion-duree-1: 120ms;
+  --motion-duree-2: 240ms;
+  --motion-duree-3: 480ms;
+  --motion-courbe-entree: cubic-bezier(0, 0, 0.2, 1);
+  --motion-courbe-sortie: cubic-bezier(0.4, 0, 1, 1);
+  --motion-autorisee: 1200ms;
+
+  --layer-contenu: 0;
+  --layer-collant: 100;
+  --layer-superpose: 300;
+  --layer-modal: 400;
+  --layer-notification: 500;
+
+  --control-height: 44px;
+  --densite-rang-h: 36px;
+  --densite-cell-y: 8px;
+  --densite-cell-x: 12px;
+  --densite-type-rang: 14px;
+}
+
+:root,
+[data-theme="dark"],
+html.dark {
+  color-scheme: dark;
+  --surface: #111418;
+  --surface-raised: #1C2127;
+  --text-primary: #E8EBEF;
+  --text-secondary: #B4BBC4;
+  --border: #48505A;
+  --border-control: #7B8591;
+  --border-color-strong: #E8EBEF;
+  --focus-ring: #8FB9FF;
+  --accent: #6EA8FE;
+  --accent-hover: #8FB9FF;
+  --on-accent: #0B1016;
+  --on-accent-hover: #0B1016;
+  --text-accent: #8FB9FF;
+  --text-accent-raised: #B4D0FF;
+  --tension: #1E8C96;
+  --on-tension: #FFFFFF;
+  --text-tension: #5CC4CE;
+  --text-tension-raised: #7ED3DB;
+  --status-success: #7FD6A0;
+  --status-warning: #F2C94C;
+  --status-critical: #F2867E;
+  --status-info: #8FB9FF;
+  --status-pending: #C9A6F5;
+  --scrim: rgba(17, 20, 24, 0.72);
+  --diff-add-bg: #1E3A2A;
+  --diff-add-ink: #7FD6A0;
+  --diff-del-bg: #43211F;
+  --diff-del-ink: #F2867E;
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+  --surface: #FFFFFF;
+  --surface-raised: #F2F4F7;
+  --text-primary: #14181D;
+  --text-secondary: #4E5763;
+  --border: #CBD1D9;
+  --border-control: #7B8591;
+  --border-color-strong: #14181D;
+  --focus-ring: #1F5FBF;
+  --accent: #1F5FBF;
+  --accent-hover: #17478F;
+  --on-accent: #FFFFFF;
+  --on-accent-hover: #FFFFFF;
+  --text-accent: #1F5FBF;
+  --text-accent-raised: #17478F;
+  --tension: #1E8C96;
+  --on-tension: #FFFFFF;
+  --text-tension: #136570;
+  --text-tension-raised: #136570;
+  --status-success: #1E6B3A;
+  --status-warning: #8A5A00;
+  --status-critical: #B3261E;
+  --status-info: #1F5FBF;
+  --status-pending: #6A3FBF;
+  --scrim: rgba(17, 20, 24, 0.56);
+  --diff-add-bg: #DDF0E3;
+  --diff-add-ink: #1E6B3A;
+  --diff-del-bg: #F9E0DE;
+  --diff-del-ink: #8C1D18;
+}
+
+[data-density="confortable"] {
+  --densite-rang-h: 48px;
+  --densite-cell-y: 12px;
+  --densite-cell-x: 16px;
+  --densite-type-rang: 16px;
+}
+
+[data-density="compacte"] {
+  --densite-rang-h: 28px;
+  --densite-cell-y: 4px;
+  --densite-cell-x: 8px;
+  --densite-type-rang: 13px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}

@@ -1,0 +1,16 @@
+<%# Personnes annoncées d'un café (Webinar::Program), paires dt/dd à placer
+    dans un `dl.live-meta`. Rien sans intervenants ni animateur du jour.
+    Locaux : `webinar` ; `announced` (vrai sur la page animateur, où la section
+    des liens d'intervenants (Speaker) porte déjà le mot « Intervenants » : les
+    noms annoncés y sont dits « annoncés »). %>
+<% speakers = webinar.announced_speakers %>
+<% if speakers.any? %>
+  <% label = speakers.one? ? "Intervenant" : "Intervenants" %>
+  <% label = "#{label} #{speakers.one? ? 'annoncé' : 'annoncés'}" if local_assigns[:announced] %>
+  <dt><%= label %></dt>
+  <dd data-role="program-speakers"><%= speakers.to_sentence(locale: :fr) %></dd>
+<% end %>
+<% if webinar.lead_host_name %>
+  <dt>Animé par</dt>
+  <dd data-role="program-lead-host"><%= webinar.lead_host_name %></dd>
+<% end %>

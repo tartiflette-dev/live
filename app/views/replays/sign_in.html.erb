@@ -1,0 +1,21 @@
+<%# Replay sans accès : connexion Pocket ID (POST, retour sur la page
+    demandée par `session[:return_to]`), ou le lien personnel reçu par mail
+    pour un inscrit. Aucune donnée personnelle affichée. %>
+<% content_for :title, "Replays" %>
+<article class="live-legal" data-role="replay-sign-in-page">
+  <h1>Replays réservés</h1>
+  <% if @invalid_link %>
+    <p class="etat etat--ecart" role="alert" data-role="replay-invalid-link">
+      Ce lien n'ouvre pas ce replay : il n'est plus valable, ou l'inscription n'a pas été confirmée.
+    </p>
+  <% end %>
+  <% if @webinar %>
+    <p><strong><%= @webinar.title %></strong>,
+       <time datetime="<%= @webinar.starts_at.iso8601 %>"><%= l @webinar.starts_at, format: :long %></time></p>
+  <% end %>
+  <p>Les replays sont ouverts aux personnes qui ont un compte <%= Brand.organization %>. Inscrit·e à un café ? Le lien personnel de ton
+     inscription ouvre son replay sans compte.</p>
+  <%= button_to "Me connecter avec mon compte #{Brand.organization}", "/auth/pocket_id", method: :post, class: "connexion-cta",
+                form: { class: "connexion-form", data: { turbo: false } }, data: { role: "replay-sign-in" } %>
+  <p class="etat etat--neutre">Pas de clé d'accès ? Tu peux te connecter avec un code reçu par mail.</p>
+</article>

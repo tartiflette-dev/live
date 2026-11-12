@@ -1,0 +1,61 @@
+<%# Liste des replays (ReplaysController#index) : titre, date, sujet,
+    personnes annoncées du programme et thèmes des chapitres validés.
+    Recherche dans ces replays (transcription, chapitres, thèmes). Compte
+    de l'organisation : tous les replays publiés ; inscrit sans compte : ceux que ce
+    navigateur a ouverts, et l'invitation à créer un compte. %>
+<% content_for :title, t("chrome.replays") %>
+<h1><%= t("chrome.replays") %></h1>
+<% if animateur_signed_in? && current_user.project_host? %>
+  <p data-role="replays-animation-links">
+    <%= link_to "Thèmes des cafés", animation_themes_path, class: "renvoi" %> ·
+    <%= link_to "Recherches des spectateurs", animation_searches_path, class: "renvoi" %>
+  </p>
+<% end %>
+
+<%= form_with url: replays_path, method: :get, local: true, class: "recherche-form", role: "search",
+              data: { role: "replay-search" } do %>
+  <div class="champ">
+    <%= label_tag :q, "Chercher dans les replays" %>
+    <%= search_field_tag :q, @query, maxlength: ReplaySearchIndex::QUERY_LIMIT, autocomplete: "off",
+                         placeholder: "un mot, un sujet, un outil…" %>
+  </div>
+  <%= submit_tag "Chercher", name: nil, class: "btn" %>
+<% end %>
+
+<% if @search %>
+  <%= render "replays/search_results", search: @search, query: @query %>
+<% end %>
+
+<% unless user_signed_in? %>
+  <%= render "replays/account_invitation" %>
+<% end %>
+
+<% if @replays.any? %>
+  <ul class="live-liens" data-role="replays">
+    <% @replays.each do |replay| %>
+      <% webinar = replay.webinar %>
+      <li class="carte-dossier" data-replay="<%= webinar.slug %>">
+        <span class="ref"><%= webinar.kind_label %></span>
+        <h3><%= link_to webinar.title, public_webinar_replay_path(webinar.slug), class: "titre-lien renvoi" %></h3>
+        <p><time datetime="<%= webinar.starts_at.iso8601 %>"><%= l webinar.starts_at, format: :long %></time></p>
+        <% if webinar.topic %>
+          <p data-role="replay-topic"><%= webinar.topic %></p>
+        <% end %>
+        <% if webinar.announced_speakers.any? || webinar.lead_host_name %>
+          <dl class="live-meta"><%= render "webinars/program_people", webinar: webinar %></dl>
+        <% end %>
+        <% if webinar.chapter_set&.validated? && webinar.chapter_set.themes.any? %>
+          <ul class="themes" aria-label="Thèmes abordés" data-role="replay-themes">
+            <% webinar.chapter_set.themes.each do |theme| %>
+              <li><%= link_to theme, replays_path(q: theme), class: "theme" %></li>
+            <% end %>
+          </ul>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <div class="vide" data-role="replays-vide">
+    <span class="quoi">Aucun replay publié pour l'instant.</span>
+  </div>
+<% end %>

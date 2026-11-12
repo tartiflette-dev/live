@@ -1,0 +1,10 @@
+<%# Menu secondaire « … » des actions destructrices (Régénérer, Désactiver,
+    Révoquer). details/summary : s'ouvre au clavier (Entrée, Espace) sans
+    script ; chaque action demande confirmation (form[data-confirm],
+    confirm_action.js). Locaux : `label` (nom accessible du menu), `role`. %>
+<details class="menu-actions" data-role="<%= role %>">
+  <summary class="btn btn--secondary" aria-label="<%= label %>" title="<%= label %>">…</summary>
+  <div class="menu-actions__panneau">
+    <%= yield %>
+  </div>
+</details>

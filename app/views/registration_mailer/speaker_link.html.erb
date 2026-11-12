@@ -1,0 +1,21 @@
+<p>Bonjour,</p>
+
+<p>
+  Une personne vient de rejoindre <strong><%= @webinar.title %></strong> comme
+  intervenant·e, en donnant votre adresse.
+</p>
+
+<p>Si c'est vous, confirmez-le : vos interventions seront rattachées à votre inscription.</p>
+
+<p><%= link_to "Confirmer mon intervention", @link_url %></p>
+
+<p>
+  Ou copiez ce lien dans votre navigateur :<br>
+  <%= @link_url %>
+</p>
+
+<p>Ce lien est valable 14 jours.</p>
+
+<p>Si ce n'est pas vous, ignorez ce message : rien ne sera rattaché à votre inscription.</p>
+
+<p>— <%= Brand.host %></p>

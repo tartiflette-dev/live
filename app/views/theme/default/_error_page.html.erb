@@ -1,0 +1,16 @@
+<%# Page d'erreur par défaut (pack de thème), mêmes locals que
+    l'ErrorPageComponent de la charte : code, quoi, geste, lien,
+    lien_libelle, mention (registre ignoré : toujours pleine page). %>
+<div class="erreur-page">
+  <section class="erreur-scene" aria-labelledby="erreur-quoi">
+    <div class="erreur-code" aria-hidden="true"><%= code %></div>
+    <h1 class="erreur-quoi" id="erreur-quoi"><%= quoi %></h1>
+    <p class="erreur-geste">
+      <% if local_assigns[:lien] %><%= link_to local_assigns[:lien_libelle] || lien, lien %> · <% end %><%= geste %>
+    </p>
+  </section>
+  <footer class="erreur-pied">
+    <span><%= local_assigns[:mention] %></span>
+    <%= render "theme/default/credit" %>
+  </footer>
+</div>

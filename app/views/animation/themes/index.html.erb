@@ -1,0 +1,54 @@
+<%# Thèmes abordés à travers les cafés (Animation::ThemesController) : pour
+    chacun, les cafés et les chapitres qui le portent ; filtre `q`, qui cherche
+    aussi dans la transcription de tous les replays. Animateurs du projet. %>
+<% content_for :title, "Thèmes des cafés" %>
+<h1>Thèmes des cafés</h1>
+<p>
+  <%= link_to "Recherches des spectateurs", animation_searches_path, class: "renvoi" %> ·
+  <%= link_to "Replays", replays_path, class: "renvoi" %>
+</p>
+
+<%= form_with url: animation_themes_path, method: :get, local: true, class: "recherche-form", role: "search",
+              data: { role: "themes-search" } do %>
+  <div class="champ">
+    <%= label_tag :q, "Les cafés où on a parlé de…" %>
+    <%= search_field_tag :q, @query, maxlength: ReplaySearchIndex::QUERY_LIMIT, autocomplete: "off" %>
+  </div>
+  <%= submit_tag "Chercher", name: nil, class: "btn" %>
+<% end %>
+
+<section aria-labelledby="themes-list">
+  <h2 id="themes-list"><%= @query.present? ? "Thèmes qui contiennent « #{@query} »" : "Tous les thèmes" %></h2>
+  <% if @themes.any? %>
+    <ul class="live-liens" data-role="themes">
+      <% @themes.each do |theme| %>
+        <li class="carte-dossier" data-role="theme" data-theme="<%= theme.key %>">
+          <h3><%= theme.label %></h3>
+          <p class="aide"><%= pluralize(theme.webinars.size, "café", plural: "cafés") %></p>
+          <ul class="recherche-passages">
+            <% theme.entries.each do |entry| %>
+              <li data-role="theme-entry">
+                <%= link_to theme_entry_path(entry), class: "recherche-passage" do %>
+                  <span class="recherche-instant"><%= l entry.webinar.starts_at.to_date, format: :long %></span>
+                  <span class="recherche-genre">
+                    <%= entry.webinar.title %><% unless entry.validated %> · chapitre proposé, pas encore validé<% end %>
+                  </span>
+                  <span class="recherche-extrait"><%= entry.chapter.title %></span>
+                <% end %>
+              </li>
+            <% end %>
+          </ul>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <div class="vide" data-role="themes-empty">
+      <span class="quoi">Aucun thème<%= " qui contienne « #{@query} »" if @query.present? %>.</span>
+      <span class="aide">Les thèmes viennent des chapitres des replays (proposés par le LLM local, relus par l'animation).</span>
+    </div>
+  <% end %>
+</section>
+
+<% if @search %>
+  <%= render "replays/search_results", search: @search, query: @query %>
+<% end %>

@@ -1,0 +1,9 @@
+<%# Favicon d'ENVIRONNEMENT (onglet seulement) : prod = cadre thème
+    (SVG auto, media query interne), staging = cadre orange.500, dev =
+    cadre status-critical. Le monogramme du bandeau reste prod. L'hôte
+    staging se reconnaît à APP_HOST (StagingHost : APP_HOST parmi
+    STAGING_HOSTS), pas à Rails.env. %>
+<link rel="icon" href="<%= favicon_href %>" type="image/svg+xml">
+<%# Manifest + apple-touch-icon opaques (écran d'accueil), fournis par le thème
+    (la gem pour le thème undust). %>
+<%= theme_ecran_accueil_tags %>

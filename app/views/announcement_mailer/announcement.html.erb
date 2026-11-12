@@ -1,0 +1,9 @@
+<%# Corps saisi par l'auteur : texte brut, entièrement échappé avant la mise
+    en paragraphes (aucun balisage n'est interprété). %>
+<%= simple_format(h(@announcement.body), {}, sanitize: false) %>
+
+<hr>
+<p><small>
+  <%= @announcement.footer_text %>
+  <br><%= link_to @announcement.footer_link_label, @footer_url %>
+</small></p>

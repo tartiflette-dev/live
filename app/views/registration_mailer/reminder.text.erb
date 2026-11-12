@@ -1,0 +1,16 @@
+Bonjour <%= @registration.name %>,
+
+Rappel : « <%= @webinar.title %> » a lieu demain, le <%= @starts_at %> (heure de Paris).
+
+<%= render "registration_mailer/program", webinar: @webinar -%>
+Pour rejoindre le direct, ouvrez votre lien personnel :
+
+<%= @access_url %>
+
+Ce lien vous est propre : ne le transmettez pas.
+
+Le fichier joint ajoute le rendez-vous à votre agenda.
+
+Vous recevez ce message parce que vous avez confirmé votre inscription.
+
+— <%= Brand.host %>

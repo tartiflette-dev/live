@@ -1,0 +1,18 @@
+<p>Bonjour <%= @registration.name %>,</p>
+
+<p>
+  Votre inscription à <strong><%= @webinar.title %></strong>, le <%= @starts_at %>, est confirmée.
+</p>
+
+<p>Ce lien personnel ouvre le direct depuis n'importe quel navigateur :</p>
+
+<p><%= link_to "Ouvrir le direct", @access_url %></p>
+
+<p>
+  Ou copiez ce lien dans votre navigateur :<br>
+  <%= @access_url %>
+</p>
+
+<p>Gardez ce mail et ne transmettez pas ce lien.</p>
+
+<p>— <%= Brand.host %></p>

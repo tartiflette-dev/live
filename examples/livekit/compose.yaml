@@ -1,0 +1,127 @@
+# Production media stack for a self-hosted instance: LiveKit (signalling, SFU
+# and embedded TURN), Redis, the egress (recordings) and Caddy (TLS).
+# See README.md. Every value specific to your installation comes from .env
+# (copy .env.example); nothing in this file needs editing.
+#
+# Host networking, as recommended by LiveKit: WebRTC needs a wide UDP port
+# range and the real client addresses, which Docker's port proxy hides.
+#
+# Requires Docker Compose 2.23 or later (inline `configs.content`).
+
+services:
+  caddy:
+    image: caddy:2.10-alpine@sha256:4c6e91c6ed0e2fa03efd5b44747b625fec79bc9cd06ac5235a779726618e530d
+    network_mode: host
+    restart: unless-stopped
+    environment:
+      LIVEKIT_DOMAIN: ${LIVEKIT_DOMAIN:?set LIVEKIT_DOMAIN in .env}
+      TURN_DOMAIN: ${TURN_DOMAIN:?set TURN_DOMAIN in .env}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+  redis:
+    image: redis:7-alpine@sha256:e7723ff73d963f5cc6d9c4643ea3d989527a402a319239054e9472a7fb9219a2
+    network_mode: host
+    restart: unless-stopped
+    init: true
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?set REDIS_PASSWORD in .env}
+    # Configuration on standard input: the password stays out of the process
+    # arguments. Loopback only; LiveKit and the egress are on the same host.
+    command:
+      - sh
+      - -c
+      - printf 'bind 127.0.0.1 ::1\nport 6379\nrequirepass %s\nsave ""\nappendonly no\n' "$$REDIS_PASSWORD" | redis-server -
+    healthcheck:
+      test: ["CMD-SHELL", "REDISCLI_AUTH=\"$$REDIS_PASSWORD\" redis-cli ping | grep -q PONG"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  livekit:
+    image: livekit/livekit-server:v1.13.5@sha256:3497163e15c48fef6e7830c78716f9e9d5edc28abf7aa90b61c86e93bbc306b1
+    network_mode: host
+    restart: unless-stopped
+    command: ["--config", "/etc/livekit.yaml"]
+    environment:
+      # "key: secret" — the same pair goes to the app (LIVEKIT_API_KEY/SECRET).
+      LIVEKIT_KEYS: "${LIVEKIT_API_KEY:?set LIVEKIT_API_KEY in .env}: ${LIVEKIT_API_SECRET:?set LIVEKIT_API_SECRET in .env}"
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      # Public address announced to clients. Empty: discovered through STUN.
+      NODE_IP: ${NODE_IP:-}
+    configs:
+      - source: livekit
+        target: /etc/livekit.yaml
+    volumes:
+      # TURN/TLS certificate obtained by Caddy for TURN_DOMAIN.
+      - caddy_data:/caddy:ro
+    depends_on:
+      redis:
+        condition: service_healthy
+      caddy:
+        condition: service_started
+
+  egress:
+    image: livekit/egress:v1.9.0@sha256:d62f515668d56df24082ec722a7a78134bc14ff331a2c0402ac90e8fe0fe0067
+    network_mode: host
+    restart: unless-stopped
+    environment:
+      EGRESS_CONFIG_FILE: /etc/egress.yaml
+    configs:
+      - source: egress
+        target: /etc/egress.yaml
+    volumes:
+      # Recordings; the app reads the same directory (RECORDINGS_ROOT).
+      - ${RECORDINGS_DIR:?set RECORDINGS_DIR in .env}:/data
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    shm_size: "1gb"
+    depends_on:
+      livekit:
+        condition: service_started
+
+configs:
+  livekit:
+    content: |
+      port: 7880
+      bind_addresses: ["127.0.0.1"]   # signalling behind Caddy only
+      rtc:
+        tcp_port: 7881
+        port_range_start: 50000
+        port_range_end: 60000
+        use_external_ip: true
+      redis:
+        address: 127.0.0.1:6379
+      turn:
+        enabled: true
+        domain: ${TURN_DOMAIN}
+        tls_port: 5349
+        udp_port: 3478
+        cert_file: /caddy/caddy/certificates/acme-v02.api.letsencrypt.org-directory/${TURN_DOMAIN}/${TURN_DOMAIN}.crt
+        key_file: /caddy/caddy/certificates/acme-v02.api.letsencrypt.org-directory/${TURN_DOMAIN}/${TURN_DOMAIN}.key
+      webhook:
+        api_key: ${LIVEKIT_API_KEY}
+        urls:
+          - ${APP_URL:?set APP_URL in .env}/webhooks/livekit
+      logging:
+        level: info
+        json: true
+
+  egress:
+    content: |
+      api_key: ${LIVEKIT_API_KEY}
+      api_secret: ${LIVEKIT_API_SECRET}
+      ws_url: ws://127.0.0.1:7880
+      insecure: true
+      redis:
+        address: 127.0.0.1:6379
+        password: ${REDIS_PASSWORD}
+      health_port: 9091
+      log_level: info
+      local_directory: /data
+
+volumes:
+  caddy_data:
+  caddy_config:

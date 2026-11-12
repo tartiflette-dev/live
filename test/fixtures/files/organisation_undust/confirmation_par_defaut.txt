@@ -1,0 +1,85 @@
+subject: Confirmez votre inscription — Bootcamp découverte
+--- text/plain
+Bonjour,
+
+Merci pour votre inscription à « Bootcamp découverte », le samedi 21 novembre 2026 09h30.
+
+Confirmez votre adresse pour recevoir le lien du direct :
+
+http://example.com/r/PREVIEWTOKEN0000000000000000abcd
+
+Page du webinaire : http://example.com/w/bootcamp-preview
+
+Si vous n'êtes pas à l'origine de cette inscription, ignorez ce message.
+
+---
+À l'inscription, la case « J'accepte qu'undust me recontacte au sujet
+de ses activités » a été cochée. Pour que ce consentement soit effectif,
+cliquez sur ce lien SÉPARÉ (le lien d'inscription ci-dessus n'y touche
+pas) :
+
+http://example.com/mc?t=PREVIEWMC
+
+Si vous n'avez pas coché cette case ou si quelqu'un d'autre vous a inscrit·e,
+ne cliquez PAS sur ce second lien : vous ne serez pas recontacté·e.
+— live.example.test
+
+
+--- text/html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <style>
+      /* Email styles need to be inline */
+    </style>
+  </head>
+
+  <body>
+    <p>Bonjour,</p>
+
+<p>
+  Merci pour votre inscription à
+  <strong>Bootcamp découverte</strong>,
+  le samedi 21 novembre 2026 09h30.
+</p>
+
+
+<p>Confirmez votre adresse pour recevoir le lien du direct :</p>
+
+<p>
+  <a href="http://example.com/r/PREVIEWTOKEN0000000000000000abcd">Confirmer mon inscription</a>
+</p>
+
+<p>
+  Ou copiez ce lien dans votre navigateur :<br>
+  http://example.com/r/PREVIEWTOKEN0000000000000000abcd
+</p>
+
+<p>
+  Page du webinaire : <a href="http://example.com/w/bootcamp-preview">Bootcamp découverte</a>
+</p>
+
+<p>
+  Si vous n'êtes pas à l'origine de cette inscription, ignorez ce message.
+</p>
+
+  <hr>
+  <p>
+    À l'inscription, la case <em>« J'accepte qu'undust me recontacte au sujet de ses activités »</em>
+    a été cochée. Pour que ce consentement soit effectif, cliquez sur ce lien
+    <strong>séparé</strong> (le lien d'inscription ci-dessus n'y touche pas) :
+  </p>
+  <p>
+    <a href="http://example.com/mc?t=PREVIEWMC">Confirmer mon consentement au recontact</a>
+  </p>
+  <p>
+    Si vous n'avez pas coché cette case ou si quelqu'un d'autre vous a inscrit·e,
+    ne cliquez <strong>pas</strong> sur ce second lien : vous ne serez pas recontacté·e.
+  </p>
+
+<p>— live.example.test</p>
+
+  </body>
+</html>
+

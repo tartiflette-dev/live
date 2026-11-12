@@ -1,0 +1,38 @@
+<%# Présence des animateurs (Webinar::HostPresence), avant le direct.
+    `attendance` : présence de la personne connectée si elle anime ce café
+    (propriétaire ou co-animateur), nil sinon. `roster` : réponses de chacun,
+    pour les gestionnaires seulement (un co-animateur invité ne voit pas la
+    liste des co-animateurs). %>
+<% if webinar.draft? && !webinar.past? %>
+  <section aria-labelledby="presence-heading" data-role="host-presence">
+    <h2 id="presence-heading">Présence des animateurs</h2>
+    <p>
+      <%= date_status_badge(webinar) %>
+      La date s'affiche « confirmée », en public aussi, quand tous les co-animateurs ont dit oui ; le propriétaire est présumé présent, sauf « non » de sa part.
+    </p>
+
+    <% if attendance && webinar.host_attendance_open? %>
+      <p data-role="host-presence-mine">Ta présence : <strong><%= host_presence_answer_label(attendance.current_answer) %></strong></p>
+      <div class="live-actions">
+        <%= button_to "Je serai là", webinar_presence_path(webinar), params: { answer: "present" },
+                      class: "btn", data: { role: "host-presence-present" } %>
+        <%= button_to "Je ne serai pas là", webinar_presence_path(webinar), params: { answer: "absent" },
+                      class: "btn btn--secondary", data: { role: "host-presence-absent" } %>
+      </div>
+    <% elsif attendance %>
+      <p class="etat etat--neutre" data-role="host-presence-unpublished">
+        Une fois le café publié, chaque co-animateur reçoit un mail pour dire s'il sera là.
+      </p>
+    <% end %>
+
+    <% if roster %>
+      <ul class="live-liens" data-role="host-presence-list">
+        <% roster.each do |email, answer| %>
+          <li class="live-lien" data-answer="<%= answer || "none" %>">
+            <strong><%= email || "propriétaire" %></strong> — <%= host_presence_answer_label(answer) %>
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
+  </section>
+<% end %>

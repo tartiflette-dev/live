@@ -1,0 +1,11 @@
+<%# GET /mc/withdraw?t=<token> — page de retrait SANS EFFET (idem /mc). %>
+<% content_for :title, voice_t("marketing_withdrawals.show.title") %>
+<article class="live-legal" data-role="marketing-withdrawal">
+  <h1><%= voice_t("marketing_withdrawals.show.heading") %></h1>
+  <p><%= voice_t("marketing_withdrawals.show.context_html", title: @webinar_title) %></p>
+  <%= button_to voice_t("marketing_withdrawals.show.button"),
+                confirm_marketing_withdrawal_path(t: params[:t]),
+                method: :post,
+                class: "btn" %>
+  <p><%= voice_t("marketing_withdrawals.show.cancel") %></p>
+</article>

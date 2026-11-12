@@ -1,0 +1,70 @@
+<% content_for :title, @webinar.title %>
+
+<article class="carte-dossier" data-role="pre-live">
+  <span class="ref"><%= @webinar.kind_label %></span>
+  <h1><%= @webinar.title %></h1>
+
+  <%= render "webinars/program", webinar: @webinar %>
+
+  <% if @webinar.description.present? %>
+    <div class="description">
+      <%= simple_format(@webinar.description, {}, sanitize: true) %>
+    </div>
+  <% end %>
+
+  <p>
+    <time datetime="<%= @webinar.starts_at.iso8601 %>">
+      <%= voice_l @webinar.starts_at %>
+    </time>
+    <%= date_status_badge(@webinar) %>
+  </p>
+
+  <p>
+    <span class="etat etat--info"><%= @webinar.price_label %></span>
+  </p>
+
+  <% unless @webinar.free? %>
+    <p class="etat etat--neutre" data-role="paid-notice">
+      <%= t("webinars.paid_notice") %>
+    </p>
+  <% end %>
+
+  <% if @webinar.state == "ended" %>
+    <p class="etat etat--neutre" data-role="pre-live-ended">
+      <%= voice_t("webinars.pre_live.ended") %>
+    </p>
+  <% elsif @webinar.live? %>
+    <p class="etat etat--info" data-role="live-registration-required">
+      <%= voice_t("webinars.pre_live.live_registration_required") %>
+    </p>
+  <% else %>
+    <%# data-state-url : URL hardcodée avec suffixe `.json` explicite (contrat
+        de l'action). Le helper `public_webinar_state_path(format: :json)`
+        supprime l'extension car `.json` est le `defaults:` de la route,
+        rendant le path généré `/w/<slug>/state` — ambigu vs contrat body. %>
+    <p class="etat etat--info"
+       data-countdown
+       data-starts-at="<%= @webinar.starts_at.iso8601 %>"
+       data-state-url="/w/<%= @webinar.slug %>/state.json">
+      <span class="quoi"><%= voice_t("webinars.pre_live.starts_in") %></span>
+      <span class="valeur" data-countdown-time><%= t("webinars.pre_live.computing") %></span>
+    </p>
+  <% end %>
+
+  <%# Agenda : seulement avant le direct d'un webinaire publié (le .ics
+      d'un brouillon répond 404), tant qu'il n'est pas passé (jamais lancé
+      au-delà de la fenêtre de retard). %>
+  <% if @webinar.visibility_published? && @webinar.draft? && !@webinar.past? %>
+    <div class="live-actions" data-role="add-to-calendar">
+      <%= link_to t("agenda.add.ics"), webinar_calendar_path(slug: @webinar.slug, format: :ics),
+            class: "btn btn--secondary", data: { role: "add-to-calendar-ics" } %>
+      <%= link_to webinar_calendar.google_event_url(@webinar),
+            class: "btn btn--secondary", target: "_blank", rel: "noopener", data: { role: "add-to-calendar-google" } do %>
+        <%= t("agenda.add.google") %><%= new_tab_hint %>
+      <% end %>
+      <%= link_to t("agenda.add.all"), agenda_path, class: "btn btn--discret" %>
+    </div>
+  <% end %>
+
+  <%= render "webinars/registration_cta", webinar: @webinar %>
+</article>

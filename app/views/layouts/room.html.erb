@@ -1,0 +1,31 @@
+<%# Layout SALLE (stage / join / viewer) — pas de chrome animateur : la salle
+    est plein écran. Tokens charte (tailwind) chargés AVANT le bundle LiveKit
+    (application.css esbuild = @livekit/components-styles, non layered,
+    donc prioritaire sur les règles @layer de la charte) puis room.css, la
+    coquille scopée body.room qui ne consomme que des tokens. %>
+<!DOCTYPE html>
+<html lang="<%= I18n.locale %>">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+    <meta name="color-scheme" content="light dark">
+    <%= theme_color_meta_tag %>
+    <meta name="application-name" content="<%= Brand.product_name %>">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title><%= Brand.product_name %></title>
+    <%= render "theme/anti_fouc" %>
+    <%= theme_fonts_tag %>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= yield :head %>
+    <%= render "shared/favicon" %>
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "room", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "polls", "data-turbo-track": "reload" %>
+    <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
+  </head>
+  <body class="room">
+    <%= yield %>
+  </body>
+</html>

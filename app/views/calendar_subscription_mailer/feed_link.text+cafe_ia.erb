@@ -1,0 +1,22 @@
+Salut <%= @name %>,
+
+Ton inscription est confirmée. Mets tous les cafés dans ton agenda avec ton lien perso : chaque nouvelle date s'y ajoute toute seule, et un café déplacé s'y déplace.
+
+S'abonner (Apple, Outlook) : <%= @links.webcal_url %>
+
+Google Agenda : <%= @links.google_url %>
+
+Outlook (Microsoft 365) : <%= @links.outlook_365_url %>
+
+Outlook.com : <%= @links.outlook_com_url %>
+
+Un autre agenda ? Abonne-le à cette adresse (ou télécharge le fichier, mais il ne se mettra pas à jour) :
+
+<%= @links.download_url %>
+
+Ce lien est à toi : ne le fais pas tourner. Quelqu'un veut venir ? Envoie-lui plutôt <%= series_url %>
+
+Tu reçois ce mail parce que tu as confirmé ton inscription.
+
+À bientôt au café,
+— Le Café IA · <%= series_host %>

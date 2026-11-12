@@ -1,0 +1,8 @@
+participant_consent.recording: Je suis filmé·e, enregistré·e et transcrit·e, et le replay du direct est rediffusé
+participant_consent.excerpts: J'accepte que des extraits soient publiés par undust et les co-organisateurs de la série (tartiflette.dev) sur leurs sites et réseaux sociaux
+participant_consent.adult: J'ai 18 ans ou plus
+default.marketing_consents.show.accept: Oui, j'accepte d'être recontacté·e
+default.registration_requests.show.button_with_marketing: Confirmer et accepter d'être recontacté·e
+cafe_ia.marketing_consents.show.accept: Oui, j'accepte d'être recontacté·e
+cafe_ia.registration_requests.show.button_with_marketing: Je confirme, et undust peut me recontacter
+crm: Consentement explicite au recontact par undust, posé le 2026-11-20T10:00:00+01:00 via bouton « Oui » de la page /mc (lien à usage unique reçu par mail) ; provenance live, politique v1.8.

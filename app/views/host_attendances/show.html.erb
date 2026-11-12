@@ -1,0 +1,18 @@
+<%# GET /presence?t= — page SANS EFFET (scanners de liens) : la réponse n'est
+    prise qu'au POST d'un des boutons. Le bouton de la réponse choisie dans le
+    mail vient en premier. %>
+<% content_for :title, "Ta présence" %>
+<article class="carte-dossier" data-role="host-attendance">
+  <h1>Seras-tu là ?</h1>
+  <p>
+    <strong><%= @webinar.title %></strong>,
+    <time datetime="<%= @webinar.starts_at.iso8601 %>"><%= l @webinar.starts_at, format: :long %></time>
+    (heure de Paris).
+  </p>
+  <% if (current = @attendance.current_answer) %>
+    <p class="etat etat--neutre" data-role="host-attendance-current">
+      Ta réponse actuelle : <%= current == "present" ? "tu seras là" : "tu ne seras pas là" %>.
+    </p>
+  <% end %>
+  <%= render "host_attendances/buttons", attendance: @attendance, first: @proposed %>
+</article>

@@ -1,0 +1,67 @@
+<% content_for :title, "Inscrits" %>
+<% content_for :breadcrumb do %>
+  <span class="fil-sep" aria-hidden="true">›</span>
+  <%= link_to @webinar.title, webinar_path(@webinar), class: "fil-niveau" %>
+<% end %>
+<h1>Inscrits — <%= @webinar.title %></h1>
+
+<section aria-labelledby="reg-stats">
+  <h2 id="reg-stats" class="sr-only">Statistiques</h2>
+  <p class="etat etat--info">
+    <strong><%= @registrations.size %></strong> inscrit<%= "s" if @registrations.size > 1 %>
+    (<strong><%= @confirmed_count %></strong> confirmé<%= "s" if @confirmed_count > 1 %>).
+  </p>
+  <div class="live-actions">
+    <%= link_to "Exporter en CSV",
+                webinar_registrations_path(@webinar, format: :csv),
+                class: "btn btn--secondary",
+                data: { role: "registrations-csv" } %>
+  </div>
+</section>
+
+<section aria-labelledby="reg-list">
+  <h2 id="reg-list">Liste</h2>
+
+  <% if @registrations.any? %>
+    <div class="conteneur-table">
+      <table class="table-dense">
+        <thead>
+          <tr>
+            <th>Nom</th>
+            <th>Email</th>
+            <th>Confirmé</th>
+            <th>Payé</th>
+            <th>Inscrit le</th>
+            <th>Venu dans la salle</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @registrations.each do |r| %>
+            <tr data-registration-id="<%= r.id %>">
+              <td><%= r.name %></td>
+              <td><%= r.email %></td>
+              <td>
+                <span class="etat <%= r.confirmed? ? "etat--succes" : "etat--neutre" %>">
+                  <%= r.confirmed? ? "Oui" : "Non" %>
+                </span>
+              </td>
+              <td>
+                <span class="etat <%= r.paid_confirmed? ? "etat--succes" : "etat--neutre" %>">
+                  <%= r.paid_confirmed? ? "Oui" : "Non" %>
+                </span>
+              </td>
+              <td><%= l(r.created_at, format: :short) %></td>
+              <td data-role="registration-attendance">
+                <span class="etat <%= r.room_joined_at ? "etat--succes" : "etat--neutre" %>">
+                  <%= r.room_joined_at ? "Oui" : "Non" %>
+                </span>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <p class="vide"><span class="quoi">Aucun inscrit pour ce webinaire.</span></p>
+  <% end %>
+</section>

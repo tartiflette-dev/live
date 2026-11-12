@@ -1,0 +1,33 @@
+<% content_for :title, "Co-animer #{@webinar.title}" %>
+
+<%# Lien animateur. Un seul geste : la connexion
+    Pocket ID, en POST (omniauth-rails_csrf_protection) ; le jeton part avec
+    elle et attend le retour dans un cookie chiffré (HostInvitationCookie). %>
+<article class="carte-dossier" data-role="host-invitation">
+  <h1>Co-animer « <%= @webinar.title %> »</h1>
+  <p>
+    Tu es invité·e à co-animer ce café, le
+    <time datetime="<%= @webinar.starts_at.iso8601 %>"><%= l @webinar.starts_at, format: :long %></time>.
+    Connecte-toi avec ton compte <%= Brand.organization %> : tu arriveras sur la page du café, avec la scène et la régie.
+  </p>
+
+  <%= button_to "Se connecter avec mon compte #{Brand.organization}", "/auth/pocket_id",
+                method: :post,
+                params: { HostInvitationCookie::PARAM => @invitation.token },
+                class: "connexion-cta",
+                form: { class: "connexion-form", data: { turbo: false } },
+                data: { role: "host-invitation-sign-in" } %>
+
+  <p class="etat etat--neutre" data-role="host-invitation-email-code">
+    Pas de clé d’accès ? Tu peux te connecter avec un code reçu par mail.
+  </p>
+
+  <% if @invitation.signup_url.present? %>
+    <p data-role="host-invitation-signup">
+      <%= link_to @invitation.signup_url, target: "_blank", rel: "noopener noreferrer", class: "renvoi" do %>
+        Je n’ai pas de compte : le créer<%= new_tab_hint %>
+      <% end %>
+      — puis reviens sur cette page pour te connecter.
+    </p>
+  <% end %>
+</article>

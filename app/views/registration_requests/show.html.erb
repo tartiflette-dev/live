@@ -1,0 +1,49 @@
+<%# GET /confirmer?t=<token> — page SANS EFFET (scanners de liens) : la
+    confirmation n'a lieu qu'au POST du button_to. Aucune donnée
+    personnelle affichée : ni nom, ni email. %>
+<% content_for :title, voice_t("registration_requests.show.title") %>
+<article class="live-legal" data-role="registration-request">
+  <h1><%= voice_t("registration_requests.show.title") %></h1>
+  <% registrations = @registration_request.published_registrations %>
+  <% if registrations.any? %>
+    <p><%= voice_t("registration_requests.show.covers") %></p>
+    <ul>
+      <% registrations.each do |registration| %>
+        <li>
+          <strong><%= registration.webinar.title %></strong>,
+          <time datetime="<%= registration.webinar.starts_at.iso8601 %>"><%= voice_l registration.webinar.starts_at %></time>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
+  <% if @registration_request.notify_next? %>
+    <p><%= voice_t("registration_requests.show.notify_next") %></p>
+  <% end %>
+  <p><%= voice_t("registration_requests.show.intro") %></p>
+  <% if @registration_request.marketing_choice_offered? %>
+    <%# Sécurité : la case a pu être cochée par un tiers ;
+        seul le bouton qui le dit accorde le recontact (`marketing=1`). %>
+    <p data-role="marketing-consent-notice"><%= voice_t("registration_requests.show.marketing_consent_notice") %></p>
+    <%= button_to voice_t("registration_requests.show.button_with_marketing"),
+                  confirm_registration_request_path(t: params[:t]),
+                  method: :post,
+                  params: { marketing: "1" },
+                  class: "btn",
+                  data: { role: "confirm-with-marketing" } %>
+    <%= button_to voice_t("registration_requests.show.button_without_marketing"),
+                  confirm_registration_request_path(t: params[:t]),
+                  method: :post,
+                  params: { marketing: "0" },
+                  class: "btn btn--secondary",
+                  data: { role: "confirm-without-marketing" } %>
+  <% else %>
+    <%= button_to voice_t("registration_requests.show.button"),
+                  confirm_registration_request_path(t: params[:t]),
+                  method: :post,
+                  class: "btn" %>
+  <% end %>
+  <p>
+    <%= voice_t("registration_requests.show.not_you_html",
+                privacy: link_to(voice_t("privacy_link"), confidentialite_path)) %>
+  </p>
+</article>

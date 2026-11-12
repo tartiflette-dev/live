@@ -1,0 +1,34 @@
+<%# Liste animateur. Scope host_sub côté controller.
+    Trousse charte : table-dense dans conteneur-table, état par badge. %>
+<% content_for :title, t("chrome.webinars") %>
+<h1><%= t("chrome.webinars") %></h1>
+
+<% if @webinars.any? %>
+  <div class="conteneur-table">
+    <table class="table-dense">
+      <thead>
+        <tr>
+          <th>Titre</th>
+          <th>État</th>
+          <th>Démarre</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @webinars.each do |w| %>
+          <tr>
+            <td><%= link_to w.title, webinar_path(w), class: "renvoi" %></td>
+            <td><%= webinar_state_badge(w) %></td>
+            <td><time datetime="<%= w.starts_at.iso8601 %>"><%= l w.starts_at, format: :jour_heure %></time></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% else %>
+  <div class="table-vide">
+    <div class="vide">
+      <span class="quoi">Aucun webinaire.</span>
+      <span class="geste"><%= link_to "En créer un", new_webinar_path, class: "btn" %></span>
+    </div>
+  </div>
+<% end %>

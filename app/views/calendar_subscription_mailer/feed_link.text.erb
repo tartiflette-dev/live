@@ -1,0 +1,21 @@
+Bonjour <%= @name %>,
+
+Votre inscription est confirmée. Ajoutez les dates des webinaires à votre agenda avec votre lien personnel : les nouvelles dates y apparaissent, et un changement d'horaire s'y reporte.
+
+S'abonner (Apple, Outlook) : <%= @links.webcal_url %>
+
+Google Agenda : <%= @links.google_url %>
+
+Outlook (Microsoft 365) : <%= @links.outlook_365_url %>
+
+Outlook.com : <%= @links.outlook_com_url %>
+
+Pour tout autre agenda, abonnez-le à cette adresse (ou téléchargez le fichier, sans mise à jour ensuite) :
+
+<%= @links.download_url %>
+
+Ce lien vous est propre : ne le transmettez pas.
+
+Vous recevez ce message parce que vous avez confirmé votre inscription.
+
+— <%= Brand.host %>

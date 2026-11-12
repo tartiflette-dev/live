@@ -1,0 +1,12 @@
+<% trial = ActionMailer::Base.delivery_method == :test %>
+<% heading = voice_t(trial ? "registrations.pending.trial_title" : "registrations.pending.title") %>
+<% content_for :title, heading %>
+<article class="carte-dossier">
+  <h1><%= heading %></h1>
+  <% if trial %>
+    <p><%= voice_t("registrations.pending.trial") %></p>
+  <% else %>
+    <p><%= voice_t("registrations.pending.sent") %></p>
+  <% end %>
+  <p><%= link_to voice_t("registrations.pending.back"), public_webinar_path(@webinar.slug), class: "btn btn--secondary" %></p>
+</article>

@@ -1,0 +1,172 @@
+<% content_for :title, "Présence" %>
+<% content_for :breadcrumb do %>
+  <span class="fil-sep" aria-hidden="true">›</span>
+  <%= link_to @webinar.title, webinar_path(@webinar), class: "fil-niveau" %>
+<% end %>
+<% timeline = @timeline %>
+<h1>Présence — <%= @webinar.title %></h1>
+<p class="presence-date"><%= l(@webinar.starts_at, format: "%A %-d %B %Y") %>, <%= presence_clock(@webinar.starts_at) %></p>
+
+<section aria-labelledby="presence-provenance" data-role="presence-provenance">
+  <h2 id="presence-provenance" class="sr-only">D'où viennent ces données</h2>
+  <% if timeline.empty? %>
+    <p class="etat etat--info">Aucune présence relevée pour ce webinaire.</p>
+    <p class="presence-note">
+      Le journal de présence n'existait pas encore lors de ce direct, ou personne n'est entré dans la salle.
+      Pour un café plus ancien, les arrivées et départs ne sont reconstituables que tant que le serveur LiveKit garde
+      son journal.
+    </p>
+  <% else %>
+    <p class="presence-note">
+      Sources : <%= timeline.sources.map { |source| PresenceHelper::SOURCE_LABELS.fetch(source) }.to_sentence(two_words_connector: " et ", last_word_connector: " et ") %>.
+      <% if timeline.logged? && !timeline.attempts_captured %>
+        Les pages ouvertes et les accès à la salle délivrés n'étaient pas encore relevés pour ce webinaire :
+        seules les connexions interrompues disent qui a essayé.
+      <% end %>
+    </p>
+  <% end %>
+</section>
+
+<% unless timeline.empty? %>
+  <section aria-labelledby="presence-resume" data-role="presence-summary">
+    <h2 id="presence-resume" class="sr-only">En bref</h2>
+    <% registered_came = timeline.registrations_came_count %>
+    <ul class="presence-chiffres">
+      <li><strong><%= registered_came %></strong> inscrit<%= "s" if registered_came > 1 %> venu<%= "s" if registered_came > 1 %> sur <%= presence_plural(timeline.expected_count, "attendu") %></li>
+      <li><strong><%= timeline.attendees.size %></strong> personne<%= "s" if timeline.attendees.size > 1 %> dans la salle au total<%= ", animation comprise" if timeline.logged? %></li>
+      <% if timeline.peak %>
+        <li>Au plus fort : <strong><%= timeline.peak.last %></strong> présent<%= "s" if timeline.peak.last > 1 %>, à <%= presence_clock(timeline.peak.first) %></li>
+      <% end %>
+      <% if timeline.unconfirmed_count.positive? %>
+        <li><%= presence_plural(timeline.unconfirmed_count, "inscription") %> non confirmée<%= "s" if timeline.unconfirmed_count > 1 %>, sans accès à la salle</li>
+      <% end %>
+    </ul>
+  </section>
+<% end %>
+
+<% if @chart %>
+  <section aria-labelledby="presence-courbe" data-role="presence-curve">
+    <h2 id="presence-courbe">Présents dans le temps</h2>
+    <figure class="presence-figure">
+      <div class="presence-defilement">
+        <svg class="presence-svg" viewBox="0 0 <%= PresenceChart::WIDTH %> <%= @chart.curve_view_height %>" role="img"
+             aria-labelledby="presence-courbe-titre">
+          <title id="presence-courbe-titre">Nombre de présents de <%= presence_clock(@chart.from) %> à <%= presence_clock(@chart.to) %>, au plus <%= timeline.peak.last %></title>
+          <% @chart.count_ticks.each do |y, count| %>
+            <line class="presence-grille" x1="<%= PresenceChart::LEFT %>" x2="<%= PresenceChart::WIDTH - PresenceChart::RIGHT %>" y1="<%= y %>" y2="<%= y %>"/>
+            <text class="presence-axe" x="<%= PresenceChart::LEFT - 6 %>" y="<%= y + 4 %>" text-anchor="end"><%= count %></text>
+          <% end %>
+          <% @chart.time_ticks.each do |x, time| %>
+            <text class="presence-axe" x="<%= x %>" y="<%= @chart.curve_bottom + 16 %>" text-anchor="middle"><%= presence_clock(time) %></text>
+          <% end %>
+          <path class="presence-courbe" d="<%= @chart.curve_path %>"/>
+        </svg>
+      </div>
+      <figcaption class="presence-note">
+        Animation, intervenants et inscrits ; une personne entrée sous deux identités compte une fois.
+        <% if timeline.window != timeline.full_window %>
+          Les graphiques s'en tiennent au direct (de <%= presence_clock(@chart.from) %> à <%= presence_clock(@chart.to) %>) ;
+          le tableau donne aussi les présences d'avant ou d'après.
+        <% end %>
+      </figcaption>
+    </figure>
+  </section>
+<% end %>
+
+<% if timeline.attendees.any? %>
+  <section aria-labelledby="presence-chrono" data-role="presence-chronology">
+    <h2 id="presence-chrono">Qui était là, et quand</h2>
+    <% if @chart %>
+      <figure class="presence-figure" aria-hidden="true">
+        <div class="presence-defilement">
+          <svg class="presence-svg" viewBox="0 0 <%= PresenceChart::WIDTH %> <%= @chart.rows_view_height(timeline.attendees.size) %>">
+            <% timeline.attendees.each_with_index do |attendee, index| %>
+              <% row_y = @chart.row_y(index) %>
+              <line class="presence-grille" x1="<%= PresenceChart::LEFT %>" x2="<%= PresenceChart::WIDTH - PresenceChart::RIGHT %>" y1="<%= row_y + PresenceChart::BAR_HEIGHT / 2.0 %>" y2="<%= row_y + PresenceChart::BAR_HEIGHT / 2.0 %>"/>
+              <% @chart.bars(attendee).each do |x, width| %>
+                <rect class="presence-barre presence-barre--<%= attendee.person.role %>" x="<%= x %>" y="<%= row_y %>" width="<%= width %>" height="<%= PresenceChart::BAR_HEIGHT %>" rx="2"/>
+              <% end %>
+              <% @chart.marks(attendee).each do |x, kind| %>
+                <circle class="presence-marque presence-marque--<%= kind %>" cx="<%= x %>" cy="<%= row_y + PresenceChart::BAR_HEIGHT / 2.0 %>" r="3"/>
+              <% end %>
+              <text class="presence-axe" x="<%= PresenceChart::LEFT - 6 %>" y="<%= row_y + PresenceChart::BAR_HEIGHT - 2 %>" text-anchor="end"><%= index + 1 %></text>
+            <% end %>
+            <% rows_bottom = timeline.attendees.size * PresenceChart::ROW_HEIGHT %>
+            <% @chart.time_ticks.each do |x, time| %>
+              <text class="presence-axe" x="<%= x %>" y="<%= rows_bottom + 16 %>" text-anchor="middle"><%= presence_clock(time) %></text>
+            <% end %>
+          </svg>
+        </div>
+        <figcaption class="presence-legende">
+          <span class="presence-cle presence-cle--animation">Animation</span>
+          <span class="presence-cle presence-cle--intervenant">Intervenant</span>
+          <span class="presence-cle presence-cle--inscrit">Inscrit</span>
+          <span class="presence-cle presence-cle--tentative">Tentative (page, accès, connexion interrompue)</span>
+        </figcaption>
+      </figure>
+    <% end %>
+
+    <div class="conteneur-table">
+      <table class="table-dense">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Personne</th>
+            <th scope="col">Rôle</th>
+            <th scope="col">Arrivées → départs</th>
+            <th scope="col">Durée</th>
+            <th scope="col">Tentatives</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% timeline.attendees.each_with_index do |attendee, index| %>
+            <tr data-role="presence-person">
+              <td><%= index + 1 %></td>
+              <td><%= presence_name(attendee.person) %></td>
+              <td><%= presence_role(attendee.person) %></td>
+              <td><%= safe_join(presence_intervals(attendee), tag.br) %></td>
+              <td><%= presence_attendee_duration(attendee) %></td>
+              <td><%= presence_attempts(attendee).join(" ; ").presence || "—" %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </section>
+<% end %>
+
+<% if timeline.logged? %>
+  <section aria-labelledby="presence-tentatives" data-role="presence-tried">
+    <h2 id="presence-tentatives">Ont essayé sans entrer</h2>
+    <% if timeline.tried.any? %>
+      <ul class="presence-liste">
+        <% timeline.tried.each do |attendee| %>
+          <li><strong><%= presence_name(attendee.person) %></strong> (<%= presence_role(attendee.person).downcase %>) : <%= presence_attempts(attendee).join(" ; ") %></li>
+        <% end %>
+      </ul>
+    <% elsif timeline.attempts_captured %>
+      <p class="vide"><span class="quoi">Personne n'a essayé sans entrer.</span></p>
+    <% else %>
+      <p class="vide"><span class="quoi">Aucune connexion interrompue sans entrée ; les pages ouvertes et les accès délivrés n'étaient pas relevés.</span></p>
+    <% end %>
+  </section>
+<% end %>
+
+<section aria-labelledby="presence-absents" data-role="presence-never-came">
+  <h2 id="presence-absents"><%= timeline.empty? ? "Inscrits attendus" : "Inscrits jamais venus" %></h2>
+  <% if timeline.never_came.any? %>
+    <% if timeline.empty? %>
+      <p class="presence-note">Rien n'a été relevé : on ne sait pas lesquels sont venus.</p>
+    <% end %>
+    <% tried_ids = timeline.tried.filter_map { |attendee| attendee.person.registration&.id } %>
+    <ul class="presence-liste">
+      <% timeline.never_came.each do |registration| %>
+        <li><%= registration.name %><%= " (a essayé, voir plus haut)" if tried_ids.include?(registration.id) %></li>
+      <% end %>
+    </ul>
+  <% elsif timeline.all_came? %>
+    <p class="vide"><span class="quoi">Tous les inscrits attendus sont venus.</span></p>
+  <% else %>
+    <p class="vide"><span class="quoi">Aucun inscrit attendu.</span></p>
+  <% end %>
+</section>

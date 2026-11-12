@@ -1,0 +1,167 @@
+<%# Replay d'un webinaire, côté animation (WebinarReplaysController) :
+    publier ou retirer, demander le montage piloté par la parole
+    (ReplayMontage), relire les chapitres, puis qui a regardé — vues, temps
+    regardé, part de la vidéo vue, passages vus (ReplayStats) — et les
+    réponses aux sondages, direct et replay séparés. Propriétaire et
+    animateurs du projet seulement : les statistiques nomment les personnes ;
+    un animateur du projet ouvre la fiche de chacune (tous les cafés). %>
+<% content_for :title, "Replay" %>
+<% content_for :breadcrumb do %>
+  <span class="fil-sep" aria-hidden="true">›</span>
+  <%= link_to @webinar.title, webinar_path(@webinar), class: "fil-niveau" %>
+<% end %>
+<h1>Replay — <%= @webinar.title %></h1>
+
+<section aria-labelledby="replay-state">
+  <h2 id="replay-state">Publication</h2>
+  <% if @replay&.published? %>
+    <p class="etat etat--succes" data-role="replay-published">
+      Publié le <%= l @replay.published_at, format: :long %> : visible des comptes <%= Brand.organization %> et des inscrits confirmés
+      de ce café (par le lien personnel de leur inscription, joint aux messages envoyés aux inscrits).
+    </p>
+  <% elsif !@webinar.ended? %>
+    <p class="etat etat--neutre" data-role="replay-not-ended">Le replay se publie une fois le direct terminé.</p>
+  <% elsif @reference_recording.nil? %>
+    <p class="etat etat--neutre" data-role="replay-no-video">Aucune vue d'ensemble terminée : rien à publier.</p>
+  <% else %>
+    <p class="etat etat--neutre" data-role="replay-unpublished">
+      Non publié. La vue d'ensemble peut montrer un écran partagé : regarde-la
+      (<%= link_to "Enregistrements", webinar_recordings_path(@webinar), class: "renvoi" %>) avant de publier.
+    </p>
+  <% end %>
+
+  <% if @reference_recording %>
+    <p data-role="replay-reference">
+      Vidéo : vue d'ensemble démarrée
+      <% if @reference_recording.started_at %>à <%= l @reference_recording.started_at, format: "%H:%M" %><% end %>,
+      <%= duree_enregistrement(@reference_recording) %><% if @replay&.derived_path.present? %>, lue depuis sa copie de diffusion<% end %>.
+    </p>
+  <% end %>
+
+  <div class="live-actions">
+    <% if @replay %>
+      <%= link_to "Regarder", public_webinar_replay_path(@webinar.slug), class: "btn btn--secondary",
+                              data: { role: "replay-watch" } %>
+    <% end %>
+    <% if @webinar.ended? %>
+      <%= link_to "Chapitres", webinar_chapters_path(@webinar), class: "btn btn--secondary", data: { role: "replay-chapters" } %>
+    <% end %>
+    <% if @replay&.published? %>
+      <%= button_to "Retirer le replay", unpublish_webinar_replay_path(@webinar), method: :post,
+                    class: "btn btn--secondary", form: { data: { turbo: false } }, data: { role: "replay-unpublish" } %>
+    <% elsif @webinar.ended? && @reference_recording %>
+      <%= button_to "Publier le replay", publish_webinar_replay_path(@webinar), method: :post,
+                    class: "btn", form: { data: { turbo: false } }, data: { role: "replay-publish" } %>
+    <% end %>
+  </div>
+</section>
+
+<% if @webinar.ended? && @reference_recording %>
+  <section aria-labelledby="replay-montage">
+    <h2 id="replay-montage">Montage</h2>
+    <% status = @montage&.status || :none %>
+    <% case status %>
+    <% when :adopted %>
+      <p class="etat etat--succes" data-role="replay-montage-state">
+        Le replay est lu depuis son montage : la personne qui parle en grand, les autres sur le côté, l'écran partagé en grand.
+      </p>
+    <% when :done %>
+      <p class="etat etat--info" data-role="replay-montage-state">
+        Montage rendu : il remplace la vidéo du replay dans les dix minutes.
+      </p>
+    <% when :pending %>
+      <% if @montage.overdue? %>
+        <p class="etat etat--alerte" data-role="replay-montage-state">
+          Montage demandé le <%= l @montage.requested_at, format: :long %> et toujours pas rendu après une nuit :
+          le rendu de nuit sur le serveur des enregistrements est à vérifier.
+        </p>
+      <% else %>
+        <p class="etat etat--info" data-role="replay-montage-state">
+          Montage demandé<% if @montage.requested_at %> le <%= l @montage.requested_at, format: :long %><% end %> :
+          rendu la nuit, jamais pendant un direct, puis lu à la place de la vidéo actuelle.
+        </p>
+      <% end %>
+    <% when :failed %>
+      <p class="etat etat--alerte" data-role="replay-montage-state">
+        Le montage a échoué (<%= @montage.failure %>) :
+        <%= @replay.derived_path.present? ? "le replay reste lu depuis sa copie de diffusion actuelle." : "le replay reste lu depuis la vue d'ensemble." %>
+      </p>
+    <% else %>
+      <p class="etat etat--neutre" data-role="replay-montage-state">
+        Le replay montre la vue d'ensemble du direct. Le montage met en grand la personne qui parle
+        (pas celle qui fait du bruit) et l'écran partagé ; il est rendu la nuit, hors direct.
+      </p>
+    <% end %>
+    <% case @montage&.audio_method %>
+    <% when "mesuré" %>
+      <p data-role="replay-montage-audio">Son calé sur les micros séparés (mesuré).</p>
+    <% when "médiane" %>
+      <p data-role="replay-montage-audio">Son calé sur une ou deux mesures des micros séparés (décalage constant).</p>
+    <% when "estimé" %>
+      <p class="etat etat--ecart" data-role="replay-montage-audio">
+        Son calé par estimation, faute de mesure fiable : un léger décalage entre les lèvres et la voix est possible,
+        regarde un passage avant de publier.
+      </p>
+    <% end %>
+    <% unless %i[pending done].include?(status) %>
+      <div class="live-actions">
+        <%= button_to status == :none ? "Monter le replay" : "Refaire le montage", montage_webinar_replay_path(@webinar),
+                      method: :post, class: "btn btn--secondary", form: { data: { turbo: false } },
+                      data: { role: "replay-montage-request" } %>
+      </div>
+    <% end %>
+  </section>
+<% end %>
+
+<section aria-labelledby="replay-stats">
+  <h2 id="replay-stats">Visionnage</h2>
+  <% rows = @stats&.rows || [] %>
+  <% if rows.any? %>
+    <p class="etat etat--info" data-role="replay-stats-summary">
+      <strong><%= rows.size %></strong> personne<%= "s" if rows.size > 1 %>,
+      <strong><%= @stats.total_views %></strong> vue<%= "s" if @stats.total_views > 1 %>.
+    </p>
+    <div class="conteneur-table">
+      <table class="table-dense" data-role="replay-stats">
+        <thead>
+          <tr>
+            <th>Personne</th>
+            <th>Email</th>
+            <th>Vues</th>
+            <th>Temps regardé</th>
+            <th>Vu</th>
+            <th>Passages vus</th>
+            <th>Dernière fois</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% rows.each do |row| %>
+            <tr data-role="replay-stats-row">
+              <td>
+                <% if current_user.project_host? %>
+                  <%= link_to row.name, animation_person_path(PersonActivity.key_for(row.viewer)),
+                              class: "renvoi", data: { role: "replay-stats-person" } %>
+                <% else %>
+                  <%= row.name %>
+                <% end %>
+                <span class="etat etat--neutre"><%= row.via_account? ? "compte" : "inscription" %></span>
+              </td>
+              <td><%= row.email %></td>
+              <td><%= row.views_count %></td>
+              <td><%= DurationFormat.short(row.watched_seconds) %></td>
+              <td><%= number_to_percentage(row.ratio * 100, precision: 0) %></td>
+              <td><%= replay_intervals(row.intervals).presence || "—" %></td>
+              <td><%= l row.last_seen_at, format: :short %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <p class="etat etat--neutre" data-role="replay-stats-empty">Personne n'a encore regardé ce replay.</p>
+  <% end %>
+</section>
+
+<% if @polls.any? %>
+  <%= render "webinar_replays/poll_results", polls: @polls %>
+<% end %>

@@ -1,0 +1,75 @@
+{
+  "ignored_warnings": [
+    {
+      "warning_type": "File Access",
+      "warning_code": 16,
+      "fingerprint": "16fbd349ea26d69938bbfebaecaa02349ca4469f4f37631a74c6892b9287dea8",
+      "check_name": "FileAccess",
+      "message": "Model attribute used in file name",
+      "file": "app/services/participant_mux.rb",
+      "line": 167,
+      "link": "https://brakemanscanner.org/docs/warning_types/file_access/",
+      "code": "FileUtils.mkdir_p(Recording.recordings_root.join(relative_output_path).dirname, :mode => 488)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "ParticipantMux",
+        "method": "call"
+      },
+      "user_input": null,
+      "confidence": "Medium",
+      "cwe_id": [
+        22
+      ],
+      "note": "relative_output_path = `_participants/<slug>/mux-<identity>.ext`. webinar.slug est contraint par Recording#filename_for (regex /\\A[a-z0-9-]+\\z/), safe(identity) sanitise [^a-z0-9]→- borné 60 chars, PARTICIPANTS_SUBDIR est une constante littérale. La résolution reste SOUS Recording.recordings_root (invariant partagé avec Recording#absolute_path, défense traversal couverte par recording_test). Pas de traversal possible."
+    },
+    {
+      "warning_type": "File Access",
+      "warning_code": 16,
+      "fingerprint": "f46184076edacdaf2ffdb0c7e9e6dcbb1a4b5498d07c06757811b6b446880a30",
+      "check_name": "FileAccess",
+      "message": "Model attribute used in file name",
+      "file": "app/services/participant_mux.rb",
+      "line": 178,
+      "link": "https://brakemanscanner.org/docs/warning_types/file_access/",
+      "code": "File.delete(Recording.recordings_root.join(relative_output_path).dirname.join(\".#{Recording.recordings_root.join(relative_output_path).basename}.part-#{Process.pid}-#{SecureRandom.hex(4)}\"))",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "ParticipantMux",
+        "method": "call"
+      },
+      "user_input": null,
+      "confidence": "Medium",
+      "cwe_id": [
+        22
+      ],
+      "note": "Cleanup atomique du fichier temporaire `.part-<pid>-<rand><ext>` (écriture atomique). Le nom est construit depuis relative_output_path déjà borné (cf. 16fbd349…) + Process.pid + SecureRandom.hex — aucune entrée utilisateur. Supprime UNIQUEMENT un .part situé dans le même dossier que la cible, aucun risque de sortir du scope."
+    },
+    {
+      "warning_type": "File Access",
+      "warning_code": 16,
+      "fingerprint": "39d2e2abf515e743cab11981b56c079dc1442e502e7d3d7cb19ae14c0611da7d",
+      "check_name": "FileAccess",
+      "message": "Model attribute used in file name",
+      "file": "app/services/participant_mux.rb",
+      "line": 186,
+      "link": "https://brakemanscanner.org/docs/warning_types/file_access/",
+      "code": "File.rename(Recording.recordings_root.join(relative_output_path).dirname.join(\".#{Recording.recordings_root.join(relative_output_path).basename}.part-#{Process.pid}-#{SecureRandom.hex(4)}\"), Recording.recordings_root.join(relative_output_path))",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "ParticipantMux",
+        "method": "call"
+      },
+      "user_input": null,
+      "confidence": "Medium",
+      "cwe_id": [
+        22
+      ],
+      "note": "Rename atomique .part-<pid>-<rand><ext> → nom final. Source et destination sont dans le même dossier scopé (Recording.recordings_root.join(relative_output_path).dirname), aucune entrée utilisateur, aucun traversal possible."
+    }
+  ],
+  "updated": "2026-10-07",
+  "brakeman_version": "8.1.0"
+}

@@ -1,0 +1,20 @@
+<p>
+  <%= link_to "Je serai là", @present_url %>
+  &nbsp;·&nbsp;
+  <%= link_to "Je ne serai pas là", @absent_url %>
+</p>
+
+<p>
+  La date s'affiche « confirmée » quand tous les co-animateurs ont dit oui.
+  Un « non » prévient l'organisateur, qui décide de la suite : rien ne change
+  côté public sans lui.
+</p>
+
+<p>
+  Tu peux aussi répondre depuis <%= link_to "la page du café", @webinar_url %>,
+  connecté·e à ton compte <%= Brand.organization %>.
+</p>
+
+<p>Ces liens te sont propres : ne les transmets pas.</p>
+
+<p>— <%= Brand.host %></p>

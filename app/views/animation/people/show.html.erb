@@ -1,0 +1,96 @@
+<%# Fiche d'une personne sur tous les cafés (Animation::PeopleController,
+    PersonActivity). Animateurs du projet. La fiche CRM est un lien vers
+    CRM, jamais une écriture. %>
+<% content_for :title, @person.name || "Personne" %>
+<h1><%= @person.name || "Personne" %></h1>
+<p data-role="person-email"><%= @person.email %><% if @person.user %> · <span class="etat etat--neutre">compte <%= Brand.organization %></span><% end %></p>
+<% if (crm_url = crm_contact_url(@person.crm_contact_id)) %>
+  <p><%= link_to crm_url, class: "renvoi", target: "_blank", rel: "noopener noreferrer", data: { role: "person-crm" } do %>
+    Fiche CRM<%= new_tab_hint %>
+  <% end %></p>
+<% end %>
+
+<section aria-labelledby="person-viewings">
+  <h2 id="person-viewings">Replays regardés</h2>
+  <% viewings = @person.viewings %>
+  <% if viewings.any? %>
+    <div class="conteneur-table">
+      <table class="table-dense" data-role="person-viewings">
+        <thead><tr><th>Café</th><th>Vues</th><th>Temps regardé</th><th>Vu</th><th>Passages vus</th><th>Dernière fois</th></tr></thead>
+        <tbody>
+          <% viewings.each do |replay, row| %>
+            <tr data-role="person-viewing">
+              <td><%= link_to replay.webinar.title, webinar_replay_path(replay.webinar), class: "renvoi" %></td>
+              <td><%= row.views_count %></td>
+              <td><%= DurationFormat.short(row.watched_seconds) %></td>
+              <td><%= number_to_percentage(row.ratio * 100, precision: 0) %></td>
+              <td><%= replay_intervals(row.intervals).presence || "—" %></td>
+              <td><%= l row.last_seen_at, format: :short %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <p class="etat etat--neutre">Aucun replay regardé.</p>
+  <% end %>
+</section>
+
+<section aria-labelledby="person-registrations">
+  <h2 id="person-registrations">Inscriptions</h2>
+  <% if @person.registrations.any? %>
+    <ul class="live-liens" data-role="person-registrations">
+      <% @person.registrations.each do |registration| %>
+        <li>
+          <%= link_to registration.webinar.title, webinar_path(registration.webinar), class: "renvoi" %>
+          — <%= l registration.webinar.starts_at.to_date, format: :long %> :
+          <%= registration.confirmed? ? "confirmée" : "non confirmée" %><%= ", venue dans la salle" if registration.room_joined_at %>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p class="etat etat--neutre">Aucune inscription (compte <%= Brand.organization %> seul).</p>
+  <% end %>
+</section>
+
+<section aria-labelledby="person-questions">
+  <h2 id="person-questions">Questions</h2>
+  <% questions = @person.questions %>
+  <% if questions.any? %>
+    <ul class="live-liens" data-role="person-questions">
+      <% questions.each do |question| %>
+        <li><strong><%= question.webinar.title %></strong> (<%= l question.at, format: :short %>) : <%= question.body %></li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p class="etat etat--neutre">Aucune question.</p>
+  <% end %>
+</section>
+
+<section aria-labelledby="person-answers">
+  <h2 id="person-answers">Réponses aux sondages</h2>
+  <% answers = @person.answers %>
+  <% if answers.any? %>
+    <ul class="live-liens" data-role="person-answers">
+      <% answers.each do |answer| %>
+        <li><strong><%= answer.webinar.title %></strong> — <%= answer.poll.label %> : <%= poll_answer_text(answer.poll, answer.value) %></li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p class="etat etat--neutre">Aucune réponse.</p>
+  <% end %>
+</section>
+
+<section aria-labelledby="person-searches">
+  <h2 id="person-searches">Recherches dans les replays</h2>
+  <% searches = @person.searches.to_a %>
+  <% if searches.any? %>
+    <ul class="live-liens" data-role="person-searches">
+      <% searches.each do |search| %>
+        <li><%= l search.created_at, format: :short %> : « <%= search.query %> » (<%= pluralize(search.results_count, "résultat", plural: "résultats") %>)</li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p class="etat etat--neutre">Aucune recherche.</p>
+  <% end %>
+</section>

@@ -1,0 +1,2 @@
+# Octets attendus des flux iCalendar (CRLF RFC 5545) : aucune conversion de fin de ligne.
+test/fixtures/files/*.ics binary

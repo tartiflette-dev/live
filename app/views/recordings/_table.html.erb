@@ -1,0 +1,43 @@
+<%# Tableau d'enregistrements — composite (source_label: false) ou pistes
+    d'une personne (source_label: true). %>
+<% sources = { "camera" => "Caméra", "microphone" => "Micro", "screen_share" => "Écran partagé", "screen_share_audio" => "Son de l'écran" } %>
+<div class="conteneur-table">
+  <table class="table-dense">
+    <thead>
+      <tr>
+        <% if source_label %><th>Source</th><% end %>
+        <th>Statut</th>
+        <th>Démarré</th>
+        <th>Durée</th>
+        <th>Taille</th>
+        <th>Fichier</th>
+        <th>Erreur</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% recordings.each do |r| %>
+        <% size = r.size_on_disk %>
+        <tr data-recording-id="<%= r.id %>" data-status="<%= r.status %>">
+          <% if source_label %><td><%= sources.fetch(r.track_source.to_s, r.track_source) %></td><% end %>
+          <td><span class="etat <%= { "done" => "etat--succes", "failed" => "etat--ecart" }.fetch(r.status, "etat--en-cours") %>"><%= r.status %></span></td>
+          <td><%= l(r.started_at, format: :short) if r.started_at %></td>
+          <td><%= duree_enregistrement(r) %></td>
+          <td><%= size ? number_to_human_size(size) : "—" %></td>
+          <td>
+            <% if r.downloadable? %>
+              <%= link_to "Télécharger",
+                          download_webinar_recording_path(@webinar, r),
+                          class: "renvoi",
+                          data: { role: "recording-download" } %>
+            <% elsif r.done? %>
+              <em>Fichier introuvable</em>
+            <% else %>
+              <%= "—" %>
+            <% end %>
+          </td>
+          <td><%= r.error_message.presence || "—" %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,4 @@
+<%# Chrome par défaut (pack de thème) : le mode clair/sombre vient du cookie
+    `theme`, lu côté serveur (Theme::Pack::ModeHelper) ; tokens.css le lit
+    sur [data-theme]. %>
+<%= javascript_tag "document.documentElement.dataset.theme = #{current_theme.to_json};", nonce: true %>

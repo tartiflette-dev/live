@@ -1,0 +1,4 @@
+<%# Dispatch : anti-FOUC de la gem undust-charte pour le thème undust (helper
+    `undust_anti_fouc_tag`, qui pose lui-même le nonce CSP), chrome par défaut
+    (theme/default/, `nonce: true`) sinon. %>
+<%= Theme.undust? ? undust_anti_fouc_tag : render("theme/default/anti_fouc", local_assigns) %>

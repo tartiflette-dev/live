@@ -1,0 +1,87 @@
+<%# Page générique : ce que le logiciel traite, sans base légale, destinataire
+    ni sous-traitant, qui sont ceux de l'opérateur. Une instance la remplace
+    par sa propre politique (PrivacyPolicy). Zéro hex, zéro style inline. %>
+<% content_for :title, "Politique de confidentialité" %>
+<article class="live-legal" data-role="privacy">
+  <h1>Politique de confidentialité — <%= Brand.host %></h1>
+  <p><em>Version <%= PrivacyPolicy::VERSION %> — <%= PrivacyPolicy::DATE %>.</em></p>
+
+  <p data-role="privacy-generic">Cette page décrit les données que traite le logiciel qui fait tourner
+     <%= Brand.host %>. Elle ne tient pas lieu de politique de l'opérateur : c'est lui qui fixe les finalités, les
+     bases légales, les destinataires et les hébergeurs de son instance, et qui fournit sa propre politique de
+     confidentialité. Pour l'obtenir, ou pour toute question sur vos données, écrivez-lui.</p>
+
+  <h2>Opérateur du service</h2>
+  <p><strong><%= Brand.organization %></strong><% if Brand.legal_identity %> — <%= Brand.legal_identity %><% end %>. Contact : <%= mail_to(Brand.support_email) %>.</p>
+
+  <h2>Inscription à un webinaire</h2>
+  <ul>
+    <li>Le logiciel enregistre le <strong>nom</strong> et l'<strong>adresse email</strong> donnés à l'inscription, et
+        les dates de confirmation. L'adresse reçoit le lien de confirmation, puis les messages du webinaire (accès,
+        rappel la veille, changement de date ou annulation).</li>
+    <li>Une <strong>case facultative, non cochée par défaut</strong>, propose d'accepter d'être recontacté·e par
+        l'opérateur. Elle ne prend effet qu'une fois l'adresse confirmée ; l'accord est enregistré avec sa date, la
+        page où il a été donné, le libellé du bouton cliqué et la version de cette page. Il se retire par le lien joint
+        aux messages concernés.</li>
+    <li>Une demande d'inscription non confirmée est effacée 30 jours après la demande ; une inscription confirmée,
+        12 mois après la date du webinaire.</li>
+  </ul>
+
+  <h2>Pendant le direct</h2>
+  <ul>
+    <li><strong>Discussion</strong> : les messages sont visibles par tous les participants du webinaire, sous le
+        nom donné à l'inscription.</li>
+    <li><strong>Sondages</strong> : chaque réponse est enregistrée avec le nom de la personne ; l'animation voit qui
+        a répondu quoi, la salle ne voit que le résultat d'ensemble, quand l'animation le montre.</li>
+    <li><strong>Présence</strong> : le logiciel note qui se connecte à la salle, et quand.</li>
+    <li>Messages, réponses, mains levées et présences sont effacés avec les inscriptions, 12 mois après la date du
+        webinaire.</li>
+  </ul>
+
+  <h2>Prise de parole et enregistrement</h2>
+  <p>Avant d'allumer sa caméra ou son micro pour la première fois dans un webinaire, un intervenant, un co-animateur
+     invité ou un spectateur à qui la parole est donnée voit une fenêtre de trois cases :</p>
+  <ul data-role="participant-consent">
+    <li>« <%= ParticipantConsent::LABELS[:recording] %> » : <strong>obligatoire</strong> pour allumer.</li>
+    <li>« <%= ParticipantConsent::LABELS[:excerpts] %> » : <strong>facultative</strong>.</li>
+    <li>« <%= ParticipantConsent::LABELS[:adult] %> » : <strong>obligatoire</strong>.</li>
+  </ul>
+  <p>L'accord est enregistré avec sa date, les libellés affichés et la version de cette page. Il se retire dans la
+     salle par le bouton « Retirer mon accord », qui coupe caméra, micro et partage d'écran.</p>
+  <ul>
+    <li><strong>Enregistrement</strong> : quand l'animation lance l'enregistrement ou passe en direct, le logiciel
+        enregistre la vidéo d'ensemble du direct et, pour chaque personne dont l'accord est en cours, ses pistes
+        séparées (caméra, micro, partage d'écran). Un spectateur qui ne prend pas la parole n'est jamais enregistré.</li>
+    <li><strong>Transcription</strong>, si l'instance l'active : la voix des personnes qui ont la parole est
+        transcrite pendant le direct, pour les sous-titres et le replay ; la transcription peut ensuite être découpée
+        en chapitres.</li>
+    <li>Enregistrements, transcriptions, chapitres et preuves d'accord sont effacés au plus tard 3 ans après la date
+        du webinaire, comme le nom et l'adresse des intervenants. Les copies faites hors du logiciel (fichiers
+        déposés ailleurs, extraits publiés) ne sont pas effacées automatiquement.</li>
+  </ul>
+
+  <h2>Replays</h2>
+  <ul>
+    <li>Le visionnage d'un replay est mesuré pour chaque personne (quand, combien de temps, quels passages) et
+        montré aux organisateurs ; il est effacé avec l'inscription ou le compte qui a servi à regarder.</li>
+    <li>Une recherche dans les replays est enregistrée avec son auteur (texte cherché, date, nombre de résultats)
+        et effacée au plus tard 12 mois après.</li>
+  </ul>
+
+  <h2>Fonctions que l'opérateur peut activer</h2>
+  <p>Selon sa configuration, une instance peut aussi : envoyer les inscriptions confirmées et les accords de recontact
+     à un CRM ; faire analyser les messages de la discussion par un modèle de langage, pour regrouper les questions
+     posées à l'animation ; transmettre les inscriptions à des co-organisateurs ; déposer les fichiers d'un direct
+     dans un espace de fichiers. Ce sont les choix de l'opérateur : sa politique en nomme les destinataires.</p>
+
+  <h2>Cookies et données techniques</h2>
+  <p>Des cookies techniques mémorisent l'inscription confirmée, la langue d'affichage et le thème choisi, l'accès
+     d'un intervenant à la salle et, pour une personne retirée de la salle par l'animation, ce retrait.
+     Le navigateur garde les derniers choix de micro et de caméra. Pour la qualité de la vidéo, le logiciel
+     mesure les caméras des participants (identifiant de connexion, résolution, encodeur) et efface ces mesures
+     après 30 jours.</p>
+
+  <h2>Vos droits</h2>
+  <p>Pour accéder à vos données, les faire rectifier ou effacer, ou retirer un accord, écrivez à
+     <%= mail_to(Brand.support_email) %>.</p>
+</article>

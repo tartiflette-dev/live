@@ -1,0 +1,12 @@
+<%# Erreurs de validation d'un formulaire de webinaire (création, édition,
+    programme). Local : `webinar`. %>
+<% if webinar.errors.any? %>
+  <div class="etat etat--ecart" role="alert">
+    <%= pluralize(webinar.errors.count, "erreur") %> :
+    <ul>
+      <% webinar.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>

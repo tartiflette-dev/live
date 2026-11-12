@@ -1,0 +1,29 @@
+Bonjour,
+
+Merci pour votre inscription à « <%= @webinar.title %> », le <%= @starts_at %>.
+<% if @registration.instant_access? %>
+
+Quelqu'un est entré au direct avec votre adresse. Si c'est vous, confirmez depuis le même navigateur pour garder vos échanges ; depuis un autre navigateur, vous aurez votre propre accès, sans eux. Si ce n'est pas vous, ignorez ce message : rien ne sera rattaché à votre adresse.
+<% end %>
+
+Confirmez votre adresse pour recevoir le lien du direct :
+
+<%= @confirm_url %>
+
+Page du webinaire : <%= @webinar_url %>
+
+Si vous n'êtes pas à l'origine de cette inscription, ignorez ce message.
+<% if @marketing_consent_url %>
+
+---
+À l'inscription, la case « J'accepte <%= organization_after("que") %> me recontacte au sujet
+de ses activités » a été cochée. Pour que ce consentement soit effectif,
+cliquez sur ce lien SÉPARÉ (le lien d'inscription ci-dessus n'y touche
+pas) :
+
+<%= @marketing_consent_url %>
+
+Si vous n'avez pas coché cette case ou si quelqu'un d'autre vous a inscrit·e,
+ne cliquez PAS sur ce second lien : vous ne serez pas recontacté·e.
+<% end %>
+— <%= Brand.host %>

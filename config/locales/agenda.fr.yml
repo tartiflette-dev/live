@@ -1,0 +1,23 @@
+# Objets des mails de l'agenda personnel et des changements de webinaire,
+# par tonalité (Voice, docs/tonalites.md) : repli clé par clé sur `default`.
+# Corps : app/views/calendar_subscription_mailer/, app/views/webinar_change_mailer/.
+fr:
+  voices:
+    default:
+      calendar_subscription_mailer:
+        feed_link:
+          subject: "Votre lien d'agenda personnel"
+      webinar_change_mailer:
+        rescheduled:
+          subject: "Changement de date — %{title}"
+        cancelled:
+          subject: "Annulation — %{title}"
+    cafe_ia:
+      calendar_subscription_mailer:
+        feed_link:
+          subject: "Ajoute le Café IA à ton agenda"
+      webinar_change_mailer:
+        rescheduled:
+          subject: "Nouvelle date pour le café : %{title}"
+        cancelled:
+          subject: "Café annulé : %{title}"

@@ -1,0 +1,27 @@
+<p>Bonjour <%= @registration.name %>,</p>
+
+<p>
+  Rappel : <strong><%= @webinar.title %></strong> a lieu demain,
+  le <%= @starts_at %> (heure de Paris).
+</p>
+
+<%= render "registration_mailer/program", webinar: @webinar %>
+
+<p>Pour rejoindre le direct, ouvrez votre lien personnel :</p>
+
+<p>
+  <%= link_to "Rejoindre le webinaire", @access_url %>
+</p>
+
+<p>
+  Ou copiez ce lien dans votre navigateur :<br>
+  <%= @access_url %>
+</p>
+
+<p>Ce lien vous est propre : ne le transmettez pas.</p>
+
+<p>Le fichier joint ajoute le rendez-vous à votre agenda.</p>
+
+<p>Vous recevez ce message parce que vous avez confirmé votre inscription.</p>
+
+<p>— <%= Brand.host %></p>

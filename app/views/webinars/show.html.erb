@@ -1,0 +1,203 @@
+<% content_for :title, @webinar.title %>
+<%# Page animateur d'un webinaire, rangée par moment : le
+    bouton principal suit le moment (avant : le lien public ; pendant : la
+    régie ; après : valider les vidéos) et, après le direct, les fichiers
+    passent en tête. Le moment ne retire rien : chaque fonction garde les
+    conditions d'état qu'elle avait (« Valider et partager » après le direct,
+    « Modifier » tant que le café est modifiable…) et reste sur la page, au
+    pire repliée (test/integration/webinar_page_inventory_test.rb).
+
+    Les sections exposées dépendent du rôle de current_user sur CE
+    webinaire. Un co-animateur invité ne voit NI les inscrits, NI les
+    enregistrements, NI les liens d'intervenants (Speaker), NI la liste des
+    co-animateurs. Il voit le programme annoncé (sujet, intervenants
+    annoncés, animateur du jour), qu'il peut saisir. %>
+<% primary = webinar_primary_action(@webinar, current_user, videos_to_review: @videos_to_review) %>
+<% publication_first = webinar_moment(@webinar) == :after %>
+
+<div class="page-webinaire">
+  <h1><%= @webinar.title %></h1>
+
+  <dl class="live-meta">
+    <dt>État</dt>
+    <dd><%= webinar_state_badge(@webinar) %></dd>
+
+    <dt>Démarre</dt>
+    <dd>
+      <time datetime="<%= @webinar.starts_at.iso8601 %>"><%= l @webinar.starts_at, format: :jour_heure %></time>
+      <%= date_status_badge(@webinar) %>
+    </dd>
+
+    <% if @webinar.topic %>
+      <dt>Sujet</dt>
+      <dd data-role="program-topic"><%= @webinar.topic %></dd>
+    <% end %>
+    <%= render "webinars/program_people", webinar: @webinar, announced: true %>
+
+    <% if @role.in?(%i[guest_host project_host]) %>
+      <dt>Rôle</dt>
+      <dd data-role="role-badge">
+        <% if @role == :guest_host %>
+          <span class="etat etat--info">Co-animateur invité</span>
+        <% else %>
+          <span class="etat etat--info">Animateur du projet</span>
+        <% end %>
+      </dd>
+    <% end %>
+  </dl>
+
+  <div class="live-actions" data-role="webinar-actions" data-primary="<%= primary %>">
+    <% if primary == :copy_public_link %>
+      <%= copy_link_button @spectator_url, status_id: "copie-public-principal", role: "primary-viewer-copy",
+                                           label: "Copier le lien public", primary: true %>
+    <% elsif primary == :review_videos %>
+      <%= link_to "Valider les vidéos", "#publication-review", class: "btn", data: { role: "primary-review" } %>
+    <% end %>
+    <%= link_to "Ouvrir la scène", stage_webinar_path(slug: @webinar.slug), class: "btn btn--secondary", data: { role: "stage-open" } %>
+    <%# Régie : les commandes du direct, sans vidéo, dans un
+        autre onglet que la scène. %>
+    <%= link_to webinar_regie_path(@webinar), class: webinar_action_class(primary, :regie),
+                target: "_blank", rel: "noopener", data: { role: "regie-open" } do %>
+      Ouvrir la régie<%= new_tab_hint %>
+    <% end %>
+    <%= link_to "Envoyer un message", new_webinar_announcement_path(@webinar), class: "btn btn--secondary", data: { role: "announcement-new" } %>
+    <% if @webinar.can_manage_recordings?(current_user) %>
+      <%= link_to "Enregistrements", webinar_recordings_path(@webinar), class: webinar_action_class(primary, :recordings),
+                  data: { role: "recordings-link" } %>
+      <%= link_to "Replay", webinar_replay_path(@webinar), class: "btn btn--secondary", data: { role: "replay-link" } %>
+    <% end %>
+    <% if @webinar.can_manage_registrations?(current_user) %>
+      <%= link_to "Inscrits", webinar_registrations_path(@webinar), class: "btn btn--secondary", data: { role: "registrations-link" } %>
+      <%# Présence : qui s'est connecté quand, courbe, tentatives sans entrée
+          (WebinarRoomPresencesController, même périmètre que les inscrits). %>
+      <%= link_to "Présence en salle", webinar_room_presence_path(@webinar), class: "btn btn--secondary", data: { role: "room-presence-link" } %>
+    <% end %>
+    <% if @role == :owner && @webinar.editable? %>
+      <%= link_to "Modifier", webinar_edition_path(@webinar), class: "btn btn--secondary", data: { role: "webinar-edit" } %>
+    <% end %>
+    <% if @webinar.can_edit_program?(current_user) && @webinar.editable? %>
+      <%= link_to "Programme", webinar_program_path(@webinar), class: "btn btn--secondary", data: { role: "webinar-program-edit" } %>
+    <% end %>
+    <% if primary == :copy_public_link %>
+      <%= copy_link_status "copie-public-principal" %>
+    <% end %>
+  </div>
+
+  <% if @webinar.can_manage_registrations?(current_user) %>
+    <% confirmed_registrations_count = @webinar.registrations.confirmed.count %>
+    <p class="etat etat--info" data-role="registrations-count">
+      <strong><%= confirmed_registrations_count %></strong>
+      inscrit<%= "s" if confirmed_registrations_count > 1 %> confirmé<%= "s" if confirmed_registrations_count > 1 %>
+      &middot; <%= link_to "Voir la liste", webinar_registrations_path(@webinar), class: "renvoi", data: { role: "registrations-list" } %>
+    </p>
+  <% end %>
+
+  <%= render "webinars/host_presence", webinar: @webinar, attendance: @my_attendance, roster: @presence_roster %>
+
+  <% if publication_first && @webinar.can_manage_recordings?(current_user) %>
+    <%= render "webinars/publication", webinar: @webinar, publication: @publication,
+                                       configured: @publication_configured, hold: @publication_hold %>
+  <% end %>
+
+  <section aria-labelledby="links-heading" id="liens" data-role="webinar-links">
+    <h2 id="links-heading">Liens</h2>
+    <% if @webinar.can_manage_speakers?(current_user) %>
+      <p data-role="links-expiry"><%= links_expiry_notice(@webinar) %></p>
+    <% end %>
+
+    <div class="live-liens live-liens--grille">
+      <section class="live-lien" aria-labelledby="link-stage">
+        <h3 id="link-stage">Scène (animateur)</h3>
+        <p>Ton accès à la scène, à garder en favori.</p>
+        <input type="text" readonly value="<%= @stage_url %>" data-role="stage-link" aria-labelledby="link-stage">
+        <div class="live-actions">
+          <%= copy_link_button @stage_url, status_id: "copie-scene", role: "stage-copy" %>
+          <%= copy_link_status "copie-scene" %>
+        </div>
+      </section>
+
+      <section class="live-lien" aria-labelledby="link-viewer">
+        <h3 id="link-viewer">Lien public — inscription</h3>
+        <p>Inscription publique : observer (chat) ou participer (caméra et micro, après admission en régie). À diffuser librement.</p>
+        <input type="text" readonly value="<%= @spectator_url %>" data-role="viewer-link" aria-labelledby="link-viewer">
+        <div class="live-actions">
+          <%= copy_link_button @spectator_url, status_id: "copie-spectateur", role: "viewer-copy" %>
+          <%= copy_link_status "copie-spectateur" %>
+        </div>
+      </section>
+
+      <% if @webinar.can_manage_speakers?(current_user) %>
+        <%# Lien participants PRIVÉ :
+            un seul jeton par webinaire ; chaque invité l'ouvre, saisit son nom
+            et son mail, choisit participant (Speaker nominatif + redirect vers
+            son lien personnel ; rattaché à son inscription une fois sa boîte
+            prouvée) ou spectateur.
+            Gestion réservée owner/project_host au même titre que les
+            intervenants eux-mêmes. %>
+        <section class="live-lien" aria-labelledby="link-invitation" data-role="invitation-link">
+          <h3 id="link-invitation">Lien participants privé</h3>
+          <% if @webinar.share_token.present? %>
+            <p>À donner à tes intervenants : caméra et micro sans admission, dès leur accord à l'image ; mail obligatoire.</p>
+            <% invitation_link = invitation_url(t: @webinar.share_token) %>
+            <input type="text" readonly value="<%= masked_token_link(invitation_link) %>" data-role="invitation-url" aria-labelledby="link-invitation">
+            <div class="live-actions live-actions--menu">
+              <%= copy_link_button invitation_link, status_id: "copie-invitation", role: "invitation-copy" %>
+              <%= render layout: "webinars/actions_menu", locals: { label: "Autres actions : lien participants privé", role: "invitation-menu" } do %>
+                <p>Toute l'animation, co-animateurs compris, peut aussi le régénérer depuis la régie (pas le désactiver), par exemple après avoir retiré quelqu'un.</p>
+                <%= button_to "Régénérer (invalide l’ancien)", webinar_share_link_path(@webinar), method: :post, class: "btn btn--secondary",
+                              form: { data: { confirm: "Régénérer le lien participants privé ? L’ancien lien cessera de marcher." } },
+                              data: { role: "invitation-regenerate" } %>
+                <%= button_to "Désactiver", webinar_share_link_path(@webinar), method: :delete, class: "btn btn--secondary",
+                              form: { data: { confirm: "Désactiver le lien participants privé ? Plus personne ne pourra entrer par ce lien." } },
+                              data: { role: "invitation-disable" } %>
+              <% end %>
+              <%= copy_link_status "copie-invitation" %>
+            </div>
+          <% else %>
+            <p>Aucun lien participants privé actif. Génère-le pour inviter tous tes participants d’un coup.</p>
+            <%= button_to "Générer le lien participants privé", webinar_share_link_path(@webinar), method: :post, class: "btn", data: { role: "invitation-generate" } %>
+          <% end %>
+        </section>
+      <% end %>
+    </div>
+  </section>
+
+  <% if @webinar.can_manage_speakers?(current_user) %>
+    <%= render "webinars/speakers", webinar: @webinar, speakers: @speakers %>
+  <% end %>
+
+  <% if @webinar.can_manage_hosts?(current_user) %>
+    <%= render "webinars/co_hosts", webinar: @webinar, webinar_hosts: @webinar_hosts,
+                                    host_invitations: @host_invitations, carryover_hosts: @carryover_hosts %>
+  <% end %>
+
+  <% if !publication_first && @webinar.can_manage_recordings?(current_user) %>
+    <%= render "webinars/publication", webinar: @webinar, publication: @publication,
+                                       configured: @publication_configured, hold: @publication_hold %>
+  <% end %>
+
+  <details class="repli" data-role="technical-details">
+    <summary>Détails techniques</summary>
+    <dl class="live-meta">
+      <dt>Room LiveKit</dt>
+      <dd><code><%= @webinar.room_name %></code></dd>
+
+      <dt>Lien de scène</dt>
+      <dd>Token re-signé à chaque accès, valable tant que ta session animateur est active.</dd>
+
+      <% if @webinar.can_manage_hosts?(current_user) %>
+        <dt>Co-animateurs</dt>
+        <dd>
+          Désignés par email ou entrés par un lien animateur, ils reçoivent les droits d'animation à leur
+          connexion Pocket ID. Sans compte <%= Brand.organization %> : jeton d’inscription créé dans l’admin Pocket ID, groupe
+          live-invites, à coller dans « Lien d’inscription Pocket ID » du lien animateur.
+        </dd>
+      <% end %>
+
+      <% if @webinar.can_manage_recordings?(current_user) && @publication_configured %>
+        <dt>WhatsApp</dt>
+        <dd>Non disponible : aucun canal d'envoi utilisable par l'application.</dd>
+      <% end %>
+    </dl>
+  </details>
+</div>

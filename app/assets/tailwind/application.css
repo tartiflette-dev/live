@@ -1,0 +1,740 @@
+@import "tailwindcss";
+
+/* Thème choisi par BRAND_THEME : theme.css est écrit par `theme:sync`
+   (avant chaque compilation, gitignoré). Thème undust : theme_undust.css ;
+   pack themes/<nom>/ : ses jetons + theme_default.css. */
+@import "./theme.css";
+/* Page « Présence » : feuille à part, pour ne pas croiser les autres pages. */
+@import "./presence.css";
+
+/* Chapitres, recherche et thèmes des replays. */
+@import "./replay_navigation.css";
+
+@source "../../views";
+@source "../../helpers";
+@source "../../controllers";
+
+/* Android Chrome : pas d'agrandissement automatique du texte (font
+   boosting), quel que soit le thème. */
+html {
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Mapping hôte — pages animateur (tokens only, zéro hex).
+   Les composants de la trousse (.champ, .btn, .table-dense, .etat) font
+   l'essentiel ; ici uniquement la mise en page propre à Live. */
+.live-liens {
+  display: grid;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+}
+.live-lien {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border: var(--border-width-hairline) solid var(--border);
+  background: var(--surface-raised);
+  border-radius: var(--radius-card);
+}
+.live-lien h3 {
+  margin: 0;
+  font-size: var(--type-h3-size, 1rem);
+  font-weight: 700;
+}
+.live-lien p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: var(--type-small-size);
+}
+.live-lien input[readonly] {
+  width: 100%;
+  font-family: var(--font-mono);
+  font-size: var(--type-small-size);
+  padding: var(--space-2) var(--space-3);
+  border: var(--border-width-hairline) solid var(--border);
+  background: var(--surface);
+  color: var(--text-primary);
+  border-radius: var(--radius-interactive);
+}
+.live-meta {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: var(--space-2) var(--space-6);
+  margin: 0 0 var(--space-6);
+}
+.live-meta dt {
+  color: var(--text-secondary);
+  font-size: var(--type-small-size);
+}
+.live-meta dd {
+  margin: 0;
+}
+/* Programme d'une date de l'agenda (sujet, intervenants), sous son titre. */
+.chrono .programme {
+  color: var(--text-secondary);
+  font-size: var(--type-small-size);
+}
+.live-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: center;
+  margin: var(--space-4) 0;
+}
+.live-form {
+  display: grid;
+  gap: var(--space-4);
+  max-width: 32rem;
+}
+/* Pleine largeur pour les champs de saisie seulement : appliquée aux
+   radios et cases, elle les centrait seules sur leur ligne, au-dessus
+   de leur libellé. */
+.live-form .champ input:not([type="radio"]):not([type="checkbox"]) {
+  width: 100%;
+}
+/* Page animateur d'un webinaire, rangée par moment (avant, pendant, après) :
+   sections aérées, liens de base côte à côte sur écran large. */
+.page-webinaire > section,
+.page-webinaire > details {
+  margin-top: var(--space-8);
+}
+.live-liens--grille {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+}
+.live-lien--ligne {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+/* Formulaire en ligne (ajout d'un intervenant ou d'un co-animateur, email
+   d'un intervenant dans son tableau) : champs côte à côte, à la ligne
+   quand la place manque. */
+.form-ligne {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: flex-end;
+  margin: var(--space-4) 0;
+}
+.form-ligne .champ {
+  flex: 1 1 14rem;
+  max-width: 24rem;
+}
+.form-ligne .champ input {
+  width: 100%;
+}
+.table-intervenants {
+  min-width: 0;
+}
+/* Nom d'une personne : en-tête de sa ligne, lu comme une cellule (pas
+   le style capitales des en-têtes de colonne de .table-dense). */
+.table-intervenants th[scope="row"] {
+  position: static;
+  padding: var(--space-2) var(--space-3);
+  border-bottom: var(--border-width-hairline) solid var(--border);
+  font: inherit;
+  font-weight: 700;
+  letter-spacing: normal;
+  text-transform: none;
+  white-space: normal;
+  color: var(--text-primary);
+}
+.table-intervenants .btn {
+  white-space: nowrap;
+}
+.table-intervenants .form-ligne {
+  flex-wrap: nowrap;
+  align-items: center;
+  margin: 0;
+}
+.table-intervenants .form-ligne .champ {
+  flex: 1 1 12rem;
+  max-width: none;
+}
+.table-intervenants__menu {
+  width: 1%;
+  text-align: right;
+}
+/* Mobile : une carte par intervenant (nom et menu, puis email, puis lien). */
+@media (max-width: 40rem) {
+  .table-intervenants thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+  }
+  .table-intervenants tr {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: var(--space-2);
+    padding: var(--space-3) 0;
+    border-bottom: var(--border-width-hairline) solid var(--border);
+  }
+  .table-intervenants th[scope="row"],
+  .table-intervenants td {
+    display: block;
+    height: auto;
+    padding: 0;
+    border: 0;
+  }
+  .table-intervenants__email,
+  .table-intervenants__lien {
+    grid-column: 1 / -1;
+  }
+  .table-intervenants__menu {
+    grid-row: 1;
+    grid-column: 2;
+    width: auto;
+  }
+}
+/* Menu « … » des actions destructrices : details/summary. Le panneau se
+   cale sur la rangée qui porte le menu (`.live-actions--menu` d'une carte,
+   ligne du tableau des intervenants), jamais sur le seul bouton : il reste
+   dans la carte ou dans le tableau, y compris sur un écran de 412 px. */
+.menu-actions {
+  display: inline-block;
+}
+.menu-actions > summary {
+  list-style: none;
+  padding: 0 var(--space-3);
+}
+.menu-actions > summary::-webkit-details-marker {
+  display: none;
+}
+.live-actions--menu,
+.table-intervenants tr {
+  position: relative;
+}
+.menu-actions__panneau {
+  position: absolute;
+  z-index: 10;
+  left: 0;
+  display: grid;
+  gap: var(--space-2);
+  box-sizing: border-box;
+  width: max-content;
+  max-width: 100%;
+  margin-top: var(--space-2);
+  padding: var(--space-3);
+  border: var(--border-width-hairline) solid var(--border-control);
+  border-radius: var(--radius-card);
+  background: var(--surface-raised);
+  text-align: left;
+  white-space: normal;
+}
+.table-intervenants .menu-actions__panneau {
+  left: auto;
+  right: 0;
+}
+.menu-actions__panneau p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: var(--type-small-size);
+}
+.menu-actions__panneau .btn {
+  width: 100%;
+  white-space: normal;
+}
+/* Bloc replié (Avancé, Détails techniques, aide de la relecture). */
+.repli > summary {
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-weight: 700;
+}
+.repli[open] > summary {
+  margin-bottom: var(--space-3);
+}
+.publication-relecture {
+  display: grid;
+  gap: var(--space-3);
+  margin: var(--space-4) 0;
+}
+.publication-relecture h3,
+.publication-relecture p {
+  margin: 0;
+}
+.publication-relecture h3 {
+  font-size: var(--type-h3-size, 1rem);
+  font-weight: 700;
+}
+.publication-videos {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding-left: var(--space-4);
+}
+.publication-videos li {
+  overflow-wrap: anywhere;
+}
+
+/* Page d'un café avant le direct : la carte de la charte (420px) laissait
+   les deux tiers de la page vides ; elle prend la colonne de lecture,
+   centrée. */
+.carte-dossier[data-role="pre-live"] {
+  max-width: 44rem;
+  width: 100%;
+  margin-inline: auto;
+}
+
+/* Bloc enregistrements d'une personne. Un conteneur par
+   participant (caméra + micro + éventuel écran) encapsulant le titre
+   (nom) et le tableau des pistes. Tokens seuls. */
+.bloc-pistes {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  margin: var(--space-4) 0;
+  border: var(--border-width-hairline) solid var(--border);
+  background: var(--surface-raised);
+  border-radius: var(--radius-card);
+}
+.bloc-pistes > h3 {
+  margin: 0;
+  font-size: var(--type-h3-size);
+  font-weight: var(--type-h3-weight);
+  line-height: var(--type-h3-leading);
+  letter-spacing: var(--type-h3-tracking);
+}
+.bloc-pistes .bloc-pistes-montage {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: baseline;
+  padding: var(--space-3);
+  border: var(--border-width-hairline) solid var(--border);
+  background: var(--surface);
+  border-radius: var(--radius-interactive);
+  color: var(--text-secondary);
+  font-size: var(--type-small-size);
+}
+.bloc-pistes .bloc-pistes-montage strong {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+/* Carte de connexion : le bouton Pocket ID est le seul CTA (aplat accent). */
+.connexion-carte .connexion-form {
+  width: 100%;
+}
+.connexion-carte input.connexion-cta,
+.connexion-carte button.connexion-cta {
+  width: 100%;
+  cursor: pointer;
+}
+
+/* Titres DANS la fenêtre des pages animateur : échelle de type des tokens
+   (Tailwind preflight neutralise h1/h2 ; le chrome ne les stylise pas —
+   hôte). */
+.chrome-fenetre h1 {
+  font-size: var(--type-h2-size);
+  font-weight: var(--type-h2-weight);
+  line-height: var(--type-h2-leading);
+  letter-spacing: var(--type-h2-tracking);
+  margin: 0 0 var(--space-6);
+}
+.chrome-fenetre h2 {
+  font-size: var(--type-h3-size);
+  font-weight: var(--type-h3-weight);
+  line-height: var(--type-h3-leading);
+  letter-spacing: var(--type-h3-tracking);
+  margin: var(--space-8) 0 var(--space-4);
+}
+.chrome-fenetre p {
+  margin: 0 0 var(--space-4);
+}
+
+/* Console Q&R de la régie (rooms/qa_console.jsx). Tokens
+   seuls ; boutons = trousse (.btn). La question affichée à l'écran porte
+   le filet accent, les traitées sont repliées en bas. */
+.qa-console {
+  display: grid;
+  gap: var(--space-3);
+}
+.qa-console__header {
+  display: grid;
+  gap: var(--space-1);
+}
+.qa-console__title {
+  margin: 0;
+  font-size: var(--type-h3-size);
+  font-weight: var(--type-h3-weight);
+}
+.qa-console__hint,
+.qa-console__empty,
+.qa-console__time {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: var(--type-small-size);
+}
+.qa-console__alert {
+  margin: 0;
+  padding: var(--space-2) var(--space-3);
+  border-left: var(--border-width-strong) solid var(--status-critical);
+  font-size: var(--type-small-size);
+}
+.qa-console__list {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.qa-console__item {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border: var(--border-width-hairline) solid var(--border);
+  background: var(--surface-raised);
+  border-radius: var(--radius-card);
+}
+.qa-console__item[data-displayed="true"] {
+  border-left: var(--border-width-strong) solid var(--accent);
+}
+.qa-console__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: baseline;
+  font-size: var(--type-small-size);
+}
+.qa-console__count,
+.qa-console__author {
+  font-weight: 700;
+}
+.qa-console__tag {
+  font-family: var(--font-mono);
+  font-size: var(--type-small-size);
+  text-transform: uppercase;
+  padding: 0 var(--space-1);
+  border: var(--border-width-hairline) solid var(--border);
+  color: var(--text-secondary);
+}
+.qa-console__tag--live {
+  border-color: var(--accent);
+  color: var(--text-accent);
+}
+.qa-console__label {
+  margin: 0;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+.qa-console__body {
+  margin: 0 0 var(--space-2);
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+.qa-console__origins ol {
+  margin: var(--space-2) 0 0;
+  padding-left: var(--space-4);
+}
+.qa-console__origins summary,
+.qa-console__done summary {
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-size: var(--type-small-size);
+}
+.qa-console__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: center;
+}
+.qa-console__edit {
+  display: grid;
+  gap: var(--space-2);
+}
+.qa-console__edit-label {
+  font-size: var(--type-small-size);
+  color: var(--text-secondary);
+}
+.qa-console__edit textarea {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: var(--border-width-hairline) solid var(--border-control);
+  background: var(--surface);
+  color: var(--text-primary);
+  border-radius: var(--radius-interactive);
+}
+
+/* Écran d'envoi groupé (webinar_announcements) : utilisable au téléphone
+   depuis la régie pendant le direct — une colonne, cibles en cartes radio
+   de la trousse, aperçu du mail en texte brut. Tokens seuls. */
+.envoi-form textarea,
+.envoi-form input[type="text"] {
+  width: 100%;
+}
+.envoi-cibles {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+.envoi-cibles legend {
+  margin-bottom: var(--space-2);
+}
+.envoi-cible-texte {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+}
+.envoi-cible-nombre {
+  font-weight: 700;
+  color: var(--text-accent);
+}
+.envoi-nombre {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0 0 var(--space-4);
+}
+.envoi-nombre strong {
+  font-size: var(--type-h2-size);
+  font-weight: var(--type-h2-weight);
+  line-height: var(--type-h2-leading);
+}
+.envoi-nombre span {
+  color: var(--text-secondary);
+}
+.envoi-apercu {
+  display: grid;
+  gap: var(--space-3);
+  max-width: 40rem;
+  padding: var(--space-4);
+  margin: var(--space-4) 0;
+  border: var(--border-width-hairline) solid var(--border);
+  background: var(--surface-raised);
+  border-radius: var(--radius-card);
+  overflow-wrap: anywhere;
+}
+.envoi-apercu p {
+  margin: 0;
+}
+.envoi-apercu-corps {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.envoi-apercu-pied {
+  padding-top: var(--space-3);
+  border-top: var(--border-width-hairline) solid var(--border);
+  color: var(--text-secondary);
+  font-size: var(--type-small-size);
+}
+.envoi-apercu-lien {
+  color: var(--text-accent);
+  text-decoration: underline;
+}
+.envoi-case {
+  display: flex;
+  gap: var(--space-3);
+  align-items: flex-start;
+}
+.envoi-modifier {
+  margin: var(--space-4) 0;
+}
+.envoi-journal {
+  display: grid;
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.envoi-entree {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border: var(--border-width-hairline) solid var(--border);
+  border-radius: var(--radius-card);
+  overflow-wrap: anywhere;
+}
+.envoi-entree p {
+  margin: 0;
+}
+.envoi-entree-tete {
+  display: grid;
+  gap: var(--space-1);
+}
+
+/* Replay (replays/show) : la vidéo occupe la colonne de lecture, sans
+   jamais dépasser la hauteur de l'écran (téléphone en paysage). */
+.replay {
+  max-width: 60rem;
+  width: 100%;
+  margin-inline: auto;
+}
+.replay-lecteur {
+  display: grid;
+  gap: var(--space-2);
+  margin: var(--space-4) 0 var(--space-6);
+}
+.replay-video {
+  width: 100%;
+  max-height: 80vh;
+  background: var(--surface-raised);
+  border-radius: var(--radius-card);
+}
+
+/* Replay interactif (replays/_interactions) : la carte de sondage se pose
+   sur le coin haut de la vidéo sur écran large, jamais incrustée dans la
+   vidéo ; au téléphone elle suit la vidéo dans la colonne, pour ne pas la
+   masquer. La question pour les animateurs vient sous le lecteur. */
+.replay-sondage__carte {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  background: var(--surface);
+  border: var(--border-width-hairline) solid var(--border);
+  border-left: var(--border-width-strong) solid var(--accent);
+  border-radius: var(--radius-card);
+}
+.replay-sondage__entete {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+.replay-sondage__titre,
+.replay-sondage__note {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: var(--type-small-size);
+}
+.replay-sondage__question {
+  margin: 0;
+  color: var(--text-primary);
+  font-weight: var(--type-h3-weight);
+  overflow-wrap: anywhere;
+}
+.replay-sondage__formulaire,
+.replay-sondage__resultats {
+  display: grid;
+  gap: var(--space-2);
+}
+.replay-sondage__choix {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.replay-sondage__option {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 2.75rem;
+  overflow-wrap: anywhere;
+}
+.replay-sondage__formulaire textarea {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: var(--border-width-hairline) solid var(--border-control);
+  background: var(--surface);
+  color: var(--text-primary);
+  border-radius: var(--radius-interactive);
+}
+.replay-sondage__barres {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.replay-sondage__barre {
+  display: grid;
+  gap: var(--space-1);
+  font-size: var(--type-small-size);
+  overflow-wrap: anywhere;
+}
+.replay-sondage__piste {
+  display: block;
+  height: var(--space-1);
+  background: var(--surface-raised);
+  border-radius: var(--radius-interactive);
+}
+.replay-sondage__remplissage {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  border-radius: var(--radius-interactive);
+}
+.replay-sondage__erreur {
+  margin: 0;
+  color: var(--text-primary);
+  border-left: var(--border-width-strong) solid var(--status-critical);
+  padding-left: var(--space-2);
+  font-size: var(--type-small-size);
+}
+.replay-sondage__erreur:empty {
+  display: none;
+}
+@media (min-width: 48rem) {
+  .replay-lecteur {
+    position: relative;
+  }
+  .replay-sondage {
+    position: absolute;
+    top: var(--space-3);
+    right: var(--space-3);
+    z-index: 2;
+    width: min(22rem, 45%);
+    max-height: min(26rem, 60vh);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+}
+.replay-question {
+  display: grid;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+.replay-question textarea {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: var(--border-width-hairline) solid var(--border-control);
+  background: var(--surface);
+  color: var(--text-primary);
+  border-radius: var(--radius-interactive);
+}
+.replay-sondage[hidden],
+.replay-question[hidden] {
+  display: none;
+}
+.replay-question__etat {
+  margin: 0;
+  font-size: var(--type-small-size);
+  color: var(--text-secondary);
+}
+
+/* Toutes les questions (questions/index) : une carte par question. */
+.questions-liste {
+  display: grid;
+  gap: var(--space-3);
+  margin: var(--space-4) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.question-entree {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border: var(--border-width-hairline) solid var(--border);
+  border-radius: var(--radius-card);
+  overflow-wrap: anywhere;
+}
+.question-entree p {
+  margin: 0;
+}
+.question-libelle {
+  color: var(--text-primary);
+}
+.question-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--text-secondary);
+  font-size: var(--type-small-size);
+}

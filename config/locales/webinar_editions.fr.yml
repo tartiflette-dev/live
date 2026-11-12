@@ -1,0 +1,13 @@
+fr:
+  webinar_editions:
+    nouns:
+      cafe_ia: "café"
+      bootcamp: "bootcamp"
+    reschedule_notice:
+      zero: "Personne n’est encore inscrit et confirmé : changer la date ne prévient personne."
+      one: "Changer la date prévient la personne inscrite et confirmée, avec la nouvelle date."
+      other: "Changer la date prévient les %{count} personnes inscrites et confirmées, avec la nouvelle date."
+    unpublish_confirmation:
+      zero: "Je confirme l’annulation : le %{noun} quitte le catalogue et l’agenda. Personne n’est inscrit et confirmé, aucun mail ne partira."
+      one: "Je confirme l’annulation : le %{noun} quitte le catalogue et l’agenda, et la personne inscrite et confirmée sera prévenue."
+      other: "Je confirme l’annulation : le %{noun} quitte le catalogue et l’agenda, et les %{count} personnes inscrites et confirmées seront prévenues."

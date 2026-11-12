@@ -1,0 +1,9 @@
+@font-face{font-family:'Ponctuation FR';src:url('/fonts/JetBrainsMono-400.woff2') format('woff2');font-weight:100 500;font-display:swap;unicode-range:U+00A7,U+00AB,U+00BB,U+00B1,U+00BD,U+2190,U+2192,U+2260,U+2264,U+2265;}
+@font-face{font-family:'Ponctuation FR';src:url('/fonts/JetBrainsMono-700.woff2') format('woff2');font-weight:501 900;font-display:swap;unicode-range:U+00A7,U+00AB,U+00BB,U+00B1,U+00BD,U+2190,U+2192,U+2260,U+2264,U+2265;}
+@font-face{font-family:'Aspekta';src:url('/fonts/Aspekta-400.woff2') format('woff2');font-weight:400;font-display:swap;}
+@font-face{font-family:'Aspekta';src:url('/fonts/Aspekta-500.woff2') format('woff2');font-weight:500;font-display:swap;}
+@font-face{font-family:'Aspekta';src:url('/fonts/Aspekta-700.woff2') format('woff2');font-weight:700;font-display:swap;}
+@font-face{font-family:'Aspekta';src:url('/fonts/Aspekta-800.woff2') format('woff2');font-weight:800;font-display:swap;}
+@font-face{font-family:'Aspekta';src:url('/fonts/Aspekta-900.woff2') format('woff2');font-weight:900;font-display:swap;}
+@font-face{font-family:'JetBrains Mono';src:url('/fonts/JetBrainsMono-400.woff2') format('woff2');font-weight:400;font-display:swap;}
+@font-face{font-family:'JetBrains Mono';src:url('/fonts/JetBrainsMono-700.woff2') format('woff2');font-weight:700;font-display:swap;}

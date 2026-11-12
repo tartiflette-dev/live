@@ -1,0 +1,92 @@
+/* Page « Présence » (webinar_room_presences#show) — mapping hôte, jetons
+   seulement, zéro hex. Graphiques SVG rendus côté serveur (PresenceChart) :
+   une teinte de données par rôle (--chart-*), la tentative en alerte. */
+.presence-date {
+  margin: 0 0 var(--space-4);
+  color: var(--text-secondary);
+}
+.presence-note {
+  color: var(--text-secondary);
+  font-size: var(--type-small-size);
+}
+.presence-chiffres {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-6);
+  margin: var(--space-4) 0 var(--space-6);
+  padding: 0;
+  list-style: none;
+}
+.presence-figure {
+  margin: 0 0 var(--space-4);
+  padding: var(--space-4);
+  border: var(--border-width-hairline) solid var(--border);
+  background: var(--surface-raised);
+  border-radius: var(--radius-card);
+}
+/* Téléphone : le graphique se tasse à la largeur de l'écran (viewBox
+   conservé, pas de défilement horizontal). */
+.presence-defilement {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+.presence-svg {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.presence-grille {
+  stroke: var(--border);
+  stroke-width: 0.5;
+  stroke-dasharray: 2 3;
+}
+.presence-axe {
+  fill: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+.presence-courbe {
+  fill: none;
+  stroke: var(--chart-4, var(--text-primary));
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+.presence-barre--animation { fill: var(--chart-2, var(--text-primary)); }
+.presence-barre--intervenant { fill: var(--chart-3, var(--text-primary)); }
+.presence-barre--inscrit { fill: var(--chart-4, var(--text-primary)); }
+.presence-marque {
+  fill: var(--surface);
+  stroke: var(--status-warning, var(--text-primary));
+  stroke-width: 1.5;
+}
+.presence-legende {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  margin-top: var(--space-3);
+  color: var(--text-secondary);
+  font-size: var(--type-small-size);
+}
+.presence-cle::before {
+  content: "";
+  display: inline-block;
+  width: 0.9em;
+  height: 0.6em;
+  margin-right: var(--space-1);
+  vertical-align: middle;
+}
+.presence-cle--animation::before { background: var(--chart-2, var(--text-primary)); }
+.presence-cle--intervenant::before { background: var(--chart-3, var(--text-primary)); }
+.presence-cle--inscrit::before { background: var(--chart-4, var(--text-primary)); }
+.presence-cle--tentative::before {
+  width: 0.6em;
+  border: 1.5px solid var(--status-warning, var(--text-primary));
+  /* charte-allow: R3 pastille d'état — seules les pastilles sont rondes */
+  border-radius: 50%;
+}
+.presence-liste {
+  margin: var(--space-2) 0 var(--space-6);
+  padding-left: var(--space-6);
+}

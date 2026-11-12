@@ -1,0 +1,10 @@
+# TLS for the LiveKit signalling endpoint, and the certificate LiveKit's
+# embedded TURN server uses (Caddy obtains and renews it for TURN_DOMAIN).
+
+{$LIVEKIT_DOMAIN} {
+	reverse_proxy 127.0.0.1:7880
+}
+
+{$TURN_DOMAIN} {
+	respond 404
+}

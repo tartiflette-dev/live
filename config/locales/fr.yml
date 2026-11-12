@@ -1,0 +1,115 @@
+fr:
+  # Chrome par défaut des packs de thème (app/views/theme/).
+  theme:
+    chrome:
+      home: "Accueil"
+      sign_out: "Se déconnecter"
+    toggle:
+      label: "Basculer entre mode clair et mode sombre"
+      to_dark: "Passer en mode sombre"
+      to_light: "Passer en mode clair"
+    links:
+      site: "Site"
+      linkedin: "LinkedIn"
+      github: "GitHub"
+  chrome:
+    webinars: "Mes webinaires"
+    new_webinar: "Nouveau webinaire"
+    packs: "Mes packs"
+    replays: "Replays"
+    questions: "Questions"
+    questions_pending: "Questions (%{count})"
+    new_pack: "Nouveau pack"
+    breadcrumb: "Fil d'ariane"
+    login: "Connexion animateur"
+    login_hint: "Espace animateur — webinaires en direct. Un geste, pas de mot de passe."
+    login_pocket: "Continuer avec Pocket ID"
+    login_dev: "Se connecter (développement)"
+    login_dev_email: "Adresse e-mail"
+    login_dev_hint: "Connexion de développement : sans fournisseur d'identité, n'importe quelle adresse. Jamais disponible en production."
+    login_dev_invalid: "Saisis une adresse e-mail valide."
+    login_dev_local_only: "La connexion de développement ne répond que sur cette machine (loopback, ou les réseaux de LIVE_DEV_LOGIN_ALLOWED_NETWORKS)."
+    login_unavailable: "Aucune méthode de connexion configurée : renseigne OIDC_ISSUER, OIDC_CLIENT_ID et OIDC_CLIENT_SECRET."
+    language: "Langue"
+    language_next: "Passer en %{lang}"
+    lang_fr: "FR"
+    lang_en: "EN"
+  catalogue:
+    title: "Prochains webinaires"
+    empty: "Aucun événement à venir."
+    status:
+      live: "En direct"
+      starting_late: "Va commencer"
+    kinds:
+      cafe_ia: "Café IA"
+      bootcamp: "Bootcamp"
+  webinars:
+    pre_live:
+      computing: "…"
+    price:
+      free: "Gratuit"
+      in_pack: "Inclus dans le pack %{name}"
+    paid_notice: "Sur inscription — accès après confirmation."
+  packs:
+    empty: "Aucun pack."
+  agenda:
+    title: "Agenda des webinaires"
+    intro: "Toutes les dates des webinaires %{organization}."
+    link: "Agenda : toutes les dates des webinaires"
+    # Flux personnel (CalendarSubscription) : le lien part par mail à la
+    # confirmation d'une inscription.
+    register:
+      title: "Toutes les dates dans votre agenda"
+      body: "Inscrivez-vous à un webinaire : vous recevrez par mail votre lien d'agenda personnel, mis à jour à chaque nouvelle date. Les changements d'horaire y apparaissent au prochain rafraîchissement de votre agenda, de quelques minutes à quelques heures selon l'agenda."
+    # Corps text/plain du 410 de l'ancien flux public /agenda.ics.
+    public_feed_gone: "Ce flux public est fermé. Inscrivez-vous à un webinaire (%{url}) pour recevoir votre lien d'agenda personnel, mis à jour à chaque nouvelle date."
+    empty: "Aucune date à venir pour l'instant."
+    empty_hint: "Déjà inscrit·e ? La prochaine date apparaîtra dans votre agenda personnel à son prochain rafraîchissement."
+    live: "en direct"
+    past:
+      title: "Webinaires passés"
+      show:
+        one: "Afficher le webinaire passé"
+        other: "Afficher les %{count} webinaires passés"
+    add:
+      ics: "Ajouter à mon agenda"
+      google: "Google Agenda"
+      all: "Toutes les dates"
+  time:
+    formats:
+      agenda: "%A %-d %B · %-Hh%M"
+      agenda_past: "%A %-d %B %Y · %-Hh%M"
+      agenda_month: "%B %Y"
+      # Date d'un café dans ses mails (tonalité cafe_ia) : « mercredi 4 novembre à 9 h 30 ».
+      day_time: "%A %-d %B à %-H h %M"
+      # Page animateur d'un webinaire : heures au format maison 9:30.
+      jour_heure: "%A %-d %B %Y, %-H:%M"
+      date_heure: "%-d %b, %-H:%M"
+      heure: "%-H:%M"
+  errors:
+    back: "Retour à l'accueil"
+    "403":
+      quoi: "Cette page n'est pas pour ce compte."
+      geste: "Se connecter avec le compte animateur du webinaire"
+    "404":
+      quoi: "Rien ici — le lien est faux ou le webinaire a été retiré."
+      geste: "Vérifier le lien reçu, ou revenir à l'accueil"
+    "500":
+      quoi: "L'application a rencontré un écart."
+      geste: "L'incident est consigné — rien à refaire de votre côté"
+  activerecord:
+    attributes:
+      webinar:
+        title: "Titre"
+        starts_at: "Démarre le"
+        state: "État"
+        topic: "Sujet"
+        topic_summary: "Présentation du sujet"
+        announced_speakers: "Intervenants annoncés"
+        lead_host_name: "Animateur du jour"
+      user:
+        email: "Adresse mail"
+      host_invitation:
+        max_uses: "Nombre d’usages"
+        expires_at: "Expiration"
+        signup_url: "Lien d’inscription Pocket ID"

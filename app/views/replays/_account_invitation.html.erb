@@ -1,0 +1,23 @@
+<%# Inscrit sans compte : son lien ouvre le replay de SON café ; un compte
+    de l'organisation ouvre tous les replays. Connexion Pocket ID en POST
+    (omniauth-rails_csrf_protection), retour sur la page courante
+    (`session[:return_to]`, posé par le contrôleur) ; création de compte =
+    lien de jeton d'inscription Pocket ID, s'il est posé (aucune création de
+    compte côté live). %>
+<section class="live-lien" data-role="replay-account-invitation" aria-labelledby="replay-account-title">
+  <h3 id="replay-account-title">Tous les replays avec un compte <%= Brand.organization %></h3>
+  <p>Ton inscription ouvre le replay de ton café. Avec un compte <%= Brand.organization %>, tu accèdes à tous les replays publiés.</p>
+  <div class="live-actions">
+    <% if spectator_signup_url %>
+      <%= link_to spectator_signup_url, class: "btn btn--secondary", target: "_blank",
+                 rel: "noopener noreferrer", data: { role: "replay-signup" } do %>
+        Créer mon compte<%= new_tab_hint %>
+      <% end %>
+    <% end %>
+    <%= button_to "J'ai un compte : me connecter", "/auth/pocket_id", method: :post, class: "connexion-cta",
+                  form: { class: "connexion-form", data: { turbo: false } }, data: { role: "replay-sign-in" } %>
+  </div>
+  <% if spectator_signup_url %>
+    <p>Une fois ton compte créé, reviens ici pour te connecter.</p>
+  <% end %>
+</section>

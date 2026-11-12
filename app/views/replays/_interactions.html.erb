@@ -1,0 +1,23 @@
+<%# Couches interactives du lecteur, replay publié seulement (les écritures
+    sont refusées avant publication) :
+    • sondages du direct en surcouche de la vidéo, à leur instant
+      (replay_polls.js → ReplayPollsController) ;
+    • question ancrée à l'instant de la vidéo, envoyée aux animateurs
+      (replay_questions.js → ReplayQuestionsController).
+    Rendus cachés : le script les révèle (sans lui, rien ne s'envoie). %>
+<section class="replay-sondage" hidden aria-label="Sondage du direct" aria-live="polite"
+         data-replay-polls data-polls-url="<%= public_webinar_replay_polls_path(webinar.slug) %>"></section>
+
+<form class="replay-question" hidden data-replay-question
+      data-questions-url="<%= public_webinar_replay_questions_path(webinar.slug) %>">
+  <label for="replay-question-texte">
+    Une question pour les animateurs, à <span data-replay-question-instant>0:00</span> de la vidéo
+  </label>
+  <textarea id="replay-question-texte" rows="2" maxlength="<%= QaItem::LABEL_LIMIT %>" required
+            data-replay-question-text></textarea>
+  <span class="aide">Elle leur parvient avec ton nom ; personne d'autre ne la voit.</span>
+  <div class="live-actions">
+    <button type="submit" class="btn btn--secondary">Envoyer la question</button>
+  </div>
+  <p class="replay-question__etat" role="status" data-replay-question-status></p>
+</form>

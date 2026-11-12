@@ -1,0 +1,29 @@
+Salut,
+<% if @registrations.any? %>
+
+Tu viens à :
+<% @registrations.each do |registration| %>
+- « <%= registration.webinar.title %> », <%= l registration.webinar.starts_at, format: :day_time, locale: :fr %>
+<% end %>
+<% end %>
+<% if @registration_request.notify_next? %>
+
+Tu as demandé qu'on te prévienne du prochain Café IA.
+<% end %>
+<% if @registration_request.marketing_choice_offered? %>
+
+La case « Ok pour <%= organization_after("que") %> me recontacte au sujet de ses activités. Je peux dire stop quand je veux. » a été cochée lors de cette demande. Sur la page de confirmation, tu choisiras : « Je confirme, et <%= Brand.organization %> peut me recontacter » ou « Je confirme, sans être recontacté·e ». Pour dire stop plus tard, quand tu veux : le lien « ne plus être recontacté·e » de cette page, ou <%= Brand.support_email %>.
+<% end %>
+
+Presque fini ! Il reste un clic pour confirmer :
+
+<%= @confirm_url %>
+<% if @registrations.any? %>
+
+Garde ce mail : le même lien t'ouvrira le café le jour J. Et on te le renvoie la veille.
+<% end %>
+
+Ce n'est pas toi ? Ignore ce mail : sans confirmation, la demande est effacée sous 30 jours.
+
+À très vite,
+— Le Café IA · <%= series_host %>

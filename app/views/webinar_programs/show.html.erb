@@ -1,0 +1,8 @@
+<%# Programme d'un café, saisi par toute l'animation (WebinarProgramsController).
+    Une colonne : lisible au téléphone. %>
+<% content_for :title, "Programme — #{@webinar.title}" %>
+<h1>Programme</h1>
+<p><%= link_to "← Retour au webinaire", webinar_path(@webinar), class: "renvoi" %></p>
+
+<%= render "webinars/errors", webinar: @webinar %>
+<%= render "webinar_programs/form", webinar: @webinar %>

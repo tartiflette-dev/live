@@ -1,0 +1,90 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Liste les custom properties CSS que l'app consomme et qu'un thème doit
+# définir (contrat des packs themes/<nom>/tokens.css), et écrit
+# docs/theme-contract.md. Usage : script/theme-contract [--check]
+#   --check : n'écrit rien, sort en 1 si le document n'est pas à jour.
+#
+# Consommée = `var(--x` dans le CSS, les vues, le JS et les helpers de l'app,
+# y compris le chrome par défaut (theme_default.css, app/views/theme/default/).
+# Exclues : les propriétés que l'app définit elle-même (`--x:` dans ces
+# fichiers, `setProperty("--x"`, clé de style React "--x") et celles de
+# Tailwind (`--tw-*`). Une propriété toujours lue avec repli
+# (`var(--x, …)`) est facultative.
+
+module ThemeContract
+  module_function
+
+  ROOT = File.expand_path("..", __dir__)
+  DOC = File.join(ROOT, "docs/theme-contract.md")
+  SOURCES = %w[
+    app/assets/tailwind/application.css
+    app/assets/tailwind/theme_default.css
+    app/assets/stylesheets/**/*.css
+    app/views/**/*.erb
+    app/javascript/**/*.{js,jsx}
+    app/helpers/**/*.rb
+  ].freeze
+
+  def scan
+    uses = Hash.new { |hash, name| hash[name] = { files: [], bare: false } }
+    defined = []
+    SOURCES.flat_map { |glob| Dir.glob(File.join(ROOT, glob)) }.sort.each do |path|
+      text = File.read(path)
+      relative = path.delete_prefix("#{ROOT}/")
+      text.scan(/var\(\s*(--[\w-]+)\s*([,)])/) do |name, after|
+        next if name.start_with?("--tw-")
+
+        uses[name][:files] |= [ relative ]
+        uses[name][:bare] ||= after == ")"
+      end
+      defined.concat(text.scan(/(?<![\w-])(--[\w-]+)\s*:(?!:)/).flatten)
+      defined.concat(text.scan(/setProperty\(\s*["'](--[\w-]+)["']/).flatten)
+      defined.concat(text.scan(/["'](--[\w-]+)["']\s*:/).flatten)
+    end
+    uses.reject { |name, _| defined.include?(name) }.sort.to_h
+  end
+
+  def family(name)
+    name.delete_prefix("--").split("-").first
+  end
+
+  def render(uses)
+    required, optional = uses.partition { |_, use| use[:bare] }.map(&:to_h)
+    lines = []
+    lines << "# Contrat de thème : custom properties CSS consommées par l'app"
+    lines << ""
+    lines << "Généré par `script/theme-contract` (ne pas éditer à la main ; `script/theme-contract --check`"
+    lines << "échoue si ce document n'est pas à jour, `test/lib/theme_contract_test.rb` le vérifie)."
+    lines << ""
+    lines << "Contrat complet d'un pack : [theme-pack.md](theme-pack.md). Un pack `themes/<nom>/tokens.css` doit définir **toutes les propriétés obligatoires**, en mode"
+    lines << "clair (`:root`) et, s'il le souhaite, en mode sombre (`[data-theme=\"dark\"]`). Les propriétés"
+    lines << "facultatives sont toujours lues avec une valeur de repli."
+    lines << ""
+    lines << "Obligatoires : **#{required.size}** · facultatives : **#{optional.size}**."
+    [ [ "Obligatoires", required ], [ "Facultatives (lues avec repli)", optional ] ].each do |title, group|
+      lines << ""
+      lines << "## #{title}"
+      group.group_by { |name, _| family(name) }.sort.each do |prefix, entries|
+        lines << ""
+        lines << "### `--#{prefix}-*` (#{entries.size})"
+        lines << ""
+        entries.each { |name, use| lines << "- `#{name}` — #{use[:files].size} fichier#{"s" if use[:files].size > 1}" }
+      end
+    end
+    lines.join("\n") + "\n"
+  end
+
+  def required_properties = scan.select { |_, use| use[:bare] }.keys
+end
+
+if $PROGRAM_NAME == __FILE__
+  content = ThemeContract.render(ThemeContract.scan)
+  if ARGV.include?("--check")
+    current = File.exist?(ThemeContract::DOC) ? File.read(ThemeContract::DOC) : ""
+    abort "docs/theme-contract.md n'est pas à jour : lancer script/theme-contract" unless current == content
+  else
+    File.write(ThemeContract::DOC, content)
+  end
+end

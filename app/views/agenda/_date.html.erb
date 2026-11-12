@@ -1,0 +1,15 @@
+<%# Une date de l'agenda : horodatage Europe/Paris (fuseau de l'app), format,
+    prix, puis le titre vers la page publique et, s'il est annoncé, le
+    programme. Le direct en cours porte le marqueur d'accent de .chrono. %>
+<%= tag.li class: ("est-accent" if webinar.live?), data: { role: "agenda-webinaire" } do %>
+  <div class="quand">
+    <time datetime="<%= webinar.starts_at.iso8601 %>"><%= l webinar.starts_at, format: date_format %></time>
+    · <%= webinar.kind_label %> · <%= webinar.price_label %>
+    <% if webinar.live? %>· <%= t("agenda.live") %><% end %>
+    <% if (date_status = date_status_badge(webinar)) %>· <%= date_status %><% end %>
+  </div>
+  <div class="quoi"><%= link_to webinar.title, public_webinar_path(slug: webinar.slug), class: "renvoi" %></div>
+  <% if (program = agenda_program_line(webinar)) %>
+    <div class="programme" data-role="agenda-program"><%= program %></div>
+  <% end %>
+<% end %>

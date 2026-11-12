@@ -1,0 +1,24 @@
+<p>Bonjour <%= @registration.name %>,</p>
+
+<p>
+  Nous enregistrons votre consentement à être recontacté·e par <%= Brand.organization %>
+  au sujet de ses activités, suite à votre inscription à
+  <strong><%= @webinar.title %></strong>.
+</p>
+
+<p>
+  Vous pouvez retirer ce consentement à tout moment, en un clic, via le
+  lien ci-dessous. Il est aussi joint à tout email que nous vous
+  enverrons dans ce cadre.
+</p>
+
+<p>
+  <%= link_to "Retirer mon consentement", @withdrawal_url %>
+</p>
+
+<p>
+  Vous pouvez aussi écrire à
+  <%= mail_to(Brand.support_email) %>.
+</p>
+
+<p>— <%= Brand.host %></p>

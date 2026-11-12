@@ -1,0 +1,87 @@
+subject: Confirme ton inscription — Café IA #8
+--- text/plain
+Salut,
+
+Tu viens à « Café IA #8 », samedi 21 novembre à 9 h 30. Presque fini !
+
+Un clic pour confirmer ton mail, et on t'envoie le lien du café la veille :
+
+http://example.com/r/PREVIEWTOKEN0000000000000000abcd
+
+Garde ce mail : le même lien t'ouvrira le café le jour J.
+
+La page du café : http://example.com/w/cafe-ia-preview
+
+Ce n'est pas toi qui t'es inscrit·e ? Ignore ce mail, tout simplement.
+
+---
+À l'inscription, la case « J'accepte qu'undust me recontacte au sujet
+de ses activités » a été cochée. Pour que ça compte, clique sur ce lien
+À PART (le lien de confirmation du dessus n'y touche pas) :
+
+http://example.com/mc?t=PREVIEWMC
+
+Tu n'as pas coché cette case, ou quelqu'un t'a inscrit·e à ta place ?
+Ne clique PAS sur ce second lien : personne ne te recontactera.
+
+À très vite,
+— Le Café IA · tartiflette.dev
+
+
+--- text/html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <style>
+      /* Email styles need to be inline */
+    </style>
+  </head>
+
+  <body>
+    <p>Salut,</p>
+
+<p>
+  Tu viens à <strong>Café IA #8</strong>,
+  samedi 21 novembre à 9 h 30. Presque fini !
+</p>
+
+
+<p>Un clic pour confirmer ton mail, et on t'envoie le lien du café la veille :</p>
+
+<p>
+  <a href="http://example.com/r/PREVIEWTOKEN0000000000000000abcd">Je confirme</a>
+</p>
+
+<p>
+  Le bouton ne marche pas ? Copie ce lien dans ton navigateur :<br>
+  http://example.com/r/PREVIEWTOKEN0000000000000000abcd
+</p>
+
+<p>Garde ce mail : le même lien t'ouvrira le café le jour J.</p>
+
+<p>
+  La page du café : <a href="http://example.com/w/cafe-ia-preview">Café IA #8</a>
+</p>
+
+<p>Ce n'est pas toi qui t'es inscrit·e ? Ignore ce mail, tout simplement.</p>
+
+  <hr>
+  <p>
+    À l'inscription, la case <em>« J'accepte qu'undust me recontacte au sujet de ses activités »</em>
+    a été cochée. Pour que ça compte, clique sur ce lien <strong>à part</strong>
+    (le lien de confirmation du dessus n'y touche pas) :
+  </p>
+  <p>
+    <a href="http://example.com/mc?t=PREVIEWMC">Oui, undust peut me recontacter</a>
+  </p>
+  <p>
+    Tu n'as pas coché cette case, ou quelqu'un t'a inscrit·e à ta place ?
+    Ne clique <strong>pas</strong> sur ce second lien : personne ne te recontactera.
+  </p>
+
+<p>À très vite,<br>— Le Café IA · tartiflette.dev</p>
+
+  </body>
+</html>
+

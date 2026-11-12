@@ -1,0 +1,33 @@
+<%# Demande confirmée : liens personnels `/r/:token` vers chaque café
+    (inscription déjà confirmée → cookie posé, accès direct). Page
+    no-store, Referrer-Policy strict-origin (TokenLinkPage) ; elle reste accessible par le lien du mail. %>
+<% content_for :title, voice_t("registration_requests.confirmed.title") %>
+<article class="live-legal" data-role="registration-request-confirmed">
+  <h1><%= voice_t("registration_requests.confirmed.heading") %></h1>
+  <% registrations = @registration_request.published_registrations %>
+  <% if registrations.any? %>
+    <p><%= voice_t("registration_requests.confirmed.keep_mail") %></p>
+    <ul>
+      <% registrations.each do |registration| %>
+        <li>
+          <strong><%= registration.webinar.title %></strong>,
+          <time datetime="<%= registration.webinar.starts_at.iso8601 %>"><%= voice_l registration.webinar.starts_at %></time>
+          — <%= link_to voice_t("registration_requests.confirmed.open"), confirm_registration_path(registration.token) %>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
+  <% if @registration_request.notify_next? %>
+    <p><%= voice_t("registration_requests.confirmed.notify_next") %></p>
+  <% end %>
+  <% if (withdrawal_token = @registration_request.marketing_withdrawal_token_for_page) %>
+    <p data-role="marketing-consent-given">
+      <%= voice_t("registration_requests.confirmed.marketing_consent_given_html",
+                  withdraw: link_to(voice_t("registration_requests.confirmed.withdraw_link"),
+                                    marketing_withdrawal_path(t: withdrawal_token)),
+                  contact: mail_to(Brand.support_email)) %>
+    </p>
+  <% end %>
+  <p><%= voice_t("registration_requests.confirmed.privacy_html",
+                 privacy: link_to(voice_t("privacy_link"), confidentialite_path)) %></p>
+</article>

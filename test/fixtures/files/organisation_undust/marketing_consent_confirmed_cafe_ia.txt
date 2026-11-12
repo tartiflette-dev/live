@@ -1,0 +1,55 @@
+subject: Merci, c'est noté : undust peut te recontacter
+--- text/plain
+Salut Camille,
+
+C'est noté : undust peut te recontacter au sujet de ses activités,
+suite à ton inscription à « Café IA #8 ».
+
+Tu changes d'avis ? Un clic suffit, quand tu veux. Ce lien sera aussi
+dans chaque mail qu'on t'enverra dans ce cadre :
+
+http://example.com/mc/withdraw?t=PREVIEWWD
+
+Tu peux aussi écrire à contact@example.test.
+
+Merci, et à très vite au café,
+— Le Café IA · tartiflette.dev
+
+
+--- text/html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <style>
+      /* Email styles need to be inline */
+    </style>
+  </head>
+
+  <body>
+    <p>Salut Camille,</p>
+
+<p>
+  C'est noté : undust peut te recontacter au sujet de ses activités,
+  suite à ton inscription à <strong>Café IA #8</strong>.
+</p>
+
+<p>
+  Tu changes d'avis ? Un clic suffit, quand tu veux. Ce lien sera aussi
+  dans chaque mail qu'on t'enverra dans ce cadre :
+</p>
+
+<p>
+  <a href="http://example.com/mc/withdraw?t=PREVIEWWD">Je retire mon accord</a>
+</p>
+
+<p>
+  Tu peux aussi écrire à
+  <a href="mailto:contact@example.test">contact@example.test</a>.
+</p>
+
+<p>Merci, et à très vite au café,<br>— Le Café IA · tartiflette.dev</p>
+
+  </body>
+</html>
+

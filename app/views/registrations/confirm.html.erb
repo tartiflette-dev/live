@@ -1,0 +1,44 @@
+<%# GET /r/:token, inscription non confirmée — page SANS EFFET (scanners
+    de liens) : la confirmation n'a lieu qu'au POST. Aucune donnée
+    personnelle affichée : ni nom, ni email. Identité provisoire (accès
+    immédiat) vue depuis un autre navigateur que le sien (@hand_over) : le
+    POST crée une inscription neuve, sous le prénom saisi ici. %>
+<% content_for :title, voice_t("registrations.confirm.title") %>
+<article class="live-legal" data-role="registration-confirm">
+  <h1><%= voice_t("registrations.confirm.title") %></h1>
+  <p>
+    <strong><%= @webinar.title %></strong>,
+    <time datetime="<%= @webinar.starts_at.iso8601 %>"><%= voice_l @webinar.starts_at %></time>
+  </p>
+  <% if @hand_over %>
+    <p><%= voice_t("registrations.confirm.hand_over_intro") %></p>
+    <% if @hand_over_invalid %>
+      <p class="etat etat--ecart" role="alert"><%= voice_t("registrations.invalid_submission") %></p>
+    <% end %>
+    <%= form_with url: @confirm_path, method: :post, class: "live-form", data: { role: "registration-hand-over" } do |form| %>
+      <div class="champ">
+        <%= form.label :name, voice_t("webinars.registration_cta.name") %>
+        <%= form.text_field :name, value: @hand_over_name, required: true, maxlength: 120, autocomplete: "name" %>
+      </div>
+      <fieldset class="groupe" data-role="registration-hand-over-participation">
+        <legend><%= voice_t("webinars.registration_cta.participation") %></legend>
+        <%= form.label :participation_spectator, class: "radio" do %>
+          <%= form.radio_button :participation, "spectator", checked: @hand_over_participation != "participant" %>
+          <span><%= voice_t("webinars.registration_cta.spectator") %></span>
+        <% end %>
+        <%= form.label :participation_participant, class: "radio" do %>
+          <%= form.radio_button :participation, "participant", checked: @hand_over_participation == "participant" %>
+          <span><%= voice_t("webinars.registration_cta.participant") %></span>
+        <% end %>
+      </fieldset>
+      <%= form.submit voice_t("registrations.confirm.button"), class: "btn" %>
+    <% end %>
+  <% else %>
+    <p><%= voice_t("registrations.confirm.intro") %></p>
+    <%= button_to voice_t("registrations.confirm.button"), @confirm_path, method: :post, class: "btn" %>
+  <% end %>
+  <p>
+    <%= voice_t("registrations.confirm.not_you_html",
+                privacy: link_to(voice_t("privacy_link"), confidentialite_path)) %>
+  </p>
+</article>

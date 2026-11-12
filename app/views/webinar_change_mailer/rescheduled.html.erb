@@ -1,0 +1,18 @@
+<p>Bonjour <%= @registration.name %>,</p>
+
+<p>
+  Changement de date : <strong><%= @webinar.title %></strong> aura lieu
+  le <%= l @starts_at, format: :long %> (heure de Paris).
+</p>
+
+<p>Votre inscription reste valable, avec le même lien personnel :</p>
+
+<p>
+  <%= link_to "Ouvrir la page du webinaire", @access_url %>
+</p>
+
+<p>Le fichier joint met le rendez-vous à jour dans votre agenda. Si vous êtes abonné·e à votre lien d'agenda personnel, c'est déjà fait.</p>
+
+<p>Vous recevez ce message parce que vous avez confirmé votre inscription.</p>
+
+<p>— <%= Brand.host %></p>

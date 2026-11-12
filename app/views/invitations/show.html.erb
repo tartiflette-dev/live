@@ -1,0 +1,42 @@
+<% content_for :title, voice_t("invitations.show.title") %>
+
+<article class="carte-dossier" data-role="invitation-form">
+  <h1><%= voice_t("invitations.show.title") %></h1>
+  <p><%= voice_t("invitations.show.intro_html", title: @webinar.title) %></p>
+  <%= render "webinars/program", webinar: @webinar %>
+
+  <% if @entry.errors.any? %>
+    <p class="etat etat--ecart" role="alert">
+      <%= voice_t("registrations.invalid_submission") %>
+    </p>
+  <% end %>
+
+  <%= form_with model: @entry, scope: :invitation, url: invitation_create_path(t: params[:t]), method: :post, class: "live-form", local: true do |form| %>
+    <div class="champ">
+      <%= form.label :name, voice_t("webinars.registration_cta.name") %>
+      <%= form.text_field :name, required: true, maxlength: 120, autocomplete: "name", data: { role: "invitation-name" } %>
+    </div>
+    <div class="champ">
+      <%= form.label :email, voice_t("webinars.registration_cta.email") %>
+      <%= form.email_field :email, required: true, maxlength: 254, autocomplete: "email", data: { role: "invitation-email" } %>
+    </div>
+    <fieldset class="groupe" data-role="invitation-participation">
+      <legend><%= voice_t("webinars.registration_cta.participation") %></legend>
+      <%= form.label :participation_participant, class: "radio" do %>
+        <%= form.radio_button :participation, "participant" %>
+        <span><%= voice_t("invitations.show.participant") %></span>
+      <% end %>
+      <%= form.label :participation_spectator, class: "radio" do %>
+        <%= form.radio_button :participation, "spectator" %>
+        <span><%= voice_t("webinars.registration_cta.spectator") %></span>
+      <% end %>
+    </fieldset>
+    <% if registration_privacy_url %>
+      <p><%= voice_t("webinars.registration_cta.privacy_notice_html",
+                     privacy: link_to("Politique de confidentialité", registration_privacy_url)) %></p>
+    <% end %>
+    <%= form.submit voice_t("invitations.show.submit"), class: "btn", data: { role: "invitation-submit" } %>
+  <% end %>
+
+  <p class="etat etat--neutre"><%= voice_t("invitations.show.keep_link") %></p>
+</article>

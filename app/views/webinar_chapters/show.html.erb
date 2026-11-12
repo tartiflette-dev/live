@@ -1,0 +1,106 @@
+<%# Relecture des chapitres du replay (WebinarChaptersController) : la
+    proposition du LLM local, à corriger puis valider avant que les
+    spectateurs la voient. Une ligne par chapitre : instant dans la vidéo,
+    titre, thèmes ; lignes vides pour en ajouter. Une colonne au téléphone. %>
+<% content_for :title, "Chapitres — #{@webinar.title}" %>
+<% content_for :breadcrumb do %>
+  <span class="fil-sep" aria-hidden="true">›</span>
+  <%= link_to @webinar.title, webinar_path(@webinar), class: "fil-niveau" %>
+  <span class="fil-sep" aria-hidden="true">›</span>
+  <%= link_to "Replay", webinar_replay_path(@webinar), class: "fil-niveau" %>
+<% end %>
+<h1>Chapitres — <%= @webinar.title %></h1>
+
+<section aria-labelledby="chapters-state">
+  <h2 id="chapters-state">État</h2>
+  <% if @chapter_set.validated? %>
+    <p class="etat etat--succes" data-role="chapters-validated">
+      Validés le <%= l @chapter_set.validated_at, format: :long %><% if @chapter_set.validated_by %> par <%= @chapter_set.validated_by.chat_alias %><% end %> :
+      les spectateurs du replay les voient, et la recherche des replays les trouve.
+    </p>
+  <% elsif @chapter_set.chapters.any? %>
+    <p class="etat etat--neutre" data-role="chapters-proposed">
+      Proposés, pas encore validés : les spectateurs ne les voient pas.
+    </p>
+  <% end %>
+  <p data-role="chapters-llm"><%= chapter_llm_status(@chapter_set) %></p>
+
+  <div class="live-actions">
+    <% if @chapter_set.validated? %>
+      <%= button_to "Retirer aux spectateurs", unvalidate_webinar_chapters_path(@webinar), method: :post,
+                    class: "btn btn--secondary", form: { data: { turbo: false } }, data: { role: "chapters-unvalidate" } %>
+    <% else %>
+      <%= button_to "Redemander une proposition", propose_webinar_chapters_path(@webinar), method: :post,
+                    class: "btn btn--secondary",
+                    form: { data: { turbo: false, confirm: "La nouvelle proposition remplacera les chapitres de cette page. Continuer ?" } },
+                    data: { role: "chapters-propose" } %>
+    <% end %>
+    <% if @webinar.replay %>
+      <%= link_to "Regarder le replay", public_webinar_replay_path(@webinar.slug), class: "btn btn--secondary" %>
+    <% end %>
+  </div>
+</section>
+
+<section aria-labelledby="chapters-edit">
+  <h2 id="chapters-edit">Chapitres</h2>
+  <% if @revision.nil? %>
+    <p class="etat etat--neutre" data-role="chapters-no-origin">
+      Ni vidéo ni transcription : rien sur quoi caler des chapitres.
+    </p>
+  <% else %>
+    <% if @revision.errors.any? %>
+      <div class="etat etat--ecart" role="alert" data-role="chapters-errors">
+        <%= pluralize(@revision.errors.size, "erreur", plural: "erreurs") %> :
+        <ul>
+          <% @revision.errors.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+    <p class="aide">
+      Instant dans la vidéo du replay (12:34 ou 1:02:09), titre court sans nom de personne, thèmes séparés par des
+      virgules (<%= Chapter::MAX_THEMES %> au plus). Les lignes vides sont ignorées.
+    </p>
+    <%= form_with url: webinar_chapters_path(@webinar), method: :patch, local: true, class: "live-form",
+                  data: { role: "chapters-form" } do %>
+      <% rows = @revision.errors.any? ? @revision.rows_for_display : @revision.rows %>
+      <% rows.each_with_index do |row, index| %>
+        <fieldset class="groupe" data-role="chapter-row">
+          <legend>Chapitre <%= index + 1 %></legend>
+          <div class="champ chapitre-instant">
+            <%= label_tag "chapters_#{index}_timecode", "Instant" %>
+            <%= text_field_tag "chapters[#{index}][timecode]", row.timecode, id: "chapters_#{index}_timecode",
+                               inputmode: "numeric", autocomplete: "off", placeholder: "12:34" %>
+          </div>
+          <div class="champ">
+            <%= label_tag "chapters_#{index}_title", "Titre" %>
+            <%= text_field_tag "chapters[#{index}][title]", row.title, id: "chapters_#{index}_title",
+                               maxlength: Chapter::TITLE_LIMIT, autocomplete: "off" %>
+          </div>
+          <div class="champ">
+            <%= label_tag "chapters_#{index}_themes", "Thèmes" %>
+            <%= text_field_tag "chapters[#{index}][themes]", row.themes, id: "chapters_#{index}_themes", autocomplete: "off" %>
+          </div>
+          <% unless row.blank? %>
+            <%= hidden_field_tag "chapters[#{index}][remove]", "0", id: nil %>
+            <label class="case">
+              <%= check_box_tag "chapters[#{index}][remove]", "1", row.remove, id: "chapters_#{index}_remove" %>
+              <span>Retirer ce chapitre</span>
+            </label>
+          <% end %>
+        </fieldset>
+      <% end %>
+      <div class="live-actions">
+        <% if @chapter_set.validated? %>
+          <%# Déjà visibles : enregistrer les publie, le dire. Pour les cacher,
+              « Retirer aux spectateurs » plus haut. %>
+          <%= submit_tag "Enregistrer (reste visible)", name: "save", class: "btn", data: { role: "chapters-save" } %>
+        <% else %>
+          <%= submit_tag "Valider : montrer aux spectateurs", name: "validate", class: "btn", data: { role: "chapters-validate" } %>
+          <%= submit_tag "Enregistrer sans montrer", name: "save", class: "btn btn--secondary", data: { role: "chapters-save" } %>
+        <% end %>
+      </div>
+    <% end %>
+  <% end %>
+</section>

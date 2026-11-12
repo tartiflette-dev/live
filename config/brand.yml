@@ -1,0 +1,48 @@
+# Marque de la distribution, lue par `Brand` (lib/brand.rb) par-dessus
+# l'identité du thème (themes/<BRAND_THEME>/theme.yml : product_name, credit,
+# links, favicon). Une clé posée ici prime sur le thème ;
+# chaque valeur se surcharge par BRAND_<CHEMIN> en majuscules (BRAND_HOST,
+# BRAND_SUPPORT_EMAIL, BRAND_CREDIT_URL).
+#
+# Aucune valeur d'une instance réelle : chaque instance pose les siennes dans
+# sa configuration de déploiement. En production, une adresse de contact
+# ou un nom d'organisation absents refusent le démarrage
+# (config/initializers/instance_settings.rb).
+shared:
+  # Organisation qui opère l'instance : nommée dans les consentements, les
+  # mails et les pages (« J'accepte qu'Acme me recontacte »). BRAND_ORGANIZATION.
+  organization: null
+  # Hôte public affiché (signatures de mails, pages d'erreur, calendrier,
+  # source des fiches CRM). Par défaut APP_HOST, l'hôte de l'instance ; une
+  # instance servie sous plusieurs noms (staging) fixe le sien par BRAND_HOST.
+  host: <%= ENV.fetch("APP_HOST", "localhost").to_json %>
+  # Adresse de contact affichée aux spectateurs (retrait d'un accord,
+  # questions) et destinataire des alertes de repli.
+  support_email: null
+  # Identité du responsable de traitement, affichée par la page de
+  # confidentialité (texte brut, après le nom de l'organisation).
+  legal_identity: null
+  # Série d'émissions que l'instance anime avec d'autres (tonalité cafe_ia).
+  series:
+    # Site public de la série : liens et signature des mails de la série,
+    # par son hôte (« Le Café IA · exemple.org »). BRAND_SERIES_URL.
+    # Absent : l'agenda public de l'instance.
+    url: null
+    # Co-organisateurs qui publient aussi les extraits : nommés dans
+    # l'accord à l'image (texte figé dans chaque preuve) et dans le mail
+    # de retrait. BRAND_SERIES_CO_ORGANIZERS. Absent : l'organisation seule.
+    co_organizers: null
+  # MAIL_FROM (posé par la configuration de déploiement) reste lu ;
+  # BRAND_MAILER_FROM prime.
+  mailer_from: <%= ENV.fetch("MAIL_FROM") { "noreply@#{ENV.fetch('APP_HOST', 'localhost')}" }.to_json %>
+
+development:
+  organization: "Studio Exemple"
+  support_email: "contact@example.test"
+
+test:
+  organization: "Studio Exemple"
+  host: "live.example.test"
+  support_email: "contact@example.test"
+  legal_identity: "entreprise de démonstration, 1 rue de l'Exemple, 00000 Exempleville"
+  mailer_from: <%= ENV.fetch("MAIL_FROM", "noreply@live.example.test").to_json %>

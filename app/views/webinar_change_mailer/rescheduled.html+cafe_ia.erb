@@ -1,0 +1,20 @@
+<p>Salut <%= @registration.name %>,</p>
+
+<p>
+  Le café change de date : <strong><%= @webinar.title %></strong> aura lieu
+  <%= l @starts_at, format: :day_time, locale: :fr %> (heure de Paris).
+</p>
+
+<p>Tu restes inscrit·e. Ton lien pour entrer ne change pas :</p>
+
+<p>
+  <%= link_to "Ouvrir la page du café", @access_url %>
+</p>
+
+<p>Le fichier joint déplace le café dans ton agenda. Avec ton lien d'agenda perso, c'est déjà fait.</p>
+
+<p>Pas dispo à cette date ? Pas de souci : les prochaines sont sur <%= link_to series_host, series_url %>.</p>
+
+<p>Tu reçois ce mail parce que tu as confirmé ton inscription.</p>
+
+<p>À bientôt,<br>— Le Café IA · <%= series_host %></p>

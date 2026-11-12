@@ -1,0 +1,11 @@
+Bonjour <%= @registration.name %>,
+
+« <%= @webinar.title %> », prévu le <%= l @starts_at, format: :long %> (heure de Paris), est annulé.
+
+Si vous l'aviez ajouté à votre agenda, vous pouvez l'en retirer. Avec votre lien d'agenda personnel, il disparaît de lui-même.
+
+Les prochaines dates : <%= @agenda_url %>
+
+Vous recevez ce message parce que vous avez confirmé votre inscription.
+
+— <%= Brand.host %>

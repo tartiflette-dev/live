@@ -1,0 +1,33 @@
+# Context exclusions — réduit la taille du build context et évite les faux positifs.
+.git
+.gitignore
+.gitattributes
+
+# Fichiers de dev locaux
+node_modules
+log/
+tmp/
+storage/
+*.log
+
+# Secrets et configuration de déploiement : jamais dans le contexte de build
+# (le Dockerfile fait `COPY . .`, tout ce qui entre ici finit dans l'image).
+/config/*.key
+/config/credentials/*.key
+.env*
+.kamal/
+
+# Assets compilés localement (reconstruits dans le container)
+app/assets/builds/*
+
+# Tests (pas dans le container de prod)
+test/
+
+# Outillage hors application (CI, exploitation)
+.forgejo/
+infra/
+scripts/
+
+# Docs
+README.md
+*.md

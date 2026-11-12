@@ -1,0 +1,9 @@
+<%# GET /prochain/stop?t=<jeton> — page SANS EFFET : l'arrêt est au POST. %>
+<% content_for :title, voice_t("notify_next_stops.show.title") %>
+<article class="live-legal" data-role="notify-next-stop">
+  <h1><%= voice_t("notify_next_stops.show.heading") %></h1>
+  <p><%= voice_t("notify_next_stops.show.body") %></p>
+  <%= button_to voice_t("notify_next_stops.show.button"), confirm_notify_next_stop_path(t: params[:t]),
+                method: :post, class: "btn" %>
+  <p><%= voice_t("notify_next_stops.show.cancel") %></p>
+</article>

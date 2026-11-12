@@ -1,0 +1,13 @@
+<%# GET /w/:slug/replay?t=… — lien personnel d'un inscrit, page SANS EFFET :
+    le replay n'est ouvert à ce navigateur qu'au POST du bouton, jamais par un
+    lien ouvert. Le jeton part dans le corps du POST. Aucune donnée
+    personnelle affichée. %>
+<% content_for :title, "Replay — #{@webinar.title}" %>
+<article class="live-legal" data-role="replay-access">
+  <h1>Replay</h1>
+  <p><strong><%= @webinar.title %></strong>,
+     <time datetime="<%= @webinar.starts_at.iso8601 %>"><%= l @webinar.starts_at, format: :long %></time></p>
+  <p>Ton inscription ouvre le replay de ce café sur cet appareil.</p>
+  <%= button_to "Regarder le replay", public_webinar_replay_access_path(@webinar.slug), method: :post,
+                params: { t: @token }, class: "btn", form: { data: { turbo: false } }, data: { role: "replay-open" } %>
+</article>

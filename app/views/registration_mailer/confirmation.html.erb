@@ -1,0 +1,53 @@
+<p>Bonjour,</p>
+
+<p>
+  Merci pour votre inscription à
+  <strong><%= @webinar.title %></strong>,
+  le <%= @starts_at %>.
+</p>
+
+<% if @registration.instant_access? %>
+  <p data-role="instant-access-notice">
+    Quelqu'un est entré au direct avec votre adresse.
+    Si c'est vous, confirmez depuis le même navigateur pour garder vos échanges ; depuis un autre
+    navigateur, vous aurez votre propre accès, sans eux. Si ce n'est pas vous, ignorez ce message :
+    rien ne sera rattaché à votre adresse.
+  </p>
+<% end %>
+
+<p>Confirmez votre adresse pour recevoir le lien du direct :</p>
+
+<p>
+  <%= link_to "Confirmer mon inscription", @confirm_url %>
+</p>
+
+<p>
+  Ou copiez ce lien dans votre navigateur :<br>
+  <%= @confirm_url %>
+</p>
+
+<p>
+  Page du webinaire : <%= link_to @webinar.title, @webinar_url %>
+</p>
+
+<p>
+  Si vous n'êtes pas à l'origine de cette inscription, ignorez ce message.
+</p>
+
+<% if @marketing_consent_url %>
+  <hr>
+  <p>
+    À l'inscription, la case <em>« J'accepte <%= organization_after("que") %> me recontacte au sujet de ses activités »</em>
+    a été cochée. Pour que ce consentement soit effectif, cliquez sur ce lien
+    <strong>séparé</strong> (le lien d'inscription ci-dessus n'y touche pas) :
+  </p>
+  <p>
+    <%= link_to "Confirmer mon consentement au recontact", @marketing_consent_url %>
+  </p>
+  <p>
+    Si vous n'avez pas coché cette case ou si quelqu'un d'autre vous a inscrit·e,
+    ne cliquez <strong>pas</strong> sur ce second lien : vous ne serez pas recontacté·e.
+  </p>
+<% end %>
+
+<p>— <%= Brand.host %></p>

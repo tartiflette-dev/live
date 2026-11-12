@@ -1,0 +1,339 @@
+# Tonalités des émissions (Voice ; docs/tonalites.md).
+# `default` = la voix par défaut de l'application (vouvoiement, sobre) ; une émission
+# n'écrit QUE les clés qu'elle change, le reste retombe sur `default`.
+# Café IA : tutoiement, phrases courtes, chaleureux, concret.
+# Corps des mails : gabarits app/views/registration_mailer/*+<émission>.erb.
+fr:
+  voices:
+    default:
+      date_format: "long"
+      privacy_link: "politique de confidentialité"
+      registration_mailer:
+        confirmation:
+          subject: "Confirmez votre inscription — %{title}"
+        request_confirmation:
+          subject: "Confirmez votre inscription"
+        reminder:
+          subject: "Rappel — %{title}, demain à %{time}"
+          time_format: "%Hh%M"
+        marketing_consent_confirmed:
+          subject: "Merci — consentement enregistré"
+        speaker_link:
+          subject: "Est-ce bien vous ? — %{title}"
+        access:
+          subject: "Votre accès — %{title}"
+      registrations:
+        invalid_submission: "Renseignez votre nom et une adresse email valide."
+        confirm:
+          title: "Confirmer votre inscription"
+          intro: "Si c'est bien vous, cliquez sur le bouton ci-dessous. Rien n'est confirmé tant que vous n'avez pas cliqué."
+          button: "Confirmer mon inscription"
+          not_you_html: "Si vous n'êtes pas à l'origine de cette inscription, fermez simplement cette page. Voir la %{privacy}."
+          hand_over_intro: "Cette inscription a ouvert le direct depuis un autre navigateur. En confirmant ici, vous recevez votre propre accès sur ce navigateur, sous le prénom saisi ci-dessous ; ce qui a été dit depuis l'autre navigateur n'est pas rattaché à votre inscription. Pour garder vos échanges, confirmez depuis le navigateur où vous êtes entré·e."
+        access:
+          title: "Votre inscription est confirmée"
+          intro: "Cliquez sur le bouton pour ouvrir la page du webinaire depuis ce navigateur."
+          button: "Ouvrir la page du webinaire"
+        already_registered:
+          title: "Ce navigateur est déjà inscrit"
+          intro: "Ce navigateur porte déjà une inscription à ce webinaire\u00a0: elle est conservée. Pour utiliser une autre inscription, ouvrez son lien depuis un autre navigateur."
+          open: "Ouvrir la page du webinaire"
+        # « Ce n'est pas moi » (NotMeController) : ce navigateur oublie son
+        # inscription à ce webinaire, sans jamais lever un retrait.
+        not_me:
+          button: "Ce n'est pas moi"
+          registered_hint: "Ordinateur partagé, ou une autre adresse\u00a0? Ce navigateur peut oublier cette inscription\u00a0:"
+          # Page 409 : nomme l'inscription GARDÉE (celle du navigateur), jamais
+          # celle du lien ouvert — « Ce n'est pas moi » ne peut pas être pris
+          # pour l'inscription d'un tiers (docs/moderation.md).
+          already_registered_hint: "Cette inscription est au nom de «\u00a0%{name}\u00a0». Ce n'est pas vous (ordinateur partagé)\u00a0? Ce navigateur peut l'oublier\u00a0:"
+          room_hint: "Vous êtes dans la salle sous le nom «\u00a0%{name}\u00a0»."
+          forgotten: "Ce navigateur a oublié son inscription à ce webinaire. Inscrivez-vous, ou ouvrez le lien de votre propre inscription."
+        pending:
+          title: "Vérifiez votre boîte mail"
+          trial_title: "Inscription en mode essai"
+          trial: "Cette inscription est un essai. Aucun email n'est envoyé."
+          sent: "Si votre inscription nécessite une confirmation, un message vous permettra de confirmer votre adresse."
+          back: "Revenir au webinaire"
+      registration_requests:
+        show:
+          title: "Confirmer votre inscription"
+          covers: "Cette demande porte sur :"
+          notify_next: "Vous avez demandé à être prévenu·e du prochain webinaire."
+          intro: "Si c'est bien vous, cliquez sur le bouton ci-dessous. Rien n'est confirmé tant que vous n'avez pas cliqué ; sans confirmation, la demande est effacée sous 30 jours."
+          marketing_consent_notice: "La case « Ok pour %{que_organization} me recontacte au sujet de ses activités. Je peux dire stop quand je veux. » a été cochée lors de cette demande. Choisissez ci-dessous si vous acceptez %{que_organization} vous recontacte ; vous pourrez dire stop à tout moment."
+          button: "Confirmer mon inscription"
+          button_with_marketing: "Confirmer et accepter d'être recontacté·e"
+          button_without_marketing: "Confirmer sans être recontacté·e"
+          not_you_html: "Si vous n'êtes pas à l'origine de cette demande, fermez simplement cette page. Voir la %{privacy}."
+        confirmed:
+          title: "Inscription confirmée"
+          heading: "C'est confirmé, merci !"
+          keep_mail: "Gardez le mail reçu : son lien ramène à cette page, d'où vous rejoindrez le direct le jour venu."
+          open: "Ouvrir la page du webinaire"
+          notify_next: "C'est noté : nous vous préviendrons par email de la date du prochain webinaire."
+          marketing_consent_given_html: "C'est noté aussi : %{organization} pourra vous recontacter au sujet de ses activités. Pour dire stop : %{withdraw}, ou écrivez à %{contact}."
+          withdraw_link: "ne plus être recontacté·e"
+          privacy_html: "Voir la %{privacy}."
+      marketing_consents:
+        show:
+          title: "Confirmer le consentement"
+          heading: "Confirmer votre consentement"
+          context_html: "Lors de votre inscription à <strong>%{title}</strong>, la case <em>« J'accepte %{que_organization} me recontacte au sujet de ses activités »</em> a été cochée."
+          intent: "Si c'est bien votre intention, cliquez sur le bouton ci-dessous. Rien n'est enregistré tant que vous n'avez pas cliqué."
+          accept: "Oui, j'accepte d'être recontacté·e"
+          not_you: "Si vous n'avez pas coché cette case ou si quelqu'un d'autre vous a inscrit·e, vous pouvez fermer cette page — aucun consentement ne sera enregistré. Vous pouvez aussi marquer explicitement votre refus :"
+          decline: "Non merci"
+          withdraw_html: "Vous pouvez à tout moment retirer un consentement déjà donné, ou écrire à %{contact}."
+        created:
+          title: "Consentement enregistré"
+          heading: "Merci — votre consentement est enregistré"
+          mail: "Vous recevrez un email de confirmation contenant un lien de retrait, utilisable à tout moment."
+          contact_html: "Vous pouvez aussi écrire à %{contact} pour retirer votre consentement, et consulter la %{privacy}."
+        declined:
+          title: "Refus pris en compte"
+          heading: "C'est noté — pas de recontact"
+          body: "Vous ne serez pas recontacté·e. Le lien que vous venez d'utiliser a été invalidé."
+          registration_html: "Votre inscription au webinaire <strong>%{title}</strong> n'est pas affectée."
+        expired:
+          title: "Lien expiré"
+          heading: "Ce lien a expiré"
+          body: "Le lien de confirmation de consentement est valide 14 jours après l'inscription. Celui que vous venez d'utiliser a expiré."
+          contact_html: "Si vous souhaitez tout de même être recontacté·e, écrivez à %{contact}."
+        already_consented:
+          title: "Déjà consenti"
+          heading: "Consentement déjà enregistré"
+          body_html: "Vous avez déjà confirmé votre consentement. Pour le retirer, utilisez le lien de retrait reçu par email ou écrivez à %{contact}."
+        already_withdrawn:
+          title: "Consentement retiré"
+          heading: "Vous avez déjà retiré votre consentement"
+          body: "Vous ne serez pas recontacté·e. L'ancien lien de confirmation que vous venez d'utiliser est désactivé."
+      marketing_withdrawals:
+        show:
+          title: "Retirer mon consentement"
+          heading: "Retirer votre consentement au recontact"
+          context_html: "Vous avez précédemment accepté %{que_organization} vous recontacte au sujet de ses activités, dans le cadre de votre inscription à <strong>%{title}</strong>. Vous pouvez retirer ce consentement maintenant."
+          button: "Oui, retirer mon consentement"
+          cancel: "Si vous changez d'avis, fermez simplement cette page — rien ne sera enregistré tant que vous n'avez pas cliqué."
+        created:
+          title: "Retrait pris en compte"
+          heading: "Votre retrait est enregistré"
+          body_html: "Vous ne serez plus recontacté·e au sujet des activités %{de_organization}. Le retrait est noté dans notre CRM, où votre fiche reste ; votre inscription au webinaire n'est pas affectée. Pour en demander la suppression, écrivez à %{contact} (cf. %{privacy})."
+        already_withdrawn:
+          title: "Déjà retiré"
+          heading: "Consentement déjà retiré"
+          body: "Ce lien a déjà été utilisé, ou votre consentement a déjà été retiré par un autre canal. Vous ne serez pas recontacté·e."
+      webinars:
+        pre_live:
+          starts_in: "Commence dans"
+          ended: "Ce direct est terminé."
+          live_registration_required: "Le direct a commencé. Inscrivez-vous pour entrer tout de suite ; déjà inscrit·e, le lien de votre mail vous fait entrer."
+        registration_cta:
+          registered: "Vous êtes inscrit·e, %{name}."
+          heading: "S'inscrire au webinaire"
+          intro: ""
+          name: "Nom"
+          email: "Adresse email"
+          participation: "Comment souhaitez-vous participer ?"
+          spectator: "J'observe — j'ai le chat"
+          participant: "Je participe — caméra et micro"
+          privacy_notice_html: "Votre nom et votre email servent à votre inscription et aux messages relatifs à ce webinaire. %{privacy}"
+          submit: "M'inscrire"
+          closed: "Les inscriptions ne sont pas encore ouvertes."
+        # Entrée dans la salle d'un inscrit qui n'a jamais choisi
+        # (webinars/room.html.erb, ParticipationsController). Choix produit :
+        # deux options simples, jamais « main levée » ni admission
+        # par l'animation, aucun sous-texte sur l'attente.
+        participation_choice:
+          legend: "Comment souhaitez-vous participer ?"
+          spectator: "J'observe — j'ai le chat"
+          participant: "Je participe — caméra et micro"
+          # Dans la salle, tant que l'animation n'a pas ouvert la caméra et
+          # le micro (hand_raise_viewer.jsx) : rassurant, sans attente nommée.
+          waiting: "On vous ouvre la caméra et le micro dans un instant."
+          observe_instead: "Je préfère observer"
+          submit: "Entrer dans la salle"
+          error: "Votre choix n'a pas été enregistré. Réessayez, ou rechargez la page."
+          recording_notice: "Si la parole vous est donnée, votre image et votre voix sont enregistrées et votre voix est transcrite"
+      # Lien participants privé (/i, InvitationEntry) : nom, email et choix
+      # repris du formulaire d'inscription (webinars.registration_cta).
+      invitations:
+        show:
+          title: "Rejoindre le direct"
+          intro_html: "Vous êtes invité·e à <strong>%{title}</strong>."
+          participant: "Je participe — caméra et micro, tout de suite"
+          submit: "Rejoindre"
+          keep_link: "Un mail vous demandera de confirmer votre adresse. Participant·e, vous recevez un lien personnel : gardez-le ; rouvrir cette page depuis le même navigateur vous y ramène."
+      # Rattachement d'une intervention à une inscription (/rattacher?t=).
+      speaker_links:
+        show:
+          title: "Confirmer votre intervention"
+          intro: "Si vous êtes bien intervenu·e à ce webinaire sous le nom indiqué dans le mail, cliquez sur le bouton : vos interventions seront rattachées à votre inscription. Rien n'est rattaché tant que vous n'avez pas cliqué."
+          button: "Oui, c'était moi"
+          not_you: "Ce n'était pas vous ? Fermez simplement cette page."
+        linked:
+          title: "C'est noté"
+          body: "Votre intervention est rattachée à votre inscription."
+        invalid:
+          title: "Lien expiré"
+          body: "Ce lien a déjà servi ou ne sert plus."
+      # Mail aux co-organisateurs (CoOrganizerMailer) : le corps est commun,
+      # seuls l'objet et ces libellés suivent la tonalité de la demande.
+      co_organizer_mailer:
+        message_received:
+          subject: "Message d'une inscription confirmée"
+          webinars: "Webinaire(s) :"
+          notify_next: "Prévenir du prochain webinaire"
+
+    cafe_ia:
+      date_format: "day_time"
+      registration_mailer:
+        confirmation:
+          subject: "Confirme ton inscription — %{title}"
+        request_confirmation:
+          subject: "Confirme ton inscription au Café IA"
+        reminder:
+          subject: "C'est demain, %{time} : %{title}"
+          time_format: "%-H h %M"
+        marketing_consent_confirmed:
+          subject: "Merci, c'est noté : %{organization} peut te recontacter"
+        speaker_link:
+          subject: "C'est toi ? — %{title}"
+        access:
+          subject: "Ton accès au café — %{title}"
+      registrations:
+        invalid_submission: "Il manque quelque chose : ton prénom ou un mail valide."
+        confirm:
+          title: "Confirme ton inscription"
+          intro: "C'est bien toi ? Clique sur le bouton. Tant que tu n'as pas cliqué, rien n'est confirmé."
+          button: "Je confirme"
+          not_you_html: "Ce n'est pas toi ? Ferme simplement cette page. Voir la %{privacy}."
+          hand_over_intro: "Cette inscription a ouvert le café depuis un autre navigateur. Si tu confirmes ici, tu as ton propre accès sur ce navigateur, sous le prénom que tu tapes ci-dessous ; ce qui s'est dit depuis l'autre navigateur ne suit pas ton inscription. Pour garder tes échanges, confirme depuis le navigateur où tu es entré·e."
+        access:
+          title: "Ton inscription est confirmée"
+          intro: "Clique sur le bouton pour ouvrir la page du café sur ce navigateur."
+          button: "Ouvrir la page du café"
+        already_registered:
+          title: "Ce navigateur est déjà inscrit"
+          intro: "Ce navigateur a déjà une inscription à ce café\u00a0: on la garde. Pour en utiliser une autre, ouvre son lien sur un autre navigateur."
+          open: "Ouvrir la page du café"
+        not_me:
+          registered_hint: "Ordi partagé, ou une autre adresse\u00a0? Ce navigateur peut oublier cette inscription\u00a0:"
+          already_registered_hint: "Cette inscription est au nom de «\u00a0%{name}\u00a0». Ce n'est pas toi (ordi partagé)\u00a0? Ce navigateur peut l'oublier\u00a0:"
+          room_hint: "Tu es dans le café sous le nom «\u00a0%{name}\u00a0»."
+          forgotten: "C'est oublié\u00a0: ce navigateur n'a plus d'inscription à ce café. Inscris-toi, ou ouvre le lien de ta propre inscription."
+        pending:
+          title: "Regarde ta boîte mail"
+          trial_title: "Inscription pour essayer"
+          trial: "C'est un essai : aucun mail ne part."
+          sent: "Si ton inscription doit encore être confirmée, un mail t'attend : clique sur le lien de confirmation. Rien reçu dans dix minutes ? Jette un œil aux indésirables."
+          back: "Revenir au café"
+      registration_requests:
+        show:
+          title: "Confirme ton inscription"
+          covers: "Tu viens à :"
+          notify_next: "Tu as demandé qu'on te prévienne du prochain Café IA."
+          intro: "C'est bien toi ? Clique sur le bouton. Tant que tu n'as pas cliqué, rien n'est confirmé ; sans confirmation, la demande est effacée sous 30 jours."
+          marketing_consent_notice: "La case « Ok pour %{que_organization} me recontacte au sujet de ses activités. Je peux dire stop quand je veux. » a été cochée lors de cette demande. Choisis ci-dessous si %{organization} peut te recontacter ; tu pourras dire stop quand tu veux."
+          button: "Je confirme"
+          button_with_marketing: "Je confirme, et %{organization} peut me recontacter"
+          button_without_marketing: "Je confirme, sans être recontacté·e"
+          not_you_html: "Ce n'est pas toi ? Ferme simplement cette page. Voir la %{privacy}."
+        confirmed:
+          title: "C'est confirmé"
+          heading: "C'est confirmé, à très vite !"
+          keep_mail: "Garde le mail : son lien te ramène ici, et c'est d'ici que tu entres dans le café le jour J. On te renvoie le lien la veille. Prépare ton café."
+          open: "Ouvrir la page du café"
+          notify_next: "C'est noté : on te prévient par mail dès que la date du prochain Café IA est fixée."
+          marketing_consent_given_html: "C'est noté aussi : %{organization} pourra te recontacter au sujet de ses activités. Pour dire stop : %{withdraw}, ou écris à %{contact}."
+      marketing_consents:
+        show:
+          title: "Confirme ton accord"
+          heading: "Tu veux %{que_organization} te recontacte ?"
+          context_html: "À ton inscription à <strong>%{title}</strong>, la case <em>« J'accepte %{que_organization} me recontacte au sujet de ses activités »</em> a été cochée."
+          intent: "Si c'est bien ce que tu veux, clique sur le bouton. Tant que tu n'as pas cliqué, rien n'est enregistré."
+          not_you: "Tu n'as pas coché cette case, ou quelqu'un t'a inscrit·e à ta place ? Ferme cette page : aucun accord ne sera enregistré. Tu peux aussi dire non clairement :"
+          withdraw_html: "Un accord déjà donné se retire quand tu veux. Tu peux aussi écrire à %{contact}."
+        created:
+          title: "C'est noté"
+          heading: "Merci, c'est noté !"
+          mail: "Tu vas recevoir un mail de confirmation, avec un lien pour retirer ton accord quand tu veux."
+          contact_html: "Tu peux aussi écrire à %{contact} pour le retirer, et lire la %{privacy}."
+        declined:
+          title: "C'est noté"
+          heading: "C'est noté : pas de recontact"
+          body: "Personne ne te recontactera. Le lien que tu viens d'utiliser ne marche plus."
+          registration_html: "Ton inscription à <strong>%{title}</strong> tient toujours."
+        expired:
+          body: "Ce lien marche 14 jours après l'inscription, et celui-ci a dépassé le délai."
+          contact_html: "Tu veux quand même %{que_organization} te recontacte ? Écris à %{contact}."
+        already_consented:
+          title: "Déjà noté"
+          heading: "C'est déjà noté"
+          body_html: "Tu as déjà donné ton accord. Pour le retirer, utilise le lien de retrait reçu par mail, ou écris à %{contact}."
+        already_withdrawn:
+          title: "Accord retiré"
+          heading: "Tu as déjà retiré ton accord"
+          body: "Personne ne te recontactera. Ce vieux lien de confirmation ne marche plus."
+      marketing_withdrawals:
+        show:
+          title: "Retirer mon accord"
+          heading: "Tu ne veux plus %{que_organization} te recontacte ?"
+          context_html: "À ton inscription à <strong>%{title}</strong>, tu as accepté %{que_organization} te recontacte au sujet de ses activités. Tu peux retirer cet accord maintenant."
+          button: "Oui, je retire mon accord"
+          cancel: "Tu changes d'avis ? Ferme simplement cette page : tant que tu n'as pas cliqué, rien n'est enregistré."
+        created:
+          title: "Accord retiré"
+          heading: "C'est fait, ton accord est retiré"
+          body_html: "%{organization} ne te recontactera plus au sujet de ses activités. Le retrait est noté dans notre CRM, où ta fiche reste ; ton inscription au café ne change pas. Pour demander qu'on l'efface, écris à %{contact} (cf. %{privacy})."
+        already_withdrawn:
+          title: "Déjà retiré"
+          heading: "C'est déjà fait"
+          body: "Ce lien a déjà servi, ou ton accord a déjà été retiré autrement. Personne ne te recontactera."
+      webinars:
+        pre_live:
+          starts_in: "Ça commence dans"
+          ended: "Ce café est terminé. À la prochaine !"
+          live_registration_required: "Le café a commencé ! Inscris-toi pour entrer tout de suite ; déjà inscrit·e, le lien de ton mail te fait entrer."
+        registration_cta:
+          registered: "Tu es inscrit·e, %{name}. À très vite !"
+          heading: "Tu viens ?"
+          intro: "Laisse ton mail, on t'envoie le lien la veille."
+          name: "Ton prénom"
+          email: "Ton mail"
+          participation: "Tu viens comment ?"
+          spectator: "J'observe — j'ai le chat"
+          participant: "Je participe — caméra et micro"
+          privacy_notice_html: "Ton prénom et ton mail servent à ton inscription et aux messages sur ce café. %{privacy}"
+          submit: "Je viens"
+          closed: "Les inscriptions ne sont pas encore ouvertes. Repasse bientôt !"
+        participation_choice:
+          legend: "Tu viens comment ?"
+          waiting: "On t'ouvre la caméra et le micro dans un instant."
+          submit: "J'entre"
+          error: "Ton choix n'est pas passé. Réessaie, ou recharge la page."
+          recording_notice: "Si on te donne la parole, ton image et ta voix sont enregistrées et ta voix est transcrite"
+      invitations:
+        show:
+          title: "Rejoins le café"
+          intro_html: "On t'attend à <strong>%{title}</strong>."
+          participant: "Je participe — caméra et micro, tout de suite"
+          submit: "J'entre"
+          keep_link: "Un mail te demandera de confirmer ton adresse. En participant·e, tu reçois un lien perso : garde-le ; rouvrir cette page depuis le même navigateur t'y ramène."
+      speaker_links:
+        show:
+          title: "C'était toi ?"
+          intro: "Tu es intervenu·e au café sous le nom indiqué dans le mail ? Clique sur le bouton : tes interventions seront rattachées à ton inscription. Tant que tu n'as pas cliqué, rien n'est rattaché."
+          button: "Oui, c'était moi"
+          not_you: "Ce n'était pas toi ? Ferme simplement cette page."
+        linked:
+          title: "C'est noté"
+          body: "Ton intervention est rattachée à ton inscription."
+        invalid:
+          title: "Lien expiré"
+          body: "Ce lien a déjà servi, ou il ne marche plus."
+      co_organizer_mailer:
+        message_received:
+          subject: "Café IA — message d'une inscription confirmée"
+          webinars: "Café(s) :"
+          notify_next: "Prévenir du prochain Café IA"

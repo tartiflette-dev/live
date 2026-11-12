@@ -1,0 +1,67 @@
+<%# Scène (ou lien intervenant) d'un direct TERMINÉ.
+    Rendue par WebinarsController#render_room à la place de la salle : la
+    rejoindre ne servait qu'à en être déconnecté. Les
+    enregistrements ne sont listés que pour qui les gère
+    (`can_manage_recordings?`) ; « Reprendre le direct » est monté par
+    live_state_control.jsx (confirmation en deux temps de StateButton) pour
+    l'animation seulement — l'endpoint revérifie le rôle. %>
+<% content_for :title, "#{@webinar.title} — direct terminé" %>
+
+<main class="lk-page">
+  <%= render "webinars/room_header" %>
+
+  <section class="lk-exit-screen" data-testid="ended-stage" aria-labelledby="ended-title">
+    <h2 class="lk-exit-screen__title" id="ended-title">Direct terminé</h2>
+    <% if @webinar.ended_at %>
+      <p class="lk-exit-screen__lead">
+        Terminé le <time datetime="<%= @webinar.ended_at.iso8601 %>"><%= l @webinar.ended_at, format: :long %></time>.
+      </p>
+    <% end %>
+
+    <% if @composite_recordings %>
+      <h3 class="lk-exit-screen__subtitle">Enregistrements</h3>
+      <% done_muxes = @participant_muxes.count(&:done?) %>
+      <% pending_muxes = @participant_muxes.count { |mux| Recording::ACTIVE_STATUSES.include?(mux.status) } %>
+      <% if @composite_recordings.empty? && @participant_muxes.empty? %>
+        <p class="lk-exit-screen__lead" data-testid="ended-no-recording">Aucun enregistrement produit.</p>
+      <% else %>
+        <ul class="lk-exit-screen__list" data-testid="ended-recordings">
+          <% @composite_recordings.each do |recording| %>
+            <li data-recording-id="<%= recording.id %>">
+              Vue d'ensemble<% if recording.started_at %>, démarrée à <%= l recording.started_at, format: "%H:%M" %><% end %>
+              · <%= duree_enregistrement(recording) %>
+              · <%= { "done" => "prête", "failed" => "en échec" }.fetch(recording.status, "en cours") %>
+            </li>
+          <% end %>
+          <% if @participant_muxes.any? %>
+            <li data-testid="ended-participant-muxes">
+              Montages par personne : <%= done_muxes %> prêt<%= "s" if done_muxes > 1 %><% if pending_muxes.positive? %>, <%= pending_muxes %> en cours<% end %>
+            </li>
+          <% end %>
+        </ul>
+      <% end %>
+      <p>
+        <%= link_to "Voir les enregistrements", webinar_recordings_path(@webinar),
+                    class: "lk-exit-screen__button", data: { testid: "ended-recordings-link" } %>
+      </p>
+    <% elsif @can_resume %>
+      <p class="lk-exit-screen__lead">Les enregistrements sont accessibles à l'animateur propriétaire du webinaire.</p>
+    <% else %>
+      <p class="lk-exit-screen__lead">Merci pour votre participation.</p>
+    <% end %>
+
+    <% if @can_resume %>
+      <div class="lk-exit-screen__actions"
+           data-live-state-control
+           data-state="<%= @webinar.state %>"
+           data-state-url="/w/<%= @webinar.slug %>/state.json"
+           data-resume-url="<%= resume_webinar_path(@webinar) %>">
+        <noscript>Activez JavaScript pour reprendre le direct.</noscript>
+      </div>
+    <% end %>
+  </section>
+
+  <footer class="lk-page__pied">
+    <a class="lk-page__signature" href="<%= Brand.credit.url %>"><%= Brand.credit.label %><i></i></a>
+  </footer>
+</main>

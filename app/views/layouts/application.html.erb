@@ -1,0 +1,84 @@
+<%# Chrome v3 rendu par le thème (ThemeHelper : gem
+    undust-charte pour le thème undust ; app/views/theme/default/ sinon) —
+    pages ANIMATEUR : canvas pleine page, chrome flottant (Accueil en
+    profondeur >= 1, monogramme l. + Brand.product_name), fenêtre
+    radius.window avec fil d'ariane, bande basse système (langue, bascule
+    clair/sombre, déconnexion, signature du thème) + geste principal à
+    droite. Zéro SVG de chrome recopié : glyphes et monogramme viennent du
+    thème. Les pages salle utilisent layouts/room, la connexion
+    layouts/force. %>
+<!DOCTYPE html>
+<html lang="<%= I18n.locale %>">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+    <meta name="color-scheme" content="light dark">
+    <%= theme_color_meta_tag %>
+    <meta name="application-name" content="<%= Brand.product_name %>">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title><%= Brand.product_name %></title>
+    <%= render "theme/anti_fouc" %>
+    <%= theme_fonts_tag %>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= yield :head %>
+    <%= render "shared/favicon" %>
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
+    <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
+  </head>
+
+  <body class="chrome-canvas chrome" data-chrome="v3" style="padding-bottom: env(safe-area-inset-bottom);">
+    <%# Slot haut-droite de la gem : la page y pose ses liens d'outil
+        (`content_for :chrome_haut_droite`), ex. l'entrée animateur du
+        catalogue pour un anonyme. %>
+    <%= render("theme/chrome_haut",
+          accueil_href: (root_path unless current_page?(root_path)),
+          compte_href: root_path,
+          nom: Brand.product_name,
+          droite: content_for(:chrome_haut_droite)) %>
+
+    <main class="chrome-fenetre">
+      <%# Le fil d'ariane pointe vers la zone animateur (webinars_path) :
+          on ne l'affiche pas aux anonymes (pages publiques comme
+          /confidentialite, /w/:slug, /pack/:id) ni aux spectateurs
+          connectés, seulement aux animateurs — sauf sur l'index webinars
+          lui-même. %>
+      <% if animateur_signed_in? && !current_page?(root_path) && !current_page?(webinars_path) %>
+        <div class="fenetre-entete">
+          <nav class="fil-ariane" aria-label="<%= t("chrome.breadcrumb") %>">
+            <%= link_to t("chrome.webinars"), webinars_path, class: "fil-niveau" %>
+            <%= yield :breadcrumb %>
+            <span class="fil-sep" aria-hidden="true">›</span>
+            <a class="fil-niveau" aria-current="page" href="#"><%= content_for(:title).presence || Brand.product_name %></a>
+          </nav>
+        </div>
+      <% end %>
+      <% if notice %><div class="etat etat--succes" style="margin-bottom:var(--space-4)"><%= notice %></div><% end %>
+      <% if alert %><div class="etat etat--ecart" role="alert" style="margin-bottom:var(--space-4)"><%= alert %></div><% end %>
+      <%= yield %>
+    </main>
+
+    <%= render("theme/chrome_bas",
+          langue: chrome_langue,
+          deconnexion: (sign_out_path if current_user),
+          deconnexion_form: { data: { turbo: false } },
+          signature_href: Brand.credit.url,
+          centre: (if current_user
+                     liens = []
+                     if animateur_signed_in?
+                       liens << link_to(t("chrome.webinars"), webinars_path, "aria-current": ("page" if current_page?(webinars_path)))
+                       liens << link_to(t("chrome.packs"), packs_path, "aria-current": ("page" if controller_name == "packs"))
+                       questions = open_replay_questions_count
+                       liens << link_to(questions.positive? ? t("chrome.questions_pending", count: questions) : t("chrome.questions"),
+                                        questions_path, "aria-current": ("page" if controller_name == "questions"), data: { role: "chrome-questions" })
+                     end
+                     liens << link_to(t("chrome.replays"), replays_path, "aria-current": ("page" if controller_name == "replays"))
+                     tag.nav(safe_join(liens), "aria-label": Brand.product_name)
+                   end),
+          droite: (if animateur_signed_in?
+                     link_to(new_webinar_path, class: "chrome-geste") do
+                       safe_join([tag.span(t("chrome.new_webinar")), theme_glyphe(:ajouter)])
+                     end
+                   end)) %>
+  </body>
+</html>

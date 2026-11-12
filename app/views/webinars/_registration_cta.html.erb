@@ -1,0 +1,48 @@
+<section id="inscription" data-role="registration-cta">
+  <% if (registration = current_registration) %>
+    <p class="etat etat--info"><%= voice_t("webinars.registration_cta.registered", name: registration.name) %></p>
+    <%= render "registrations/not_me", webinar: webinar, hint: voice_t("registrations.not_me.registered_hint") %>
+  <% elsif webinar.state != "ended" && webinar.visibility_published? %>
+    <% if registration_privacy_url %>
+      <h2><%= voice_t("webinars.registration_cta.heading") %></h2>
+      <% if (intro = voice_t("webinars.registration_cta.intro")).present? %>
+        <p><%= intro %></p>
+      <% end %>
+      <% if @registration_error %>
+        <p class="etat etat--ecart" role="alert"><%= @registration_error %></p>
+      <% end %>
+      <%= form_with scope: :registration, url: public_webinar_registrations_path(webinar.slug), class: "live-form" do |form| %>
+        <div class="champ">
+          <%= form.label :name, voice_t("webinars.registration_cta.name") %>
+          <%= form.text_field :name, required: true, maxlength: 120, autocomplete: "name" %>
+        </div>
+        <div class="champ">
+          <%= form.label :email, voice_t("webinars.registration_cta.email") %>
+          <%= form.email_field :email, required: true, maxlength: 254, autocomplete: "email" %>
+        </div>
+        <%# Choix spectateur / participant : mêmes libellés que
+            l'entrée en salle (participation_choice). %>
+        <fieldset class="groupe" data-role="registration-participation">
+          <legend><%= voice_t("webinars.registration_cta.participation") %></legend>
+          <%= form.label :participation_spectator, class: "radio" do %>
+            <%= form.radio_button :participation, "spectator", checked: true %>
+            <span><%= voice_t("webinars.registration_cta.spectator") %></span>
+          <% end %>
+          <%= form.label :participation_participant, class: "radio" do %>
+            <%= form.radio_button :participation, "participant" %>
+            <span><%= voice_t("webinars.registration_cta.participant") %></span>
+          <% end %>
+        </fieldset>
+        <p><%= voice_t("webinars.registration_cta.privacy_notice_html",
+                       privacy: link_to("Politique de confidentialité", registration_privacy_url)) %></p>
+        <%= form.label :marketing_consent, class: "case", data: { role: "marketing-consent" } do %>
+          <%= form.check_box :marketing_consent %>
+          <span>J'accepte <%= organization_after("que") %> me recontacte au sujet de ses activités (je peux retirer ce consentement à tout moment).</span>
+        <% end %>
+        <%= form.submit voice_t("webinars.registration_cta.submit"), class: "btn" %>
+      <% end %>
+    <% else %>
+      <p><%= voice_t("webinars.registration_cta.closed") %></p>
+    <% end %>
+  <% end %>
+</section>

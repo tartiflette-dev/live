@@ -1,0 +1,31 @@
+/* Thème undust (gem undust-charte) : tokens DTCG + chrome des pages
+   animateur + trousse + composants + pages hors-session + connexion. Les
+   fichiers undust_* sont synchronisés depuis la gem par `theme:sync`
+   (gitignorés). Ne pas éditer les tokens ici : la source est la gem. */
+@import "./undust_charte.css";
+@import "./undust_chrome.css";
+@import "./undust_trousse.css";
+@import "./undust_composants.css";
+@import "./undust_pages.css";
+@import "./undust_connexion.css";
+
+@source "../../../vendor/undust_charte_views";
+
+@theme {
+  --font-sans: Aspekta, "Ponctuation FR", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+/* Pictogramme d'état info : glyphe SVG, jamais la lettre « i »
+   (lue comme une initiale une fois passée en capitales). Correctif
+   amont : charte composants.css content:"i". */
+.etat--info::before {
+  content: "";
+  --marqueur: url("icons/aide.svg");
+  width: 11px;
+  height: 11px;
+  flex: none;
+  background: currentColor;
+  -webkit-mask: var(--marqueur) center / contain no-repeat;
+  mask: var(--marqueur) center / contain no-repeat;
+}

@@ -1,0 +1,19 @@
+<%# Chrome haut par défaut (pack de thème), mêmes locals que celui de la
+    charte : accueil_href (nil = racine), accueil_libelle, compte_href, nom,
+    droite (HTML de l'app). %>
+<% accueil_href = local_assigns[:accueil_href] %>
+<div class="chrome-haut">
+  <% if accueil_href %>
+    <%= link_to accueil_href, class: "chrome-retour" do %>
+      <%= theme_glyphe(:accueil, classe: "glyphe glyphe-accueil") %>
+      <span class="libelle"><%= local_assigns[:accueil_libelle] || t("theme.chrome.home") %></span>
+    <% end %>
+  <% else %>
+    <span></span>
+  <% end %>
+  <%= link_to local_assigns.fetch(:compte_href, "/"), class: "chrome-compte" do %>
+    <%= theme_monogramme(classe: "chrome-mono") %>
+    <span class="chrome-nom"><%= local_assigns[:nom] || Brand.product_name %></span>
+  <% end %>
+  <div class="chrome-haut-droite"><%= local_assigns[:droite] %></div>
+</div>

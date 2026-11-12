@@ -1,0 +1,18 @@
+<% content_for :title, "Ta présence" %>
+<article class="carte-dossier" data-role="host-attendance-answered">
+  <% if @attendance.attending? %>
+    <h1>C'est noté : tu seras là</h1>
+  <% else %>
+    <h1>C'est noté : tu ne seras pas là</h1>
+    <% unless @attendance.owner? %>
+      <p>L'organisateur est prévenu ; il décide de la suite.</p>
+    <% end %>
+  <% end %>
+  <p>
+    <strong><%= @webinar.title %></strong>,
+    <time datetime="<%= @webinar.starts_at.iso8601 %>"><%= l @webinar.starts_at, format: :long %></time>
+    (heure de Paris).
+  </p>
+  <p class="etat etat--neutre">Tu peux encore changer d'avis :</p>
+  <%= render "host_attendances/buttons", attendance: @attendance, first: nil %>
+</article>

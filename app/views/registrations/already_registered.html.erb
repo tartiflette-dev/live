@@ -1,0 +1,16 @@
+<%# POST /r/:token alors que ce navigateur porte déjà une autre inscription
+    valide à ce webinaire : elle est gardée. Rien sur l'inscription du lien
+    ouvert (peut-être celui d'un tiers). « Ce n'est pas moi » fait oublier
+    l'inscription GARDÉE, qu'il nomme comme la page du webinaire : sans ce nom,
+    la victime d'un lien de tiers croirait oublier l'inscription du lien
+    (docs/moderation.md, « Ce n'est pas moi »). %>
+<% content_for :title, voice_t("registrations.already_registered.title") %>
+<article class="live-legal" data-role="registration-already-registered">
+  <h1><%= voice_t("registrations.already_registered.title") %></h1>
+  <p><%= voice_t("registrations.already_registered.intro") %></p>
+  <p><%= link_to voice_t("registrations.already_registered.open"), public_webinar_path(@webinar.slug), class: "btn" %></p>
+  <% if (kept = current_registration) %>
+    <%= render "registrations/not_me", webinar: @webinar,
+          hint: voice_t("registrations.not_me.already_registered_hint", name: kept.name) %>
+  <% end %>
+</article>

@@ -1,0 +1,6 @@
+<% content_for :title, voice_t("marketing_consents.expired.title") %>
+<article class="live-legal" data-role="marketing-consent-expired">
+  <h1><%= voice_t("marketing_consents.expired.heading") %></h1>
+  <p><%= voice_t("marketing_consents.expired.body") %></p>
+  <p><%= voice_t("marketing_consents.expired.contact_html", contact: mail_to(Brand.support_email)) %></p>
+</article>

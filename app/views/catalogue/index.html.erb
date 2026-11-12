@@ -1,0 +1,25 @@
+<%# Catalogue public. Trousse de composants du thème :
+    conteneur .live-liens (déjà utilisé show.html.erb comme wrapper de
+    cartes), .carte-dossier par événement (_carte), .vide pour l'état sans
+    événement. Zéro hex, zéro style inline. Ordre : en direct, en retard,
+    à venir — un inscrit qui arrive après l'heure trouve son direct. %>
+<% content_for :title, t("catalogue.title") %>
+<%# Entrée animateur : le monogramme du chrome renvoie à la racine, un
+    anonyme n'a pas d'autre chemin vers /sign_in. Lien texte du slot
+    haut-droite du chrome, réservé au catalogue : les pages publiques d'un
+    spectateur ou d'un intervenant invité n'appellent pas de connexion. %>
+<% content_for :chrome_haut_droite, link_to(t("chrome.login"), sign_in_path) unless user_signed_in? %>
+<h1><%= t("catalogue.title") %></h1>
+<p><%= link_to t("agenda.link"), agenda_path, class: "renvoi", data: { role: "catalogue-agenda" } %></p>
+
+<% if [ @live_webinars, @starting_late_webinars, @upcoming_webinars ].any?(&:any?) %>
+  <ul class="live-liens" data-role="catalogue">
+    <%= render partial: "carte", collection: @live_webinars, as: :webinar, locals: { status: :live } %>
+    <%= render partial: "carte", collection: @starting_late_webinars, as: :webinar, locals: { status: :starting_late } %>
+    <%= render partial: "carte", collection: @upcoming_webinars, as: :webinar, locals: { status: nil } %>
+  </ul>
+<% else %>
+  <div class="vide" data-role="catalogue-vide">
+    <span class="quoi"><%= t("catalogue.empty") %></span>
+  </div>
+<% end %>

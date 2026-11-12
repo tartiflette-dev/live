@@ -1,0 +1,8 @@
+<% content_for :title, "Lien invalide" %>
+<article class="live-legal" data-role="registration-request-invalid">
+  <h1>Lien invalide</h1>
+  <p>
+    Ce lien n'est pas (ou n'est plus) valide. Pour toute question, écrivez à
+    <%= mail_to(Brand.support_email) %>.
+  </p>
+</article>

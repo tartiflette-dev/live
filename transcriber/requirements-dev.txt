@@ -1,0 +1,7 @@
+# Dépendances de dev du transcripteur.
+# JAMAIS incluses dans l'image Docker (Dockerfile n'installe que requirements.txt).
+# Installation locale : `pip install -r requirements.txt -r requirements-dev.txt`
+# puis `pytest` (voir README.md).
+-r requirements.txt
+pytest==8.3.3
+pytest-asyncio==0.24.0

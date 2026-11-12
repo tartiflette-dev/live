@@ -1,0 +1,12 @@
+<%# Écran d'envoi groupé : composer. Rien ne part d'ici ; l'aperçu montre le
+    nombre de destinataires et demande la confirmation. %>
+<% content_for :title, "Envoi" %>
+<%= render "breadcrumb", webinar: @webinar %>
+<h1>Envoyer un message — <%= @webinar.title %></h1>
+
+<div class="live-actions">
+  <%= link_to "Journal des envois", webinar_announcements_path(@webinar), class: "btn btn--secondary" %>
+  <%= link_to "Régie", webinar_regie_path(@webinar), class: "btn btn--discret" %>
+</div>
+
+<%= render "fields", announcement: @announcement, webinar: @webinar, audiences: @audiences, counts: @counts %>

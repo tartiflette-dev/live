@@ -1,0 +1,56 @@
+<%# Régie du direct. Chrome undust des
+    pages animateur, AUCUNE vidéo : la page ne rejoint pas la salle
+    LiveKit. Le composant React (rooms/regie.jsx) se monte sur #regie ;
+    ses data-attrs sont des URL d'endpoints qui revérifient tous le rôle
+    d'animation — un attribut forgé n'obtient rien. Mise en page par moment
+    (avant, pendant, après le direct : rooms/regie_layout.mjs) : une colonne
+    sur un demi-écran de portable, deux au-delà (regie.css). %>
+<% content_for :title, "Régie" %>
+<% content_for :head do %>
+  <%= stylesheet_link_tag "regie", "data-turbo-track": "reload" %>
+  <%= stylesheet_link_tag "polls", "data-turbo-track": "reload" %>
+<% end %>
+<% content_for :breadcrumb do %>
+  <span class="fil-sep" aria-hidden="true">›</span>
+  <%= link_to @webinar.title, webinar_path(@webinar), class: "fil-niveau" %>
+<% end %>
+<h1>Régie — <%= @webinar.title %></h1>
+<% if (date_status = date_status_badge(@webinar)) %>
+  <p data-role="regie-date-status">Présence des animateurs : <%= date_status %></p>
+<% end %>
+<div class="live-actions">
+  <%= link_to "Envoyer un message aux inscrits", new_webinar_announcement_path(@webinar),
+              class: "btn btn--secondary", data: { role: "announcement-new" } %>
+</div>
+
+<div
+  id="regie"
+  class="regie"
+  data-slug="<%= @webinar.slug %>"
+  data-organization="<%= Brand.organization %>"
+  data-state="<%= @webinar.state %>"
+  data-live-since="<%= @webinar.started_at&.iso8601 %>"
+  data-ended-at="<%= @webinar.ended_at&.iso8601 %>"
+  data-status-url="<%= status_webinar_regie_path(@webinar) %>"
+  data-state-url="<%= public_webinar_state_path(slug: @webinar.slug) %>"
+  data-go-live-url="<%= go_live_webinar_path(@webinar) %>"
+  data-end-url="<%= end_webinar_path(@webinar) %>"
+  data-resume-url="<%= resume_webinar_path(@webinar) %>"
+  data-recording-status-url="<%= status_webinar_recordings_path(@webinar, format: :json) %>"
+  data-recording-start-url="<%= webinar_recordings_path(@webinar, format: :json) %>"
+  data-hand-raises-url="<%= webinar_hand_raises_path(@webinar) %>"
+  data-spotlight-url="<%= webinar_spotlight_path(@webinar) %>"
+  data-participants-url="<%= webinar_path(@webinar) %>/participants"
+  data-share-link-regeneration-url="<%= webinar_share_link_regeneration_path(@webinar) %>"
+  data-messages-url="<%= public_webinar_messages_path(slug: @webinar.slug) %>"
+  data-message-moderation-url="<%= webinar_path(@webinar) %>/messages"
+  data-polls-url="<%= webinar_polls_path(@webinar) %>"
+  data-qa-items-url="<%= webinar_qa_items_path(@webinar) %>"
+  data-stage-url="<%= @stage_url %>"
+  <% if @registrations_visible %>data-attendance-url="<%= attendance_webinar_registrations_path(@webinar) %>"
+    data-room-presence-url="<%= webinar_room_presence_path(@webinar) %>"<% end %>
+>
+  <noscript>
+    <p class="etat etat--ecart">La régie nécessite JavaScript.</p>
+  </noscript>
+</div>

@@ -1,0 +1,13 @@
+<%# Bascule clair/sombre par défaut (pack de thème) : un POST, la page se
+    recharge (ThemesController, Theme::Pack::ModeSwitch). Classe propre :
+    le nom de classe de l'interrupteur est réservé à celui de la gem undust-charte. %>
+<% dark = current_theme == "dark" %>
+<%= button_to theme_path(theme: dark ? "light" : "dark"),
+      class: "chrome-bouton chrome-bascule-mode",
+      form: { data: { turbo: false }.merge(local_assigns[:form_data] || {}) },
+      title: t(dark ? "theme.toggle.to_light" : "theme.toggle.to_dark"),
+      "aria-label": t("theme.toggle.label"),
+      "aria-pressed": dark.to_s,
+      "data-theme-toggle": true do %>
+  <%= theme_glyphe(dark ? :lune : :soleil) %>
+<% end %>

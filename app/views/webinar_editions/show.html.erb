@@ -1,0 +1,63 @@
+<%# Édition par le propriétaire (WebinarEditionsController). Date saisie en
+    heure de Paris (config.time_zone), comme à la création. Trousse charte :
+    .champ, .case, .btn, .etat. Une colonne : lisible au téléphone. %>
+<% noun = t("webinar_editions.nouns.#{@webinar.kind}") %>
+<% notified_count = @webinar.registrations_to_notify.count %>
+<% content_for :title, "Modifier — #{@webinar.title_in_database}" %>
+<h1>Modifier le <%= noun %></h1>
+<p><%= link_to "← Retour au webinaire", webinar_path(@webinar), class: "renvoi" %></p>
+
+<%= form_with model: @webinar, url: webinar_edition_path(@webinar), method: :patch, local: true,
+              class: "live-form", data: { role: "webinar-edition" } do |f| %>
+  <%= render "webinars/errors", webinar: @webinar %>
+
+  <div class="champ">
+    <%= f.label :title, "Titre" %>
+    <%= f.text_field :title, required: true %>
+  </div>
+
+  <div class="champ">
+    <%= f.label :starts_at, "Démarre le" %>
+    <%= f.datetime_local_field :starts_at, required: true %>
+    <span class="aide">Heure de Paris.</span>
+    <% if @webinar.visibility_published? %>
+      <span class="aide" data-role="reschedule-notice">
+        <%= t("webinar_editions.reschedule_notice", count: notified_count) %>
+      </span>
+    <% end %>
+  </div>
+
+  <div class="champ">
+    <%= f.label :description, "Description" %>
+    <%= f.text_area :description, rows: 6 %>
+    <span class="aide">Texte affiché sur la page publique : les sauts de ligne sont conservés, le HTML est filtré (balises sûres seulement).</span>
+  </div>
+
+  <div class="live-actions">
+    <%= f.submit "Enregistrer", class: "btn" %>
+  </div>
+<% end %>
+
+<%# Programme : son propre formulaire (WebinarProgramsController), pour ne pas
+    écraser un programme saisi entre-temps par un co-animateur. %>
+<section aria-labelledby="program-heading" data-role="webinar-edition-program">
+  <h2 id="program-heading">Programme</h2>
+  <%= render "webinar_programs/form", webinar: @webinar %>
+</section>
+
+<section aria-labelledby="unpublish-heading" data-role="webinar-unpublish">
+  <h2 id="unpublish-heading">Annuler le <%= noun %></h2>
+  <% if @webinar.visibility_published? %>
+    <%= form_with url: unpublish_webinar_edition_path(@webinar), method: :post, local: true, class: "live-form" do %>
+      <label class="case">
+        <%= check_box_tag :confirmation, "1", false, required: true, data: { role: "unpublish-confirmation" } %>
+        <span><%= t("webinar_editions.unpublish_confirmation", count: notified_count, noun: noun) %></span>
+      </label>
+      <div class="live-actions">
+        <%= submit_tag "Dépublier (annuler ce #{noun})", class: "btn btn--secondary", data: { role: "unpublish-submit" } %>
+      </div>
+    <% end %>
+  <% else %>
+    <p class="etat etat--info">Brouillon : ce <%= noun %> n’est ni au catalogue ni dans l’agenda.</p>
+  <% end %>
+</section>

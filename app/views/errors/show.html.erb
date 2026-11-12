@@ -1,0 +1,12 @@
+<%# Page d'erreur hors-session, registre Force (rendue par le thème). %>
+<% content_for :body_class, "erreur-hors-session" %>
+<% content_for :title, @code %>
+<%= theme_error_page(
+      code: @code,
+      quoi: t("errors.#{@code}.quoi", default: t("errors.500.quoi")),
+      geste: t("errors.#{@code}.geste", default: t("errors.500.geste")),
+      lien: root_path,
+      lien_libelle: t("errors.back"),
+      mention: Brand.host,
+      registre: :force
+    ) %>

@@ -1,0 +1,22 @@
+<p>Salut <%= @registration.name %>,</p>
+
+<p>
+  C'est noté : <%= Brand.organization %> peut te recontacter au sujet de ses activités,
+  suite à ton inscription à <strong><%= @webinar.title %></strong>.
+</p>
+
+<p>
+  Tu changes d'avis ? Un clic suffit, quand tu veux. Ce lien sera aussi
+  dans chaque mail qu'on t'enverra dans ce cadre :
+</p>
+
+<p>
+  <%= link_to "Je retire mon accord", @withdrawal_url %>
+</p>
+
+<p>
+  Tu peux aussi écrire à
+  <%= mail_to(Brand.support_email) %>.
+</p>
+
+<p>Merci, et à très vite au café,<br>— Le Café IA · <%= series_host %></p>

@@ -1,0 +1,13 @@
+<%# Sujet annoncé du webinaire (Webinar::Program), dans le rappel de la veille,
+    pour chaque tonalité. Rien sans sujet. Local : `webinar`. %>
+<% if webinar.topic %>
+  <p>
+    Au programme : <strong><%= webinar.topic %></strong>
+    <% if webinar.announced_speakers.any? %>
+      <br>Avec <%= webinar.announced_speakers.to_sentence(locale: :fr) %>
+    <% end %>
+  </p>
+  <% if webinar.topic_summary %>
+    <p><%= webinar.topic_summary %></p>
+  <% end %>
+<% end %>

@@ -1,0 +1,56 @@
+# Envois groupés (AnnouncementMailer, docs/announcements.md) : le pied
+# ajouté au texte de l'auteur, par cible, dans la tonalité de l'envoi
+# (Voice, repli clé par clé sur `default`) ; la page d'arrêt du
+# « préviens-moi » (NotifyNextStopsController).
+fr:
+  voices:
+    default:
+      announcement_mailer:
+        footer:
+          webinar_registrants: "Vous recevez ce message en tant qu'inscrit·e à « %{title} ». Votre accès personnel :"
+          marketing_list: "Vous recevez ce message car vous avez accepté %{que_organization} vous recontacte au sujet de ses activités. Vous pouvez retirer cet accord à tout moment, en un clic :"
+          notify_next: "Vous recevez ce message car vous avez demandé à être prévenu·e du prochain Café IA. Pour ne plus l'être, un clic suffit :"
+        link:
+          webinar_registrants: "Ouvrir la page du webinaire"
+          marketing_list: "Ne plus être recontacté·e"
+          notify_next: "Ne plus être prévenu·e"
+      notify_next_stops:
+        show:
+          title: "Ne plus être prévenu·e"
+          heading: "Ne plus être prévenu·e du prochain Café IA ?"
+          body: "Vous avez demandé à être prévenu·e du prochain Café IA. En cliquant sur le bouton, vous ne recevrez plus ces messages. Vos inscriptions aux cafés ne changent pas."
+          button: "Oui, ne plus me prévenir"
+          cancel: "Si vous changez d'avis, fermez simplement cette page : rien n'est enregistré tant que vous n'avez pas cliqué."
+        created:
+          title: "C'est noté"
+          heading: "Vous ne serez plus prévenu·e"
+          body: "Vous ne recevrez plus les messages « prochain Café IA ». Vos inscriptions aux cafés ne changent pas."
+        invalid:
+          title: "Lien sans effet"
+          heading: "Ce lien ne sert plus"
+          body: "C'est déjà fait, ou ce lien n'est pas valide. Pour toute question, écrivez à %{contact}."
+    cafe_ia:
+      announcement_mailer:
+        footer:
+          webinar_registrants: "Tu reçois ce mail parce que tu es inscrit·e à « %{title} ». Ton accès perso :"
+          marketing_list: "Tu reçois ce mail parce que tu as accepté %{que_organization} te recontacte au sujet de ses activités. Tu changes d'avis ? Un clic suffit :"
+          notify_next: "Tu reçois ce mail parce que tu as demandé à être prévenu·e du prochain Café IA. Tu ne veux plus ? Un clic suffit :"
+        link:
+          webinar_registrants: "Ouvrir la page du café"
+          marketing_list: "Je retire mon accord"
+          notify_next: "Ne plus être prévenu·e"
+      notify_next_stops:
+        show:
+          title: "Ne plus être prévenu·e"
+          heading: "Tu ne veux plus être prévenu·e du prochain café ?"
+          body: "Tu as demandé à être prévenu·e du prochain Café IA. Un clic sur le bouton et tu ne reçois plus ces mails. Tes inscriptions aux cafés ne changent pas."
+          button: "Oui, ne plus me prévenir"
+          cancel: "Tu changes d'avis ? Ferme simplement cette page : tant que tu n'as pas cliqué, rien n'est enregistré."
+        created:
+          title: "C'est noté"
+          heading: "C'est fait, on ne te préviendra plus"
+          body: "Tu ne recevras plus les mails « prochain Café IA ». Tes inscriptions aux cafés ne changent pas."
+        invalid:
+          title: "Lien sans effet"
+          heading: "Ce lien ne sert plus"
+          body: "C'est déjà fait, ou ce lien n'est pas valide. Une question ? Écris à %{contact}."

@@ -1,0 +1,61 @@
+<%# Toutes les questions, tous cafés confondus (QuestionsController) : direct
+    et replay, filtrables par café et par origine. Lecture seule ; chaque
+    question renvoie à la file de son café (régie) et, quand le replay
+    existe, à son instant dans le replay. %>
+<% content_for :title, "Questions" %>
+<h1>Questions</h1>
+
+<% if open_replay_questions_count.positive? %>
+  <p class="etat etat--info" data-role="questions-replay-pending">
+    <strong><%= open_replay_questions_count %></strong>
+    question<%= "s" if open_replay_questions_count > 1 %> posée<%= "s" if open_replay_questions_count > 1 %>
+    depuis le replay à traiter (dans la file du café).
+  </p>
+<% end %>
+
+<%= form_with url: questions_path, method: :get, class: "form-ligne", data: { role: "questions-filters", turbo: false } do %>
+  <div class="champ">
+    <%= label_tag :cafe, "Café" %>
+    <%= select_tag :cafe, options_for_select(@cafes.map { |cafe| [ "#{cafe.title} — #{l cafe.starts_at.to_date, format: :long}", cafe.slug ] }, @cafe&.slug),
+                   include_blank: "Tous les cafés" %>
+  </div>
+  <div class="champ">
+    <%= label_tag :origine, "Origine" %>
+    <%= select_tag :origine, options_for_select(QuestionsHelper::ORIGIN_LABELS.invert.to_a, @origin), include_blank: "Direct et replay" %>
+  </div>
+  <div class="live-actions">
+    <%= submit_tag "Filtrer", name: nil, class: "btn btn--secondary" %>
+  </div>
+<% end %>
+
+<% if @items.any? %>
+  <p data-role="questions-count">
+    <%= @items.size %> question<%= "s" if @items.size > 1 %><% if @items.size >= QuestionsController::LIMIT %> (les plus récentes)<% end %>.
+  </p>
+  <ol class="questions-liste" data-role="questions">
+    <% @items.each do |item| %>
+      <% origin = question_origin(item) %>
+      <% second = question_replay_second(item) %>
+      <li class="question-entree" data-role="question" data-origin="<%= origin %>" data-status="<%= item.status %>">
+        <p class="question-libelle"><%= item.label %></p>
+        <p class="question-meta">
+          <span class="etat etat--neutre"><%= QuestionsHelper::ORIGIN_LABELS[origin] %></span>
+          <span class="etat <%= item.open? ? "etat--info" : "etat--neutre" %>"><%= QuestionsHelper::STATUS_LABELS[item.status] %></span>
+          <%= item.authors.map { |author| author[:name] }.join(", ").presence || "—" %>
+          · <%= item.webinar.title %>
+          · <time datetime="<%= item.created_at.iso8601 %>"><%= l item.created_at, format: :short %></time>
+        </p>
+        <p class="live-actions">
+          <% if second %>
+            <%= link_to "Voir dans le replay à #{replay_timecode(second)}",
+                        public_webinar_replay_path(item.webinar.slug, instant: second.floor),
+                        class: "renvoi", data: { role: "question-replay-link" } %>
+          <% end %>
+          <%= link_to "Traiter dans la file du café", webinar_regie_path(item.webinar), class: "renvoi" %>
+        </p>
+      </li>
+    <% end %>
+  </ol>
+<% else %>
+  <p class="etat etat--neutre" data-role="questions-empty">Aucune question.</p>
+<% end %>

@@ -1,0 +1,8 @@
+<%# Rotation de langue — un seul libellé (langue courante), clic = suivante. %>
+<%= link_to locale_label(I18n.locale),
+            locale_switch_path(next_locale),
+            class: "chrome-bouton",
+            lang: I18n.locale.to_s,
+            data: { turbo: false },
+            title: t("chrome.language_next", lang: locale_label(next_locale)),
+            "aria-label": t("chrome.language_next", lang: locale_label(next_locale)) %>

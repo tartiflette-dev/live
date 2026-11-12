@@ -1,0 +1,14 @@
+<%# GET /rattacher?t= — page SANS EFFET (scanners de liens) : le
+    rattachement n'a lieu qu'au POST du button_to. Aucune donnée personnelle
+    affichée : ni nom, ni adresse. %>
+<% content_for :title, voice_t("speaker_links.show.title") %>
+<article class="live-legal" data-role="speaker-link">
+  <h1><%= voice_t("speaker_links.show.title") %></h1>
+  <p>
+    <strong><%= @webinar.title %></strong>,
+    <time datetime="<%= @webinar.starts_at.iso8601 %>"><%= voice_l @webinar.starts_at %></time>
+  </p>
+  <p><%= voice_t("speaker_links.show.intro") %></p>
+  <%= button_to voice_t("speaker_links.show.button"), confirm_speaker_link_path(t: params[:t]), method: :post, class: "btn" %>
+  <p><%= voice_t("speaker_links.show.not_you") %></p>
+</article>

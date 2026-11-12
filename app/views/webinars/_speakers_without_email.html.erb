@@ -1,0 +1,15 @@
+<%# Près de ce qui prévient les intervenants (« Valider et partager »,
+    publication) : qui ne recevra pas le mail, faute d'adresse. Le mail ne
+    part qu'aux intervenants actifs dont l'adresse est saisie
+    (EpisodeNotification). Local : `webinar`. %>
+<% count = webinar.speakers.unreachable_by_email.count %>
+<% if count.positive? %>
+  <div class="bandeau" data-role="speakers-without-email">
+    <span class="etat etat--alerte">Sans adresse</span>
+    <span>
+      <%= count %> intervenant<%= "s" if count > 1 %> sans adresse :
+      <%= count > 1 ? "ils ne seront pas prévenus" : "il ne sera pas prévenu" %>.
+    </span>
+    <a href="#intervenants" class="renvoi" data-role="speakers-without-email-link">Compléter les adresses</a>
+  </div>
+<% end %>

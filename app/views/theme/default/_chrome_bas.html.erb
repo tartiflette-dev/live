@@ -1,0 +1,26 @@
+<%# Bande basse par défaut (pack de thème), mêmes locals que celle de la
+    charte : langue, theme, deconnexion, deconnexion_methode,
+    deconnexion_form, theme_form_data, gauche / centre / droite. Le crédit
+    (« Propulsé par … ») et les liens viennent de Brand. %>
+<% langue = local_assigns[:langue] %>
+<% deconnexion = local_assigns[:deconnexion] %>
+<div class="chrome-bas">
+  <div class="chrome-bas-gauche">
+    <% if langue %>
+      <%= link_to langue.fetch(:libelle), langue.fetch(:href), class: "chrome-bouton chrome-langue",
+            title: langue[:titre], "aria-label": langue[:titre], data: langue.fetch(:data, {}) %>
+    <% end %>
+    <%= render "theme/default/theme_toggle", form_data: local_assigns[:theme_form_data] if local_assigns.fetch(:theme, true) %>
+    <% if deconnexion %>
+      <%= button_to deconnexion, method: local_assigns.fetch(:deconnexion_methode, :delete),
+            form: local_assigns.fetch(:deconnexion_form, {}), class: "chrome-bouton chrome-deconnexion",
+            title: t("theme.chrome.sign_out"), "aria-label": t("theme.chrome.sign_out") do %>
+        <%= theme_glyphe(:deconnexion) %>
+      <% end %>
+    <% end %>
+    <%= render "theme/default/credit" %>
+    <%= local_assigns[:gauche] %>
+  </div>
+  <div class="chrome-bas-centre"><%= local_assigns[:centre] %></div>
+  <div class="chrome-bas-droite"><%= local_assigns[:droite] %></div>
+</div>

@@ -1,0 +1,160 @@
+/* Navigation dans les replays : chapitres et repères du lecteur
+   (replays/_navigation, replay_navigation.js), recherche et thèmes
+   (/replays, vue « thèmes » de l'animation), relecture des chapitres
+   (webinar_chapters/show). Jetons de la charte seulement. */
+
+.replay-navigation {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0 0 var(--space-6);
+}
+.replay-navigation h2 {
+  margin: 0;
+}
+
+/* Repères : une barre de la largeur de la vidéo, un carré cliquable par
+   chapitre, posé à sa position (left en %, par le script). */
+.replay-reperes {
+  position: relative;
+  height: var(--control-height);
+  border-bottom: var(--border-width-hairline) solid var(--border);
+}
+.replay-repere {
+  position: absolute;
+  top: 50%;
+  width: var(--control-height);
+  height: var(--control-height);
+  margin: 0;
+  padding: 0;
+  transform: translate(-50%, -50%);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+/* Le repère visible est un trait fin ; la zone cliquable garde la hauteur
+   d'un contrôle (doigt). */
+.replay-repere::after {
+  content: "";
+  position: absolute;
+  inset: 25% auto 25% 50%;
+  width: var(--square-tick);
+  transform: translateX(-50%);
+  background: var(--accent);
+}
+
+.replay-chapitres {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.replay-chapitre {
+  display: grid;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-3);
+  border-left: var(--border-width-2) solid transparent;
+}
+.replay-chapitre[aria-current="true"] {
+  border-left-color: var(--accent);
+  background: var(--surface-raised);
+}
+.replay-chapitre-bouton {
+  display: flex;
+  gap: var(--space-3);
+  align-items: baseline;
+  width: 100%;
+  min-height: var(--control-height);
+  padding: 0;
+  text-align: left;
+  color: var(--text-primary);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+.replay-chapitre-instant,
+.recherche-instant {
+  flex: none;
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+}
+.replay-chapitre-titre {
+  overflow-wrap: anywhere;
+}
+.replay-chapitre-bouton:hover .replay-chapitre-titre {
+  color: var(--text-accent);
+}
+
+/* Thèmes : liens courts en ligne, à la ligne au téléphone. */
+.themes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.theme {
+  display: inline-block;
+  padding: 0 var(--space-2);
+  border: var(--border-width-hairline) solid var(--border);
+  border-radius: var(--radius-interactive);
+  color: var(--text-secondary);
+  overflow-wrap: anywhere;
+}
+
+/* Recherche : formulaire sur une ligne au poste, empilé au téléphone ;
+   résultats par café, chaque passage un lien vers l'instant. */
+.recherche-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: flex-end;
+  margin: var(--space-4) 0;
+}
+.recherche-form .champ {
+  flex: 1 1 16rem;
+}
+.recherche-resultats {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0 0 var(--space-6);
+}
+.recherche-passages {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.recherche-passage {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0 var(--space-3);
+  min-height: var(--control-height);
+  color: var(--text-primary);
+  text-decoration: none;
+}
+.recherche-genre {
+  font-size: 0.85em;
+  color: var(--text-secondary);
+}
+.recherche-extrait {
+  grid-column: 1 / -1;
+  overflow-wrap: anywhere;
+}
+/* Mot trouvé : gras souligné accent, sur le fond de la page (contraste du
+   texte courant, dans les deux thèmes ; un fond accent l'écrasait au
+   Pixel 4). */
+.recherche-extrait mark {
+  color: inherit;
+  background: transparent;
+  font-weight: 700;
+  text-decoration: underline var(--border-width-2) var(--accent);
+  text-underline-offset: 0.2em;
+}
+
+/* Relecture des chapitres : l'instant tient en peu de place. */
+.chapitre-instant input {
+  max-width: 8rem;
+}

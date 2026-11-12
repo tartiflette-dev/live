@@ -1,0 +1,7 @@
+<%# Bande basse système de l'écran de connexion : langue, thème, signature.
+    Zéro chrome de session. %>
+<footer class="connexion-bas">
+  <%= render "shared/locale_rotate" %>
+  <%= render "theme/theme_toggle" %>
+  <a class="chrome-signature" href="<%= Brand.credit.url %>"><%= Brand.credit.label %><i></i></a>
+</footer>

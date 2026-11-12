@@ -1,0 +1,42 @@
+<%# Agenda public — dates des webinaires publiés, regroupées par mois, et
+    chemin vers le flux d'agenda personnel (lien envoyé à la confirmation
+    d'une inscription, CalendarSubscription). Trousse de composants du thème : .chrono
+    (objets de temps : .quand = horodatage, .quoi = l'événement), .vide quand
+    rien n'est prévu. Zéro hex, zéro style inline. %>
+<% content_for :title, t("agenda.title") %>
+<h1><%= t("agenda.title") %></h1>
+<p><%= t("agenda.intro", organization: Brand.organization) %></p>
+
+<section id="<%= AgendaController::REGISTER_ANCHOR %>" aria-labelledby="agenda-inscription-titre" data-role="agenda-inscription">
+  <h2 id="agenda-inscription-titre"><%= t("agenda.register.title") %></h2>
+  <p><%= t("agenda.register.body") %></p>
+</section>
+
+<% if @upcoming_by_month.any? %>
+  <% @upcoming_by_month.each do |month, webinars| %>
+    <% month_id = "agenda-#{month.strftime("%Y-%m")}" %>
+    <section aria-labelledby="<%= month_id %>" data-role="agenda-mois">
+      <h2 id="<%= month_id %>"><%= l(month, format: :agenda_month).upcase_first %></h2>
+      <ol class="chrono">
+        <%= render partial: "date", collection: webinars, as: :webinar, locals: { date_format: :agenda } %>
+      </ol>
+    </section>
+  <% end %>
+<% else %>
+  <div class="vide" data-role="agenda-vide">
+    <span class="quoi"><%= t("agenda.empty") %></span>
+    <span class="geste"><%= t("agenda.empty_hint") %></span>
+  </div>
+<% end %>
+
+<% if @past.any? %>
+  <section aria-labelledby="agenda-passes" data-role="agenda-passes">
+    <h2 id="agenda-passes"><%= t("agenda.past.title") %></h2>
+    <details>
+      <summary><%= t("agenda.past.show", count: @past.size) %></summary>
+      <ol class="chrono">
+        <%= render partial: "date", collection: @past, as: :webinar, locals: { date_format: :agenda_past } %>
+      </ol>
+    </details>
+  </section>
+<% end %>

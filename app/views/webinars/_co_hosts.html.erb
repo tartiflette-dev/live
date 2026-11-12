@@ -1,0 +1,124 @@
+<%# Co-animateurs : un email et « Ajouter » visibles, la liste avec
+    « Retirer », la reprise du café précédent ; le lien animateur (usages,
+    expiration, Pocket ID) replié sous « Avancé ». Locaux : `webinar`,
+    `webinar_hosts`, `host_invitations`, `carryover_hosts`. %>
+<section aria-labelledby="co-animateurs-heading" id="co-animateurs" data-role="co-animateurs">
+  <h2 id="co-animateurs-heading">Co-animateurs</h2>
+  <p>
+    Un co-animateur anime ce café avec toi : scène, direct, mains levées. Il ne voit NI les inscrits,
+    NI les enregistrements, NI les transcripts, NI les intervenants.
+  </p>
+
+  <%= form_with url: webinar_hosts_path(webinar), scope: :webinar_host, local: true, class: "form-ligne form-ligne--ajout",
+                data: { role: "co-animateur-form" } do |f| %>
+    <div class="champ">
+      <%= f.label :email, "Email du co-animateur" %>
+      <%= f.email_field :email, required: true, maxlength: 254, placeholder: "ex. jean@partenaire.co" %>
+    </div>
+    <%= f.submit "Ajouter un co-animateur", class: "btn" %>
+  <% end %>
+
+  <% if webinar_hosts.empty? %>
+    <p class="vide">Aucun co-animateur invité.</p>
+  <% else %>
+    <ul class="live-liens" data-role="co-animateur-list">
+      <% webinar_hosts.each do |host| %>
+        <li class="live-lien live-lien--ligne" data-webinar-host-id="<%= host.id %>">
+          <strong><%= host.email %></strong>
+          <%= button_to "Retirer", webinar_host_path(webinar, host),
+                        method: :delete,
+                        class: "btn btn--secondary",
+                        data: { role: "co-animateur-remove" } %>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
+
+  <%# Reconduction : suggestion pré-cochée, rien
+      n'est créé sans le clic. Tous les candidats viennent du même
+      webinaire précédent (Webinar#carryover_hosts). %>
+  <% if carryover_hosts.any? %>
+    <%= form_with url: carry_over_webinar_hosts_path(webinar), local: true, class: "live-form", data: { role: "co-animateurs-carryover" } do |f| %>
+      <fieldset class="groupe">
+        <legend>Café précédent : <%= carryover_hosts.first.webinar.title %></legend>
+        <% carryover_hosts.each do |host| %>
+          <label class="case">
+            <%= check_box_tag "emails[]", host.email, true, id: "carryover-host-#{host.id}" %>
+            <%= host.email %>
+          </label>
+        <% end %>
+      </fieldset>
+      <%= f.submit "Reprendre les co-animateurs du café précédent", class: "btn btn--secondary" %>
+    <% end %>
+  <% end %>
+
+  <%# Liens animateur : comme les autres liens
+      secrets de la page, affichés masqués ; l'URL complète ne vit que
+      dans le bouton « Copier le lien ». Le lien d'inscription Pocket ID
+      n'est jamais affiché. %>
+  <details class="repli" data-role="host-invitations-advanced">
+    <summary>Avancé : lien animateur</summary>
+    <section class="live-lien" aria-labelledby="host-invitations-heading" data-role="host-invitations">
+      <h3 id="host-invitations-heading">Lien animateur</h3>
+      <p>
+        À partager avec les co-animateurs : chacun se connecte avec son compte
+        <%= Brand.organization %> et devient co-animateur de ce café. Usages limités, expiration,
+        révocable à tout moment.
+      </p>
+      <%= form_with url: webinar_host_invitations_path(webinar), scope: :host_invitation, local: true, class: "live-form", data: { role: "host-invitation-form" } do |f| %>
+        <div class="champ">
+          <%= f.label :max_uses, "Nombre d’usages" %>
+          <%= f.number_field :max_uses, value: HostInvitation::DEFAULT_MAX_USES, required: true, step: 1,
+                                        min: HostInvitation::MAX_USES_RANGE.min, max: HostInvitation::MAX_USES_RANGE.max %>
+        </div>
+        <div class="champ">
+          <%= f.label :expires_at, "Expire le" %>
+          <%= f.datetime_local_field :expires_at, required: true,
+                                                  value: HostInvitation.default_expiry_for(webinar).strftime("%Y-%m-%dT%H:%M"),
+                                                  max: HostInvitation::MAX_LIFETIME.from_now.strftime("%Y-%m-%dT%H:%M") %>
+        </div>
+        <div class="champ">
+          <%= f.label :signup_url do %>Lien d’inscription Pocket ID <span class="facultatif">facultatif</span><% end %>
+          <%= f.url_field :signup_url, maxlength: 2048, placeholder: "https://id.example.org/…" %>
+          <span class="aide">Pour un co-animateur sans compte <%= Brand.organization %> : voir « Détails techniques », en bas de page.</span>
+        </div>
+        <%= f.submit "Créer un lien animateur", class: "btn", data: { role: "host-invitation-create" } %>
+      <% end %>
+
+      <% if host_invitations.any? %>
+        <ul class="live-liens" data-role="host-invitation-list">
+          <% host_invitations.each do |invitation| %>
+            <% status = invitation.status %>
+            <li class="live-lien" data-host-invitation-id="<%= invitation.id %>" data-status="<%= status %>">
+              <% if status == :active %>
+                <% invitation_link = host_invitation_url(t: invitation.token) %>
+                <input type="text" readonly value="<%= masked_token_link(invitation_link) %>" data-role="host-invitation-url" aria-label="Lien animateur">
+                <p data-role="host-invitation-usage">
+                  <%= invitation.remaining_uses %> usage<%= "s" if invitation.remaining_uses > 1 %>
+                  restant<%= "s" if invitation.remaining_uses > 1 %> sur <%= invitation.max_uses %>
+                  &middot; expire le <%= l invitation.expires_at, format: :jour_heure %>
+                  <% if invitation.signup_url.present? %>&middot; inscription Pocket ID jointe<% end %>
+                </p>
+                <div class="live-actions live-actions--menu">
+                  <%= copy_link_button invitation_link, status_id: "copie-lien-animateur-#{invitation.id}", role: "host-invitation-copy" %>
+                  <%= render layout: "webinars/actions_menu",
+                             locals: { label: "Autres actions : lien animateur", role: "host-invitation-menu" } do %>
+                    <%= button_to "Révoquer", revoke_webinar_host_invitation_path(webinar, invitation), class: "btn btn--secondary",
+                                  form: { data: { confirm: "Révoquer ce lien animateur ? Il ne pourra plus servir." } },
+                                  data: { role: "host-invitation-revoke" } %>
+                  <% end %>
+                  <%= copy_link_status "copie-lien-animateur-#{invitation.id}" %>
+                </div>
+              <% else %>
+                <p class="etat etat--neutre" data-role="host-invitation-usage">
+                  Lien <%= host_invitation_status_label(status) %>
+                  &middot; <%= invitation.uses_count %> usage<%= "s" if invitation.uses_count > 1 %> sur <%= invitation.max_uses %>
+                </p>
+              <% end %>
+            </li>
+          <% end %>
+        </ul>
+      <% end %>
+    </section>
+  </details>
+</section>

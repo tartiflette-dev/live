@@ -1,0 +1,55 @@
+.kamal/secrets*
+!/.kamal/secrets-common
+.env*
+!.env.example
+log/
+tmp/
+storage/
+
+# Ignore key files for decrypting credentials and more.
+/config/*.key
+
+
+/app/assets/builds/*
+!/app/assets/builds/.keep
+
+# Assets précompilés (assets:precompile, image Docker uniquement). Jamais
+# versionnés : en test, Propshaft servirait ce manifeste figé au lieu du code
+# courant, et les tests système tourneraient sur un JS/CSS périmé.
+/public/assets
+
+/node_modules
+
+# Charte — fichiers synchronisés par la gem de charte à chaque boot (sa
+# source fait foi). Jamais committés.
+/app/assets/tailwind/undust_*.css
+/app/assets/icons/
+/vendor/undust_charte_views/
+# Feuille d'entrée du thème choisi, écrite par `theme:sync` (lib/tasks/theme.rake).
+/app/assets/tailwind/theme.css
+
+# Configurations RENDUES au déploiement (elles portent des secrets) — jamais
+# committées.
+# Copies de sauvegarde comprises (`.bak`, `.bak-<horodatage>`).
+*.runtime.yaml
+*.runtime.conf
+*.runtime.yaml.*
+*.runtime.conf.*
+
+# SHA git posé à l'installation du transcripteur, quand sa copie n'est pas un dépôt git.
+/transcriber/.git-revision
+
+# Gems installées dans l'arbre par la CI (cache vendor/bundle) : hors git,
+# donc hors de la détection automatique des sources de Tailwind v4.
+/vendor/bundle
+
+# Certificats et clés privées : jamais committés, ni leurs sauvegardes
+# (`key.pem.bak-<horodatage>`) ni leurs écritures en cours (`.key.pem.new`).
+*.pem
+*.key
+*.pem.*
+*.key.*
+
+# Python compilé
+__pycache__/
+*.pyc

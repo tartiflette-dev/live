@@ -1,0 +1,5 @@
+<% content_for :title, voice_t("marketing_withdrawals.created.title") %>
+<article class="live-legal" data-role="marketing-withdrawal-created">
+  <h1><%= voice_t("marketing_withdrawals.created.heading") %></h1>
+  <p><%= voice_t("marketing_withdrawals.created.body_html", contact: mail_to(Brand.support_email), privacy: link_to(voice_t("privacy_link"), confidentialite_path)) %></p>
+</article>

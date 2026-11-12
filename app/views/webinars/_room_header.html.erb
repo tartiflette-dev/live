@@ -1,0 +1,12 @@
+<%# En-tête des pages salle (room.html.erb, ended.html.erb) : monogramme l.
+    + titre, ligne « date · salle ». %>
+<header class="lk-page__header">
+  <div class="lk-page__marque">
+    <%= theme_monogramme(classe: "lk-page__mono") %>
+    <h1 class="lk-page__title"><%= @webinar.title %></h1>
+  </div>
+  <p class="lk-page__meta">
+    <time datetime="<%= @webinar.starts_at.iso8601 %>"><%= l @webinar.starts_at, format: :long %></time>
+    · salle <code><%= @webinar.room_name %></code>
+  </p>
+</header>

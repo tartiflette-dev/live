@@ -1,0 +1,31 @@
+<p>Bonjour <%= @speaker.name %>,</p>
+
+<p>
+  Les fichiers du direct <strong><%= @webinar.title %></strong> du <%= @date %>
+  sont déposés dans Nextcloud.
+</p>
+
+<% if @duration %>
+  <p>Durée du direct : <%= @duration %></p>
+<% end %>
+
+<p>
+  Dossier : <%= @publication.folder %><br>
+  Lien : <%= link_to @publication.folder_url, @publication.folder_url %>
+</p>
+<p>
+  Le lien s'ouvre pour qui a déjà accès au dossier <%= @publication.folder.split("/").first %>.
+  Avec un partage fédéré, le dossier apparaît aussi dans votre propre Nextcloud.
+</p>
+
+<p>Fichiers (<%= @files.size %>) :</p>
+<ul>
+  <% @files.each do |file| %>
+    <li><%= file["name"] %> (<%= number_to_human_size(file["size"]) %>)</li>
+  <% end %>
+</ul>
+<% if @in_review %>
+  <p><%= EpisodePublication::IN_REVIEW_NOTICE %></p>
+<% end %>
+
+<p>— <%= Brand.host %></p>

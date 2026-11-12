@@ -1,0 +1,39 @@
+<p>Bonjour,</p>
+
+<% if @registrations.any? %>
+  <p>Merci pour votre inscription :</p>
+  <ul>
+    <% @registrations.each do |registration| %>
+      <li><strong><%= registration.webinar.title %></strong>, le <%= l registration.webinar.starts_at, format: :long %></li>
+    <% end %>
+  </ul>
+<% end %>
+<% if @registration_request.notify_next? %>
+  <p>Vous avez demandé à être prévenu·e du prochain Café IA.</p>
+<% end %>
+
+<% if @registration_request.marketing_choice_offered? %>
+  <p>
+    La case « Ok pour <%= organization_after("que") %> me recontacte au sujet de ses activités. Je peux dire stop quand je veux. » a été
+    cochée lors de cette demande. Sur la page de confirmation, vous choisirez : « Confirmer et accepter d'être
+    recontacté·e » ou « Confirmer sans être recontacté·e ». Pour dire stop plus tard, à tout moment : le lien
+    « ne plus être recontacté·e » de cette page, ou <%= mail_to(Brand.support_email) %>.
+  </p>
+<% end %>
+
+<p>Confirmez votre demande en un clic :</p>
+
+<p><%= link_to "Confirmer mon inscription", @confirm_url %></p>
+
+<p>
+  Ou copiez ce lien dans votre navigateur :<br>
+  <%= @confirm_url %>
+</p>
+
+<% if @registrations.any? %>
+  <p>Gardez ce message : le même lien vous permettra de rejoindre le direct.</p>
+<% end %>
+
+<p>Si vous n'êtes pas à l'origine de cette demande, ignorez ce message : sans confirmation, elle est effacée sous 30 jours.</p>
+
+<p>— <%= Brand.host %></p>

@@ -1,0 +1,34 @@
+<%# Navigation dans le replay (replay_navigation.js) : instant de départ
+    demandé par un lien de recherche (`data-start`), repères des chapitres
+    sur une barre (dessinés par le script, positions en % de `data-duration`)
+    et liste cliquable des chapitres validés, chacun avec ses thèmes.
+    Toujours rendu : l'instant de départ vaut aussi sans chapitre.
+    Locaux : `replay`, `chapters`, `start_offset` (secondes ou nil). %>
+<nav class="replay-navigation" data-replay-navigation data-duration="<%= replay.duration.to_f.round(3) %>"
+     <% if start_offset %>data-start="<%= start_offset.round(3) %>"<% end %>
+     aria-labelledby="replay-chapters-title" data-role="replay-navigation">
+  <% if chapters.any? %>
+    <h2 id="replay-chapters-title">Chapitres</h2>
+    <div class="replay-reperes" data-replay-markers hidden></div>
+    <ol class="replay-chapitres" data-role="replay-chapters">
+      <% chapters.each do |chapter| %>
+        <% offset = replay.offset_of(chapter.starts_at) %>
+        <li class="replay-chapitre" data-chapter-offset="<%= offset.round(3) %>" data-role="replay-chapter">
+          <button type="button" class="replay-chapitre-bouton" data-seek="<%= offset.round(3) %>">
+            <span class="replay-chapitre-instant"><%= replay_timecode(offset) %></span>
+            <span class="replay-chapitre-titre"><%= chapter.title %></span>
+          </button>
+          <% if chapter.themes.any? %>
+            <ul class="themes" aria-label="Thèmes">
+              <% chapter.themes.each do |theme| %>
+                <li><%= link_to theme, replays_path(q: theme), class: "theme" %></li>
+              <% end %>
+            </ul>
+          <% end %>
+        </li>
+      <% end %>
+    </ol>
+  <% else %>
+    <h2 id="replay-chapters-title" class="sr-only">Navigation</h2>
+  <% end %>
+</nav>

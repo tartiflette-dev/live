@@ -1,0 +1,41 @@
+<%# Écran de connexion : la carte, UN geste (le
+    bouton OIDC = seul CTA, aplat accent), bande basse système. Le bouton
+    POSTe vers la request phase OmniAuth (omniauth-rails_csrf_protection
+    exige POST) et n'apparaît que si le provider est monté. Hors production,
+    la connexion de développement (lib/dev_login.rb) ajoute son formulaire, pour les
+    seules origines admises. Layout force : zéro chrome de session. %>
+<% content_for :title, t("chrome.login") %>
+<div class="connexion-canvas">
+  <main class="connexion-scene">
+    <div class="connexion-carte auth-card">
+      <div class="connexion-marque">
+        <%= theme_monogramme(classe: "connexion-mono") %>
+        <span class="connexion-produit"><%= Brand.product_name %></span>
+      </div>
+      <p class="connexion-acces"><%= t("chrome.login_hint") %></p>
+      <% if flash[:alert] %><p class="etat etat--ecart" role="alert"><%= flash[:alert] %></p><% end %>
+      <% if flash[:notice] %><p class="etat etat--succes"><%= flash[:notice] %></p><% end %>
+      <% if Rails.configuration.x.oidc_login %>
+        <%= button_to t("chrome.login_pocket"), "/auth/pocket_id",
+                      method: :post,
+                      class: "connexion-cta",
+                      form: { class: "connexion-form", data: { turbo: false } } %>
+      <% end %>
+      <% if DevLogin.available_to?(request.env) %>
+        <%= form_with url: dev_login_path, class: "connexion-form", data: { turbo: false, role: "dev-login" } do |f| %>
+          <div class="champ">
+            <%= f.label :email, t("chrome.login_dev_email") %>
+            <%= f.email_field :email, value: "host@example.test", required: true, autocomplete: "email" %>
+            <p class="aide"><%= t("chrome.login_dev_hint") %></p>
+          </div>
+          <%= f.submit t("chrome.login_dev"), class: "connexion-cta" %>
+        <% end %>
+      <% elsif DevLogin.enabled? %>
+        <p class="etat etat--ecart" data-role="dev-login-local-only"><%= t("chrome.login_dev_local_only") %></p>
+      <% elsif !Rails.configuration.x.oidc_login %>
+        <p class="etat etat--ecart"><%= t("chrome.login_unavailable") %></p>
+      <% end %>
+    </div>
+  </main>
+  <%= render "shared/connexion_bas" %>
+</div>

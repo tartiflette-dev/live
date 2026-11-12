@@ -1,0 +1,15 @@
+# Thème Tartiflette — valeurs de marque de la distribution tartiflette-dev/live.
+# Chargé par BRAND_THEME=tartiflette ; le contrat d'un pack est décrit dans docs/theme-pack.md.
+product_name: "Tartiflette Live"
+credit:
+  label: "Propulsé par Tartiflette"
+  url: "https://tartiflette.dev"
+# `links` : liens affichés à côté du crédit (Brand.links), http(s) seulement.
+links:
+  site: "https://tartiflette.dev"
+  linkedin: "https://www.linkedin.com/company/tartiflette-dev/"
+  github: "https://github.com/tartiflette-dev"
+# Couleur de fond (<meta name="theme-color">).
+theme_color: "#17130f"
+# Sans cookie, l'anti-FOUC pose le mode sombre, l'identité du site.
+default_mode: "dark"

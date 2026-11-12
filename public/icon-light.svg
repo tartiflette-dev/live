@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Monogramme l. — cadre de tolérancement" data-env="prod" data-tokens="#1C1E2A=--gray-900; #1C1E2A=--gray-900; #FB5102=--orange-500">
+<rect x="32" y="32" width="448" height="448" fill="none" stroke="#1C1E2A" stroke-width="36"/>
+<path d="M159.6 126.5V332.2C159.6 379.0 188.8 385.5 219.4 385.5H260.4V342.3H236.3C223.3 342.3 219.7 336.9 219.7 326.5V126.5Z" fill="#1C1E2A"/>
+<rect x="288.4" y="283.4" width="64" height="64" fill="#FB5102"/>
+</svg>

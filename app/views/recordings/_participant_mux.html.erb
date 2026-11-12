@@ -1,0 +1,28 @@
+<%# Ligne « Image + son (montage) » d'une personne. `mux` est un
+    Recording synthétique `kind='participant'` (ou nil quand aucun job n'a
+    encore tourné pour cette personne). Une personne peut en avoir
+    plusieurs, un par lot de pistes (répétition, séance, reprise du
+    direct) : `several` les date pour les distinguer. %>
+<div class="bloc-pistes-montage" data-role="participant-mux">
+  <strong>Image + son (montage<% if several && (debut = mux.sources_started_at) %>, à partir de <%= l(debut, format: :short) %><% end %>) :</strong>
+  <% if mux.nil? %>
+    <span>pas encore disponible — produit automatiquement à la fin du direct</span>
+  <% elsif mux.downloadable? %>
+    <%= link_to "Télécharger",
+                download_webinar_recording_path(@webinar, mux),
+                class: "renvoi",
+                data: { role: "participant-mux-download" } %>
+    <% size = mux.size_on_disk %>
+    <span><%= { "microphone" => "son seul", "camera" => "image seule" }.fetch(mux.track_source, "vidéo + son") %></span>
+    <span>· <%= mux.extension %> · <%= size ? number_to_human_size(size) : "—" %></span>
+    <% if mux.caveat? %>
+      <span class="etat etat--ecart">Montage avec réserve</span>
+      <span>— <%= mux.error_message %></span>
+    <% end %>
+  <% elsif mux.failed? %>
+    <span class="etat etat--ecart">Échec montage</span>
+    <% if mux.error_message.present? %><span>— <%= mux.error_message %></span><% end %>
+  <% else %>
+    <span>statut : <%= mux.status %></span>
+  <% end %>
+</div>

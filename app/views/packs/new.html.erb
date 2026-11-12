@@ -1,0 +1,33 @@
+<%# Formulaire création pack. host_sub NON exposé
+    (posé par le controller depuis current_user.oidc_sub). %>
+<% content_for :title, t("chrome.new_pack") %>
+<h1><%= t("chrome.new_pack") %></h1>
+
+<%= form_with model: @pack, local: true, class: "live-form" do |f| %>
+  <% if @pack.errors.any? %>
+    <div class="etat etat--ecart" role="alert">
+      <%= pluralize(@pack.errors.count, "erreur") %> :
+      <ul>
+        <% @pack.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="champ">
+    <%= f.label :name, "Nom" %>
+    <%= f.text_field :name, required: true, maxlength: 100 %>
+  </div>
+
+  <div class="champ">
+    <%= f.label :price_cents, "Prix (centimes)" %>
+    <%= f.number_field :price_cents, min: 0, step: 1, value: @pack.price_cents || 0 %>
+    <span class="aide">0 = gratuit. Paiement non encaissé (accès débloqué à la main).</span>
+  </div>
+
+  <div class="live-actions">
+    <%= f.submit "Créer le pack", class: "btn" %>
+    <%= link_to "Annuler", packs_path, class: "btn btn--secondary" %>
+  </div>
+<% end %>

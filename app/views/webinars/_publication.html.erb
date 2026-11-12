@@ -1,0 +1,116 @@
+<%# Publication de l'épisode dans Nextcloud :
+    état du dernier dépôt, bouton pour le lancer ou le relancer, vidéos en
+    relecture et bouton « Valider et partager », avec l'alerte des
+    intervenants sans adresse juste au-dessus du geste qui les prévient.
+    Owner / project_host seulement (can_manage_recordings?). %>
+<section aria-labelledby="publication-heading" data-role="publication" id="publication">
+  <h2 id="publication-heading">Fichiers du direct</h2>
+
+  <% if !configured %>
+    <p class="vide" data-role="publication-state">Non configurée pour cette série : rien n'est déposé.</p>
+  <% elsif publication.nil? %>
+    <p data-role="publication-state">
+      Pas encore publiée. <%= publication_hold_message(webinar, hold) %>
+    </p>
+  <% else %>
+    <p data-role="publication-state">
+      <% if publication.queued? %>
+        <span class="etat etat--en-cours">En attente</span> — dépôt demandé, il démarre dans un instant.
+      <% elsif publication.publishing? %>
+        <span class="etat etat--en-cours">En cours</span> — dépôt démarré à <%= l(publication.started_at, format: :heure) %>.
+      <% elsif publication.published? %>
+        <% shared_count = publication.files_in("shared").size %>
+        <span class="etat etat--succes">Publiée</span> le <%= l(publication.published_at, format: :date_heure) %> :
+        <%= shared_count %> fichier<%= "s" if shared_count > 1 %> partagé<%= "s" if shared_count > 1 %> dans
+        <% if publication.folder_url.present? %>
+          <%= link_to publication.folder, publication.folder_url, class: "renvoi", data: { role: "publication-folder" } %>.
+        <% else %>
+          <code><%= publication.folder %></code>.
+        <% end %>
+      <% else %>
+        <span class="etat etat--ecart">Échec</span>
+      <% end %>
+    </p>
+    <% if publication.error_message.present? %>
+      <p class="etat etat--ecart" data-role="publication-error"><%= publication.error_message %></p>
+    <% end %>
+    <% if publication.notified_emails.any? %>
+      <p data-role="publication-notified">Mail envoyé à : <%= publication.notified_emails.join(", ") %>.</p>
+    <% end %>
+
+    <% in_review = publication.files_in("review") %>
+    <% approved = publication.files_in("approved") %>
+    <% if in_review.any? || approved.any? %>
+      <div data-role="publication-review" id="publication-review" class="publication-relecture">
+        <h3>Vidéos à valider</h3>
+        <p>
+          Elles peuvent montrer un écran partagé : les intervenants ne les voient qu'une fois validées.
+          Dossier de relecture :
+          <% if publication.review_folder_url.present? %>
+            <%= link_to publication.review_folder, publication.review_folder_url, class: "renvoi", data: { role: "publication-review-folder" } %>.
+          <% else %>
+            <code><%= publication.review_folder %></code>.
+          <% end %>
+        </p>
+        <details class="repli" data-role="publication-review-help">
+          <summary>Couper ou retirer une vidéo avant de la valider</summary>
+          <p>
+            Les vidéos déposées en relecture sont hors de tout partage et n'y sont jamais réécrites. Pour couper une
+            vidéo, remplace-la sous le même nom, sans la supprimer d'abord : c'est la coupe qui sera partagée, sans ses
+            versions précédentes. Une vidéo supprimée n'est jamais partagée.
+            « Valider et partager » les déplace dans le dossier partagé et les annonce aux intervenants.
+          </p>
+        </details>
+        <ul class="publication-videos">
+          <% in_review.each do |file| %>
+            <li data-role="publication-review-file">
+              <strong><%= file["name"] %></strong>
+              <% if (timing = publication_video_timing(webinar, file["name"])) %>
+                <span data-role="publication-review-timing"><%= timing %></span>
+              <% end %>
+              <span>(<%= number_to_human_size(file["size"]) %>)</span>
+            </li>
+          <% end %>
+          <% approved.each do |file| %>
+            <li data-role="publication-approved-file">
+              <%= file["name"] %> — validée par <%= file["approved_by"] %>, déplacement au prochain dépôt
+            </li>
+          <% end %>
+        </ul>
+        <% if configured && publication.approvable? %>
+          <%= render "webinars/speakers_without_email", webinar: webinar %>
+          <div class="live-actions">
+            <%= button_to "Valider et partager", webinar_publication_path(webinar),
+                          method: :patch, params: { names: in_review.pluck("name") }, class: "btn",
+                          data: { role: "publication-approve" } %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+    <% withdrawn = publication.files_in("withdrawn") %>
+    <% if withdrawn.any? %>
+      <p class="vide" data-role="publication-withdrawn">
+        Retirées pendant la relecture, jamais partagées : <%= withdrawn.pluck("name").join(", ") %>.
+      </p>
+    <% end %>
+  <% end %>
+
+  <% if configured %>
+    <p data-role="publication-recipients">
+      Mail aux intervenants dont l'adresse est saisie dans le <a href="#intervenants" class="renvoi">tableau des intervenants</a>,
+      jamais aux spectateurs.
+    </p>
+  <% end %>
+
+  <% if configured && webinar.ended? && !publication&.busy? %>
+    <% unless publication&.approvable? %>
+      <%= render "webinars/speakers_without_email", webinar: webinar %>
+    <% end %>
+    <div class="live-actions">
+      <%= button_to publication ? "Relancer la publication" : "Publier dans Nextcloud",
+                    webinar_publication_path(webinar),
+                    method: :post, class: "btn btn--secondary",
+                    data: { role: "publication-launch" } %>
+    </div>
+  <% end %>
+</section>

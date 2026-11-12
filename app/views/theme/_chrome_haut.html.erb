@@ -1,0 +1,5 @@
+<%# Dispatch : partial chrome_haut de la charte pour le thème undust, chrome par défaut
+    (theme/default/) sinon. Le nom du partial de la gem reste écrit ici en
+    toutes lettres : le contrôle de charte de la gem suit les partials rendus depuis les
+    layouts pour y trouver l'interrupteur de la gem. %>
+<%= Theme.undust? ? render("undust/charte/chrome_haut", local_assigns) : render("theme/default/chrome_haut", local_assigns) %>

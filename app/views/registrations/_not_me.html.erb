@@ -1,0 +1,9 @@
+<%# « Ce n'est pas moi » (NotMeController) : ce navigateur oublie son
+    inscription à ce webinaire. POST protégé CSRF (button_to), jamais un
+    lien GET ; aucun retrait n'est levé. Locaux : `webinar`, `hint` (phrase
+    avant le bouton), `container_class` et `button_class` (page ou salle). %>
+<div class="<%= local_assigns.fetch(:container_class, "live-actions") %>" data-role="registration-not-me">
+  <span><%= hint %></span>
+  <%= button_to voice_t("registrations.not_me.button"), public_webinar_not_me_path(webinar.slug),
+        class: local_assigns.fetch(:button_class, "btn btn--secondary"), form_class: "pas-moi" %>
+</div>

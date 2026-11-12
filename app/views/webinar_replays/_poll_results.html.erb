@@ -1,0 +1,46 @@
+<%# Réponses aux sondages lancés pendant le direct, direct et replay séparés :
+    la mesure du direct n'est jamais mélangée à celle du replay
+    (PollResponse#origin). Réponses courtes du replay avec leur auteur,
+    comme la régie les montre pour le direct. %>
+<section aria-labelledby="replay-polls">
+  <h2 id="replay-polls">Sondages : direct et replay</h2>
+  <% polls.each do |poll| %>
+    <% live = poll.results(poll.responses.live) %>
+    <% replay = poll.results(poll.responses.replay) %>
+    <div class="conteneur-table" data-role="replay-poll-results" data-poll-id="<%= poll.id %>">
+      <table class="table-dense">
+        <caption><%= poll.label %></caption>
+        <thead>
+          <tr>
+            <th scope="col">Réponse</th>
+            <th scope="col">Direct</th>
+            <th scope="col">Replay</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (labels = poll.format.answer_labels) %>
+            <% labels.each_with_index do |label, index| %>
+              <tr>
+                <th scope="row"><%= label %></th>
+                <td><%= live[:counts][index] %></td>
+                <td><%= replay[:counts][index] %></td>
+              </tr>
+            <% end %>
+          <% end %>
+          <tr data-role="replay-poll-respondents">
+            <th scope="row">Personnes</th>
+            <td><%= live[:respondents] %></td>
+            <td><%= replay[:respondents] %></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <% if poll.short_text? && replay[:respondents].positive? %>
+      <ul data-role="replay-poll-texts">
+        <% poll.format.respondents(poll.responses.replay.order(:updated_at, :id).pluck(:name, :value)).each do |answer| %>
+          <li><strong><%= answer[:name] %></strong> : <%= answer[:text] %></li>
+        <% end %>
+      </ul>
+    <% end %>
+  <% end %>
+</section>

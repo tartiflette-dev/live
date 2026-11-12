@@ -1,0 +1,58 @@
+subject: Merci — consentement enregistré
+--- text/plain
+Bonjour Camille,
+
+Nous enregistrons votre consentement à être recontacté·e par undust
+au sujet de ses activités, suite à votre inscription à
+« Bootcamp découverte ».
+
+Vous pouvez retirer ce consentement à tout moment, en un clic, via
+le lien ci-dessous (il sera aussi présent dans chaque email que nous
+vous enverrons dans ce cadre) :
+
+http://example.com/mc/withdraw?t=PREVIEWWD
+
+Vous pouvez aussi écrire à contact@example.test.
+
+— live.example.test
+
+
+--- text/html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <style>
+      /* Email styles need to be inline */
+    </style>
+  </head>
+
+  <body>
+    <p>Bonjour Camille,</p>
+
+<p>
+  Nous enregistrons votre consentement à être recontacté·e par undust
+  au sujet de ses activités, suite à votre inscription à
+  <strong>Bootcamp découverte</strong>.
+</p>
+
+<p>
+  Vous pouvez retirer ce consentement à tout moment, en un clic, via le
+  lien ci-dessous. Il est aussi joint à tout email que nous vous
+  enverrons dans ce cadre.
+</p>
+
+<p>
+  <a href="http://example.com/mc/withdraw?t=PREVIEWWD">Retirer mon consentement</a>
+</p>
+
+<p>
+  Vous pouvez aussi écrire à
+  <a href="mailto:contact@example.test">contact@example.test</a>.
+</p>
+
+<p>— live.example.test</p>
+
+  </body>
+</html>
+

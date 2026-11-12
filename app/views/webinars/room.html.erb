@@ -1,0 +1,135 @@
+<%# Page salle. Vue partagée par stage/viewer/join :
+    le CONTENU est identique (montage React sur #livekit-room), seuls le
+    contexte auth et la présence du speaker_token varient. Le rôle est
+    décidé par RoomParticipant#resolve_role (via /api/token) — jamais ici.
+    Layout `room` (plein écran, pas de chrome animateur) ; en-tête =
+    monogramme l. + titre, signature du thème en pied. %>
+<% content_for :title, "#{@webinar.title} — salle" %>
+
+<main class="lk-page">
+  <%= render "webinars/room_header" %>
+
+  <%# Choix « J'observe » / « Je participe » d'un inscrit qui ne l'a jamais
+      fait (@registration_to_ask, WebinarsController#viewer) : la salle
+      n'est montée qu'une fois le choix enregistré
+      (rooms/participation_choice.js → ParticipationsController). Charte :
+      fieldset.groupe, .radio, .btn, en jetons sombres (data-theme) comme la
+      salle. Pré-sélection = le choix de l'inscription. %>
+  <% if (registration = @registration_to_ask) %>
+    <section class="lk-choix" data-theme="dark" data-role="participation-choice">
+      <form class="lk-choix__carte"
+            data-participation-url="<%= public_webinar_participation_path(slug: @webinar.slug) %>"
+            data-error-message="<%= voice_t("webinars.participation_choice.error") %>">
+        <fieldset class="groupe">
+          <legend><%= voice_t("webinars.participation_choice.legend") %></legend>
+          <label class="radio">
+            <input type="radio" name="participation" value="spectator" <%= "checked" if registration.spectator? %>>
+            <span><%= voice_t("webinars.participation_choice.spectator") %></span>
+          </label>
+          <label class="radio">
+            <input type="radio" name="participation" value="participant" <%= "checked" if registration.participant? %>>
+            <span><%= voice_t("webinars.participation_choice.participant") %></span>
+          </label>
+        </fieldset>
+        <p class="lk-choix__erreur" role="alert" data-role="participation-error" hidden></p>
+        <button type="submit" class="btn"><%= voice_t("webinars.participation_choice.submit") %></button>
+      </form>
+    </section>
+  <% end %>
+
+  <%# Container React. Data-attrs = SEULES entrées client (slug + speaker
+      token éventuel). AUCUN token LiveKit ni serverUrl injecté : c'est
+      Api::TokensController qui les livre après décision serveur.
+
+      Salle animateur = salle participant : AUCUNE commande d'animation n'est posée ici
+      — ni état du direct, ni pilotage d'enregistrement, ni file des mains
+      levées, ni mise en avant, ni modération. Elles sont dans la régie
+      (/webinars/:slug/regie), ouverte dans un autre onglet par le lien
+      « Régie ↗ » (data-regie-url, animation seulement : /stage, ou /join
+      d'un animateur connecté — @regie_url, WebinarsController).
+
+      data-state-url (endpoint public) est posé pour tous : l'écran de
+      sortie de salle y lit l'état du direct.
+      data-end-url (stage) ne sert qu'à cet écran de sortie, HORS salle :
+      l'animation qui vient de quitter peut y terminer le direct. %>
+  <div
+    id="livekit-room"
+    class="lk-mount"
+    data-slug="<%= @webinar.slug %>"
+    data-organization="<%= Brand.organization %>"
+    <% if @speaker %>data-name="<%= @speaker.name %>"<% end %>
+    <%= "data-speaker-token=\"#{ERB::Util.h(@speaker_token)}\"".html_safe if @speaker_token.present? %>
+    data-state-url="/w/<%= @webinar.slug %>/state.json"
+    <% if action_name == "stage" %>
+      data-end-url="<%= end_webinar_path(@webinar) %>"
+    <% end %>
+    <% if @regie_url %>
+      data-regie-url="<%= @regie_url %>"
+    <% end %>
+    <%# Indicateur « Enregistrement en cours » (consentement), lecture
+        seule pour tous ceux qui publient ou peuvent publier :
+          • stage : session animateur ;
+          • join  : jeton intervenant `t`, revalidé par le serveur à
+                    chaque appel (Webinar.find_for_speaker) ;
+          • viewer dans la salle : cookie d'inscription confirmée.
+        Le pilotage (démarrer / arrêter) est dans la régie ; l'endpoint
+        accepte toujours le jeton intervenant (inchangé), mais la salle
+        n'expose plus le bouton. %>
+    <% if action_name == "stage" %>
+      data-recording-status-url="<%= status_webinar_recordings_path(@webinar, format: :json) %>"
+    <% elsif action_name == "join" && @speaker_token.present? %>
+      data-recording-status-url="<%= status_webinar_recordings_path(@webinar, format: :json, t: @speaker_token) %>"
+    <% elsif action_name == "viewer" && @viewer_room %>
+      data-recording-viewer-status-url="<%= public_webinar_recording_status_path(slug: @webinar.slug, format: :json) %>"
+    <% end %>
+
+    <%# Prise de parole :
+          URL /w/:slug/hand_raises posée SEULEMENT pour le spectateur dans
+          la salle live (@viewer_room : direct + inscription confirmée).
+          La file côté animation est dans la régie. %>
+    <% if action_name == "viewer" && @viewer_room %>
+      data-viewer-hand-raises-url="<%= public_hand_raises_path(slug: @webinar.slug) %>"
+      <%# Venu·e participer, en attente de l'animation : message neutre
+          (jamais « main levée » ni « admission ») et bouton pour observer
+          plutôt, dans la tonalité de l'émission (hand_raise_viewer.jsx). %>
+      data-participant-waiting-message="<%= voice_t("webinars.participation_choice.waiting") %>"
+      data-participant-cancel-label="<%= voice_t("webinars.participation_choice.observe_instead") %>"
+      data-recording-notice="<%= voice_t("webinars.participation_choice.recording_notice") %>"
+    <% end %>
+    <%# Discussion du direct (MessagesController) : le fil est posé pour
+          toute salle rendue — l'endpoint revérifie à chaque appel
+          animateur, intervenant nominatif ou inscription confirmée. La
+          modération (Questions, épinglage) est dans la régie. %>
+    data-messages-url="<%= public_webinar_messages_path(slug: @webinar.slug) %>"
+    <%# File Q&R : bandeau « question en cours », mêmes données pour tous
+          (QaDisplaysController revérifie le participant à chaque appel). %>
+    data-qa-display-url="<%= public_qa_display_path(slug: @webinar.slug) %>"
+    <%# Panneau Transcript — drapeau d'activation côté serveur.
+          Posé partout (stage/viewer/join) : le texte final arrive sur
+          le même text stream pour les trois rôles. Mentionne « votre
+          voix est transcrite » dans la mention Lever la main
+          (hand_raise_viewer.jsx) pour le consentement spectateur. %>
+    <%# Sondages du direct (PollParticipationsController) : posé pour toute
+          salle rendue, comme la discussion ; l'endpoint revérifie le
+          participant à chaque appel. Préfixe de /current et /<id>/responses. %>
+    data-polls-url="/w/<%= @webinar.slug %>/polls"
+    <% if ENV["TRANSCRIPT_ENABLED"] == "true" %>
+      data-transcript-enabled="true"
+    <% end %>
+  >
+    <noscript>
+      <p>Cette salle nécessite JavaScript pour la vidéo temps réel.</p>
+    </noscript>
+  </div>
+
+  <footer class="lk-page__pied">
+    <%# Salle spectateur : « Ce n'est pas moi » (ordinateur partagé, autre
+        adresse) — ce navigateur oublie son inscription (NotMeController). %>
+    <% if action_name == "viewer" && @viewer_room %>
+      <%= render "registrations/not_me", webinar: @webinar,
+            hint: voice_t("registrations.not_me.room_hint", name: current_registration.name),
+            container_class: "lk-page__pas-moi", button_class: "lk-page__pas-moi-bouton" %>
+    <% end %>
+    <a class="lk-page__signature" href="<%= Brand.credit.url %>"><%= Brand.credit.label %><i></i></a>
+  </footer>
+</main>

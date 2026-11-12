@@ -1,0 +1,48 @@
+<%# Lecteur du replay (ReplaysController#show) : vidéo servie avec contrôle
+    d'accès (ReplayMediaController), sous-titres WebVTT que le spectateur
+    affiche ou masque, battements de visionnage (replay_player.js →
+    ReplayViewsController). Replay publié : sondages du direct et questions
+    (replays/_interactions). Chapitres validés et instant de départ
+    (replays/_navigation, replay_navigation.js). Programme du café sous la
+    vidéo ; inscrit sans compte : invitation à créer un compte. %>
+<% content_for :title, "Replay — #{@webinar.title}" %>
+<article class="replay" data-role="replay">
+  <h1><%= @webinar.title %></h1>
+  <p>
+    <time datetime="<%= @webinar.starts_at.iso8601 %>"><%= l @webinar.starts_at, format: :long %></time>
+    · <%= DurationFormat.short(@replay.duration) %>
+  </p>
+  <% unless @replay.published? %>
+    <p class="etat etat--alerte" data-role="replay-unpublished">Non publié : seule l'animation voit ce replay.</p>
+  <% end %>
+
+  <div class="replay-lecteur" data-replay-player data-beats-url="<%= @heartbeat_url %>">
+    <video class="replay-video" controls preload="metadata" playsinline
+           src="<%= public_webinar_replay_video_path(@webinar.slug) %>" data-role="replay-video">
+      <% if @replay.subtitles? %>
+        <track kind="subtitles" srclang="fr" label="Français"
+               src="<%= public_webinar_replay_subtitles_path(@webinar.slug) %>">
+      <% end %>
+      Ton navigateur ne lit pas cette vidéo.
+    </video>
+    <% if @replay.subtitles? %>
+      <div class="live-actions">
+        <button type="button" class="btn btn--secondary" aria-pressed="false" data-replay-subtitles
+                data-label-show="Afficher les sous-titres" data-label-hide="Masquer les sous-titres">
+          Afficher les sous-titres
+        </button>
+      </div>
+    <% end %>
+    <%= render "replays/interactions", webinar: @webinar if @replay.published? %>
+  </div>
+
+  <%= render "replays/navigation", replay: @replay, chapters: @chapters, start_offset: @start_offset %>
+
+  <%= render "webinars/program", webinar: @webinar %>
+
+  <% if @viewer.is_a?(Registration) %>
+    <%= render "replays/account_invitation" %>
+  <% end %>
+
+  <p><%= link_to "Tous les replays", replays_path, class: "renvoi", data: { role: "replays-link" } %></p>
+</article>

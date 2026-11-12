@@ -1,0 +1,71 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Studio Exemple//live.example.test//FR
+CALSCALE:GREGORIAN
+REFRESH-INTERVAL;VALUE=DURATION:PT1H
+X-WR-CALNAME:Webinaires Studio Exemple
+X-PUBLISHED-TTL:PT1H
+BEGIN:VEVENT
+DTSTAMP:20261001T070000Z
+UID:cafe-ia-septembre@live.example.test
+DTSTART:20260924T073000Z
+DTEND:20260924T083000Z
+CREATED:20261001T070000Z
+DESCRIPTION:Café IA · Gratuit\n\nPage du webinaire : http://www.example.c
+ om/w/cafe-ia-septembre
+LAST-MODIFIED:20261001T070000Z
+LOCATION:http://www.example.com/w/cafe-ia-septembre
+SEQUENCE:0
+STATUS:CONFIRMED
+SUMMARY:Café IA de septembre
+URL;VALUE=URI:http://www.example.com/w/cafe-ia-septembre
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20261003T070000Z
+UID:cafe-ia-novembre@live.example.test
+DTSTART:20261105T173000Z
+DTEND:20261105T183000Z
+CREATED:20261001T070000Z
+DESCRIPTION:Une heure pour apprivoiser les agents.\n\nQuestions en direct\,
+  replay ensuite. Texte long pour forcer le pliage à 75 octets. Texte long
+  pour forcer le pliage à 75 octets. Texte long pour forcer le pliage à 7
+ 5 octets.\n\nCafé IA · Gratuit\n\nPage du webinaire : http://www.example
+ .com/w/cafe-ia-novembre
+LAST-MODIFIED:20261003T070000Z
+LOCATION:http://www.example.com/w/cafe-ia-novembre
+SEQUENCE:172800
+STATUS:CONFIRMED
+SUMMARY:Café IA de novembre \; virgules\, et points-virgules
+URL;VALUE=URI:http://www.example.com/w/cafe-ia-novembre
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20261001T070000Z
+UID:bootcamp-decembre@live.example.test
+DTSTART:20261203T083000Z
+DTEND:20261203T113000Z
+CREATED:20261001T070000Z
+DESCRIPTION:Bootcamp · 99\,00 €\n\nPage du webinaire : http://www.exampl
+ e.com/w/bootcamp-decembre
+LAST-MODIFIED:20261001T070000Z
+LOCATION:http://www.example.com/w/bootcamp-decembre
+SEQUENCE:0
+STATUS:CONFIRMED
+SUMMARY:Bootcamp de décembre
+URL;VALUE=URI:http://www.example.com/w/bootcamp-decembre
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20261001T070000Z
+UID:bootcamp-pack@live.example.test
+DTSTART:20270114T083000Z
+DTEND:20270114T113000Z
+CREATED:20261001T070000Z
+DESCRIPTION:Bootcamp · Inclus dans le pack Parcours agents\n\nPage du webi
+ naire : http://www.example.com/w/bootcamp-pack
+LAST-MODIFIED:20261001T070000Z
+LOCATION:http://www.example.com/w/bootcamp-pack
+SEQUENCE:0
+STATUS:CONFIRMED
+SUMMARY:Bootcamp du parcours
+URL;VALUE=URI:http://www.example.com/w/bootcamp-pack
+END:VEVENT
+END:VCALENDAR

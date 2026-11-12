@@ -1,0 +1,62 @@
+# Files in the config/locales directory are used for internationalization and
+# are automatically loaded by Rails. Chrome strings (language rotation) live
+# here for the EN rotation ; app copy stays French (single-market tool).
+en:
+  # Default chrome of theme packs (app/views/theme/).
+  theme:
+    chrome:
+      home: "Home"
+      sign_out: "Sign out"
+    toggle:
+      label: "Toggle light and dark mode"
+      to_dark: "Switch to dark mode"
+      to_light: "Switch to light mode"
+    links:
+      site: "Website"
+      linkedin: "LinkedIn"
+      github: "GitHub"
+  chrome:
+    webinars: "My webinars"
+    new_webinar: "New webinar"
+    replays: "Replays"
+    questions: "Questions"
+    questions_pending: "Questions (%{count})"
+    breadcrumb: "Breadcrumb"
+    login: "Host sign-in"
+    login_hint: "Host area — live webinars. One gesture, no password."
+    login_pocket: "Continue with Pocket ID"
+    login_dev: "Sign in (development)"
+    login_dev_email: "Email address"
+    login_dev_hint: "Development sign-in: no identity provider, any address. Never available in production."
+    login_dev_invalid: "Enter a valid email address."
+    login_dev_local_only: "The development sign-in only answers on this machine (loopback, or the networks in LIVE_DEV_LOGIN_ALLOWED_NETWORKS)."
+    login_unavailable: "No sign-in method is configured: set OIDC_ISSUER, OIDC_CLIENT_ID and OIDC_CLIENT_SECRET."
+    language: "Language"
+    language_next: "Switch to %{lang}"
+    lang_fr: "FR"
+    lang_en: "EN"
+  # Agenda dates: the page copy stays French (fallback), but a date
+  # rendered under EN needs its own formats, or `l` raises in dev/test and
+  # mixes the French format with English names in production.
+  time:
+    formats:
+      agenda: "%A %B %-d · %H:%M"
+      agenda_past: "%A %B %-d, %Y · %H:%M"
+      agenda_month: "%B %Y"
+      # Café IA date (voices.cafe_ia.date_format) when the chrome is in EN.
+      day_time: "%A %B %-d at %-H:%M"
+      # Webinar host page.
+      jour_heure: "%A %B %-d, %Y, %-H:%M"
+      date_heure: "%b %-d, %-H:%M"
+      heure: "%-H:%M"
+  errors:
+    back: "Back to home"
+    "403":
+      quoi: "This page is not for this account."
+      geste: "Sign in with the webinar host account"
+    "404":
+      quoi: "Nothing here — wrong link, or the webinar was removed."
+      geste: "Check the link you received, or go back home"
+    "500":
+      quoi: "The application hit a fault."
+      geste: "The incident is logged — nothing to redo on your side"

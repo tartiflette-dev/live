@@ -1,0 +1,13 @@
+<%# Les deux réponses, en POST. `first` : réponse mise en avant (choisie dans
+    le mail), nil = ordre par défaut. %>
+<% choices = { "present" => [ "oui", "Je serai là" ], "absent" => [ "non", "Je ne serai pas là" ] } %>
+<% order = first == "absent" ? %w[absent present] : %w[present absent] %>
+<div class="live-actions">
+  <% order.each_with_index do |answer, index| %>
+    <% param, label = choices.fetch(answer) %>
+    <%= button_to label, answer_host_attendance_path, method: :post,
+                  params: { t: attendance.token, reponse: param },
+                  class: (index.zero? && first ? "btn" : "btn btn--secondary"),
+                  data: { role: "host-attendance-#{answer}" } %>
+  <% end %>
+</div>

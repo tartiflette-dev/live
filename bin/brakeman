@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+# Scan de sécurité — des signaux, pas des gates :
+# passe 1 = rapport complet (Weak visibles en CI, non bloquant) ;
+# passe 2 = gate bloquante UNIQUEMENT sur Medium/High (--confidence-level 2).
+require "rubygems"
+require "bundler/setup"
+
+brakeman = Gem.bin_path("brakeman", "brakeman")
+
+# Passe 1 — toutes les warnings dans le log CI ; seules les erreurs réelles
+# de scan (exit 4-9, ex. 7 = errors found) sont propagées. NB : exit 5 (gem
+# outdated) court-circuite la passe 2 — comportement hérité de --ensure-latest.
+system(Gem.ruby, brakeman, "--ensure-latest", "--no-exit-on-warn", *ARGV)
+status = $?
+exit(status&.exitstatus || 1) unless status&.success?
+
+# Passe 2 — gate Medium+ : exit 3 si au moins une warning Medium/High.
+exec(Gem.ruby, brakeman, "--ensure-latest", "--confidence-level", "2", *ARGV)

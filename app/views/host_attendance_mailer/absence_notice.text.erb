@@ -1,0 +1,12 @@
+Bonjour,
+
+<%= @attendance.email %> a répondu qu'il ou elle ne sera pas là pour « <%= @webinar.title %> », le <%= @starts_at %> (heure de Paris).
+
+La date reste affichée « à confirmer ». Rien d'autre n'a changé côté public : à toi de décider — garder la date, la déplacer ou annuler le café.
+
+Page du café :
+<%= @webinar_url %>
+
+Répondre à ce mail écrit directement à <%= @attendance.email %>.
+
+— <%= Brand.host %>

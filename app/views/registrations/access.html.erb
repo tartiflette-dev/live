@@ -1,0 +1,13 @@
+<%# GET /r/:token, inscription déjà confirmée — page SANS EFFET : l'accès
+    (cookie d'inscription) n'est donné qu'au POST du button_to, jamais par un
+    lien ouvert. Aucune donnée personnelle affichée. %>
+<% content_for :title, voice_t("registrations.access.title") %>
+<article class="live-legal" data-role="registration-access">
+  <h1><%= voice_t("registrations.access.title") %></h1>
+  <p>
+    <strong><%= @webinar.title %></strong>,
+    <time datetime="<%= @webinar.starts_at.iso8601 %>"><%= voice_l @webinar.starts_at %></time>
+  </p>
+  <p><%= voice_t("registrations.access.intro") %></p>
+  <%= button_to voice_t("registrations.access.button"), @confirm_path, method: :post, class: "btn" %>
+</article>

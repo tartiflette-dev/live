@@ -1,0 +1,20 @@
+<%# GET /mc?t=<token> — page de confirmation SANS EFFET. Les scanners de
+    liens (Outlook Safe Links, Gmail, antivirus) peuvent ouvrir cette URL
+    automatiquement : le consentement n'est posé qu'au POST du button_to.
+    Aucune donnée personnelle affichée (pas d'email, pas de nom). %>
+<% content_for :title, voice_t("marketing_consents.show.title") %>
+<article class="live-legal" data-role="marketing-consent">
+  <h1><%= voice_t("marketing_consents.show.heading") %></h1>
+  <p><%= voice_t("marketing_consents.show.context_html", title: @webinar_title) %></p>
+  <p><%= voice_t("marketing_consents.show.intent") %></p>
+  <%= button_to voice_t("marketing_consents.show.accept"),
+                confirm_marketing_consent_path(t: params[:t]),
+                method: :post,
+                class: "btn" %>
+  <p><%= voice_t("marketing_consents.show.not_you") %></p>
+  <%= button_to voice_t("marketing_consents.show.decline"),
+                decline_marketing_consent_path(t: params[:t]),
+                method: :post,
+                class: "btn btn--secondaire" %>
+  <p><%= voice_t("marketing_consents.show.withdraw_html", contact: mail_to(Brand.support_email)) %></p>
+</article>

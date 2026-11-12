@@ -1,0 +1,58 @@
+Live
+Copyright 2026 Luc Létoffé and the Live contributors.
+Licence: AGPL-3.0-only (see LICENSE and ADDITIONAL_TERMS.md).
+
+=====================================================================
+ENGLISH
+=====================================================================
+
+Licence
+  Live is free software under the GNU Affero General Public License version 3 only
+  (AGPL-3.0-only, see LICENSE), with the additional terms of section 7 in
+  ADDITIONAL_TERMS.md. Each contributor keeps the copyright in their contributions,
+  which are licensed under the same terms.
+
+Authors (list: AUTHORS)
+  Original author: Luc Létoffé (undust), 2026.
+  Then the contributors, each with the organisation they declare.
+
+Powered by Tartiflette
+  Live is published with Tartiflette, https://tartiflette.dev. The Tartiflette theme
+  shows "Propulsé par Tartiflette"; this is not a condition of the licence.
+
+Third-party components (full list: THIRD_PARTY_NOTICES.md)
+  Aspekta (Copyright (c) 2025 Ivo Dolenc, Reserved Font Name "Aspekta"): SIL OFL 1.1
+  JetBrains Mono (Copyright 2020 The JetBrains Mono Project Authors): SIL OFL 1.1
+  Bricolage Grotesque (Copyright 2022 The Bricolage Grotesque Project Authors): SIL OFL 1.1
+  DM Sans (Copyright 2014 The DM Sans Project Authors): SIL OFL 1.1
+  The logo, favicon and style sheets of tartiflette.dev are not part of this tree:
+    the Tartiflette theme runs on Live's neutral tokens, favicon and logo
+  LiveKit components and client (Copyright 2023 LiveKit, Inc.): Apache-2.0
+    (app/javascript/rooms/room_tiles.jsx adapts ParticipantTile 2.9)
+  icalendar (Ruby gem): used under BSD-2-Clause
+
+=====================================================================
+FRANÇAIS
+=====================================================================
+
+Licence
+  Live est un logiciel libre sous licence GNU Affero General Public License version 3
+  seule (AGPL-3.0-only, voir LICENSE), avec les termes additionnels de l'article 7
+  figurant dans ADDITIONAL_TERMS.md. Chaque contributeur conserve le droit d'auteur sur
+  ses contributions, publiées sous les mêmes termes.
+
+Auteurs (liste : AUTHORS)
+  Auteur d'origine : Luc Létoffé (undust), 2026.
+  Puis les contributeurs, chacun avec l'organisation qu'il déclare.
+
+Propulsé par Tartiflette
+  Live est publié avec Tartiflette, https://tartiflette.dev. Le thème Tartiflette
+  affiche « Propulsé par Tartiflette » ; ce n'est pas une condition de la licence.
+
+Composants tiers (liste complète : THIRD_PARTY_NOTICES.md)
+  Polices Aspekta, JetBrains Mono, Bricolage Grotesque, DM Sans : SIL OFL 1.1.
+  Le logo, le favicon et les feuilles de style de tartiflette.dev ne font pas partie
+    de cet arbre : le thème Tartiflette tourne sur les jetons, le favicon et le logo
+    neutres de Live.
+  Composants LiveKit : Apache-2.0 (room_tiles.jsx adapte ParticipantTile 2.9).
+  icalendar (gem Ruby) : utilisée sous BSD-2-Clause.

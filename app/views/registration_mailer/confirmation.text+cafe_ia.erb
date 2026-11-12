@@ -1,0 +1,32 @@
+Salut,
+
+Tu viens à « <%= @webinar.title %> », <%= l @webinar.starts_at, format: :day_time, locale: :fr %>. Presque fini !
+<% if @registration.instant_access? %>
+
+Quelqu'un est entré au café avec ton adresse. C'est toi ? Confirme depuis le même navigateur pour garder tes échanges ; depuis un autre navigateur, tu auras ton propre accès, sans eux. Ce n'est pas toi ? Ignore ce mail : rien ne sera rattaché à ton adresse.
+<% end %>
+
+Un clic pour confirmer ton mail, et on t'envoie le lien du café la veille :
+
+<%= @confirm_url %>
+
+Garde ce mail : le même lien t'ouvrira le café le jour J.
+
+La page du café : <%= @webinar_url %>
+
+Ce n'est pas toi qui t'es inscrit·e ? Ignore ce mail, tout simplement.
+<% if @marketing_consent_url %>
+
+---
+À l'inscription, la case « J'accepte <%= organization_after("que") %> me recontacte au sujet
+de ses activités » a été cochée. Pour que ça compte, clique sur ce lien
+À PART (le lien de confirmation du dessus n'y touche pas) :
+
+<%= @marketing_consent_url %>
+
+Tu n'as pas coché cette case, ou quelqu'un t'a inscrit·e à ta place ?
+Ne clique PAS sur ce second lien : personne ne te recontactera.
+<% end %>
+
+À très vite,
+— Le Café IA · <%= series_host %>

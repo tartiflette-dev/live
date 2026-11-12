@@ -1,0 +1,19 @@
+Message laissé à une inscription confirmée (double opt-in) via <%= @registration_request.source %>.
+Répondre à ce mail écrit directement à la personne.
+
+Message :
+<%= @registration_request.message %>
+
+Prénom : <%= @registration_request.name %>
+Email : <%= @registration_request.email %>
+Profil : <%= @registration_request.profile || "non renseigné" %>
+<% if @registrations.any? %>
+<%= Voice.t("co_organizer_mailer.message_received.webinars", voice: @voice) %>
+<% @registrations.each do |registration| %>
+- <%= registration.webinar.title %>, le <%= l registration.webinar.starts_at, format: :long %>
+<% end %>
+<% end %>
+<%= Voice.t("co_organizer_mailer.message_received.notify_next", voice: @voice) %> : <%= @registration_request.notify_next? ? "oui" : "non" %>
+Demande reçue le <%= l @registration_request.created_at, format: :long %>, confirmée le <%= l @registration_request.confirmed_at, format: :long %>.
+
+— <%= Brand.host %>

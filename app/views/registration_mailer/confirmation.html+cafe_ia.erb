@@ -1,0 +1,52 @@
+<p>Salut,</p>
+
+<p>
+  Tu viens à <strong><%= @webinar.title %></strong>,
+  <%= l @webinar.starts_at, format: :day_time, locale: :fr %>. Presque fini !
+</p>
+
+<% if @registration.instant_access? %>
+  <p data-role="instant-access-notice">
+    Quelqu'un est entré au café avec ton adresse.
+    C'est toi ? Confirme depuis le même navigateur pour garder tes échanges ; depuis un autre
+    navigateur, tu auras ton propre accès, sans eux. Ce n'est pas toi ? Ignore ce mail : rien ne
+    sera rattaché à ton adresse.
+  </p>
+<% end %>
+
+<p>Un clic pour confirmer ton mail, et on t'envoie le lien du café la veille :</p>
+
+<p>
+  <%= link_to "Je confirme", @confirm_url %>
+</p>
+
+<p>
+  Le bouton ne marche pas ? Copie ce lien dans ton navigateur :<br>
+  <%= @confirm_url %>
+</p>
+
+<p>Garde ce mail : le même lien t'ouvrira le café le jour J.</p>
+
+<p>
+  La page du café : <%= link_to @webinar.title, @webinar_url %>
+</p>
+
+<p>Ce n'est pas toi qui t'es inscrit·e ? Ignore ce mail, tout simplement.</p>
+
+<% if @marketing_consent_url %>
+  <hr>
+  <p>
+    À l'inscription, la case <em>« J'accepte <%= organization_after("que") %> me recontacte au sujet de ses activités »</em>
+    a été cochée. Pour que ça compte, clique sur ce lien <strong>à part</strong>
+    (le lien de confirmation du dessus n'y touche pas) :
+  </p>
+  <p>
+    <%= link_to "Oui, #{Brand.organization} peut me recontacter", @marketing_consent_url %>
+  </p>
+  <p>
+    Tu n'as pas coché cette case, ou quelqu'un t'a inscrit·e à ta place ?
+    Ne clique <strong>pas</strong> sur ce second lien : personne ne te recontactera.
+  </p>
+<% end %>
+
+<p>À très vite,<br>— Le Café IA · <%= series_host %></p>

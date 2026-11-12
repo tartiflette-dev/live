@@ -1,0 +1,11 @@
+<%= @announcement.author_email %> vient d'envoyer un message.
+
+Cible : <%= announcement_audience_label(@announcement.audience) %>
+Webinaire : <%= @announcement.webinar.title %>
+Destinataires : <%= @announcement.recipients_count %>
+Objet : <%= @announcement.subject %>
+
+Journal des envois : <%= @journal_url %>
+
+--- Texte envoyé ---
+<%= @announcement.body %>

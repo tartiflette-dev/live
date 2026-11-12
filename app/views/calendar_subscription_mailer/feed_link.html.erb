@@ -1,0 +1,22 @@
+<p>Bonjour <%= @name %>,</p>
+
+<p>Votre inscription est confirmée. Ajoutez les dates des webinaires à votre agenda avec votre lien personnel : les nouvelles dates y apparaissent, et un changement d'horaire s'y reporte.</p>
+
+<p>
+  <%= link_to "S'abonner (Apple, Outlook)", @links.webcal_url %><br>
+  <%= link_to "Google Agenda", @links.google_url %><br>
+  <%= link_to "Outlook (Microsoft 365)", @links.outlook_365_url %><br>
+  <%= link_to "Outlook.com", @links.outlook_com_url %>
+</p>
+
+<p>Pour tout autre agenda, abonnez-le à cette adresse :<br>
+  <%= @links.download_url %>
+</p>
+
+<p>Vous pouvez aussi <%= link_to "télécharger le fichier", @links.download_url %>, sans mise à jour ensuite.</p>
+
+<p>Ce lien vous est propre : ne le transmettez pas.</p>
+
+<p>Vous recevez ce message parce que vous avez confirmé votre inscription.</p>
+
+<p>— <%= Brand.host %></p>

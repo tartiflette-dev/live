@@ -1,0 +1,9 @@
+<% content_for :title, "Lien invalide" %>
+<article class="live-legal" data-role="marketing-consent-invalid">
+  <h1>Lien invalide</h1>
+  <p>
+    Ce lien n'est pas (ou n'est plus) valide. Si vous souhaitez vous
+    inscrire ou gérer un consentement, écrivez à
+    <%= mail_to(Brand.support_email) %>.
+  </p>
+</article>

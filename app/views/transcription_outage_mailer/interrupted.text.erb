@@ -1,0 +1,10 @@
+Bonjour,
+
+Le transcripteur manque à la salle du direct « <%= @webinar.title %> » depuis environ <%= @since %> (heure de Paris), alors que des personnes y sont : ce qui s'y dit n'entre pas dans le transcript. L'application le rappelle chaque minute, sans résultat. La régie affiche « Transcription en direct interrompue ».
+
+À vérifier : le service transcripteur tourne-t-il, s'annonce-t-il sous le nom « <%= @agent_name %> » attendu par l'application, joint-il l'application (sans réponse de l'app, il ignore la salle avec le journal « transcript non activé par l'app ») ?
+Un second mail suivra à la fin de l'interruption.
+
+Régie : <%= @regie_url %>
+
+— <%= Brand.host %>

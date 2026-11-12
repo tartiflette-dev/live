@@ -1,0 +1,21 @@
+<%# Requêtes agrégées (ReplaySearch::Summary). Locaux : `summaries`, `role`. %>
+<% if summaries.any? %>
+  <div class="conteneur-table">
+    <table class="table-dense" data-role="<%= role %>">
+      <thead><tr><th>Requête</th><th>Recherches</th><th>Personnes</th><th>Résultats (dernière)</th><th>Dernière fois</th></tr></thead>
+      <tbody>
+        <% summaries.each do |summary| %>
+          <tr data-role="search-summary">
+            <td><%= link_to summary.query, animation_themes_path(q: summary.query), class: "renvoi" %></td>
+            <td><%= summary.searches_count %></td>
+            <td><%= summary.people_count %></td>
+            <td><%= summary.last_results_count %></td>
+            <td><%= l summary.last_at, format: :short %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% else %>
+  <p class="etat etat--neutre">Rien sur cette période.</p>
+<% end %>

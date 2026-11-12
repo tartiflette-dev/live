@@ -1,0 +1,19 @@
+{
+  "phantom_prefixes": [
+    "sous titrage",
+    "sous titres realises",
+    "sous titres par",
+    "sous titres fait",
+    "sous titres faits",
+    "merci d avoir regarde",
+    "n oubliez pas de vous abonner",
+    "abonnez vous a la chaine",
+    "amara org",
+    "subtitles by",
+    "subtitled by",
+    "thanks for watching",
+    "thank you for watching"
+  ],
+  "hesitation_words": ["euh", "heu", "hum", "hm", "mh", "mhm", "bah", "ben"],
+  "leading_filler_pattern": "^\\s*(?:(?:e+u+h+|h+e+u+|h+u+m+|h+m+|m+h+m*)(?:[\\s,.;:!?…\\-–—]+|$))+"
+}

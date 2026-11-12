@@ -1,0 +1,38 @@
+<%# Liste animateur des packs. Scope host_sub côté
+    controller. Trousse charte : mêmes composants que webinars/index. %>
+<% content_for :title, t("chrome.packs") %>
+<h1><%= t("chrome.packs") %></h1>
+
+<p>
+  <%= link_to t("chrome.new_pack"), new_pack_path, class: "btn" %>
+</p>
+
+<% if @packs.any? %>
+  <div class="conteneur-table">
+    <table class="table-dense">
+      <thead>
+        <tr>
+          <th>Nom</th>
+          <th>Prix</th>
+          <th>Webinaires</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @packs.each do |p| %>
+          <tr>
+            <td><%= p.name %></td>
+            <td><%= number_to_currency(p.price_cents / 100.0, unit: "€", locale: :fr) %></td>
+            <td><%= p.webinars.size %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% else %>
+  <div class="table-vide">
+    <div class="vide">
+      <span class="quoi"><%= t("packs.empty") %></span>
+      <span class="geste"><%= link_to t("chrome.new_pack"), new_pack_path, class: "btn" %></span>
+    </div>
+  </div>
+<% end %>

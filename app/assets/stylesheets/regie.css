@@ -1,0 +1,725 @@
+/* Régie du direct (webinar_regies/show.html.erb + rooms/regie.jsx).
+ *
+ * Page ANIMATEUR sous le chrome undust (layout application, thème clair ou
+ * sombre) : tokens sémantiques de la charte seulement (zéro hex).
+ * Servie par Propshaft, chargée par la seule page régie (content_for :head).
+ *
+ * Les composants repris de la salle (StateButton, RecordingControl,
+ * HandRaiseHost, DiscussionPanel) portent leurs classes `lk-…`, stylées par
+ * room.css pour la salle SOMBRE et sous `body.room` seulement. Leur pendant
+ * pour la régie vit ici, scopé `.regie` : même structure, couleurs du chrome.
+ * Deux feuilles pour deux contextes qui changent pour des raisons
+ * différentes (salle vidéo vs page outil), pas une duplication à fusionner.
+ *
+ * Mise en page par moment (rooms/regie_layout.mjs) : deux
+ * colonnes dès que la régie a la place (largeur de la régie, pas de l'écran)
+ * — pilotage à gauche, public (questions, discussion) à droite. Plus étroite
+ * (demi-écran de portable, tablette, téléphone) : une seule colonne, les
+ * blocs rangés par priorité du moment (`order` posé par regie.jsx). L'ordre
+ * de tabulation suit le DOM (pilotage, puis public) et non cet ordre visuel :
+ * écart assumé, une colonne restant lisible de haut en bas par zone. */
+
+/* Écran large : la fenêtre de la régie s'élargit (« la colonne fait ~630 px
+ * sur 2 000 », mesuré sur un écran de 3440 px). Sous 1200 px, la fenêtre de
+ * la charte. */
+@media (min-width: 1200px) {
+  .chrome-fenetre:has(> .regie) {
+    width: min(1600px, calc(100% - 2 * var(--space-16)));
+  }
+}
+
+.regie {
+  container-type: inline-size;
+  --regie-gap: var(--space-4);
+  /* Pastille et erreurs REC (styles inline, recording_control_styles.js) :
+   * la variante -dark par défaut, faite pour la salle sombre, passe sous
+   * 3:1 sur le chrome clair ; --status-critical suit le thème. */
+  --recording-critical: var(--status-critical);
+}
+
+.regie__grille {
+  display: grid;
+  gap: var(--regie-gap);
+  grid-template-columns: minmax(0, 1fr);
+}
+
+/* Une colonne : les deux colonnes s'effacent, leurs blocs se rangent dans la
+ * grille par `order`, toutes colonnes confondues. */
+.regie__colonne {
+  display: contents;
+}
+
+@container (min-width: 50rem) {
+  .regie__grille {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .regie__colonne {
+    display: grid;
+    gap: var(--regie-gap);
+    align-content: start;
+    min-width: 0;
+  }
+}
+
+.regie-entete,
+.regie__grille > .regie-alerte {
+  grid-column: 1 / -1;
+}
+
+/* Piste bornée à la largeur du bloc : une saisie ou une rangée de boutons
+ * ne l'élargit jamais au-delà de l'écran (téléphone, 360 px). */
+.regie-entete,
+.regie-bloc {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: var(--border-width-hairline) solid var(--border);
+  background: var(--surface-raised);
+  border-radius: var(--radius-card);
+  min-width: 0;
+}
+
+.regie-entete__salle {
+  margin-left: auto;
+}
+
+.regie-entete__faits,
+.regie-entete__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.regie-entete__chrono {
+  font-family: var(--font-mono);
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.regie-entete__presents {
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+/* Bilan d'un direct terminé : heures et durée. */
+.regie-entete__bilan {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* « Reprendre le direct » après la fin : présent, mais discret — filet fin,
+ * texte secondaire, sans le poids d'une commande de direct. Armé, il reprend
+ * l'anneau critique de toute confirmation. */
+.regie .regie-entete--bilan .lk-state-button[data-state="ended"]:not([data-armed="true"]) {
+  border-width: var(--border-width-hairline);
+  border-color: var(--border-control);
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.chrome-fenetre .regie-bloc__titre {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--type-small-size);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+/* Consoles qui portent leur propre titre (Questions, Sondages) : un seul
+ * titre par zone, au même dessin que celui des autres blocs. */
+.chrome-fenetre .regie .qa-console__title,
+.chrome-fenetre .regie .poll-console__title {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--type-small-size);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+/* Bloc secondaire replié (RegieFold) : titre et résumé sur une ligne, cible
+ * tactile de 44 px. Un bloc qui attend un geste (main levée à admettre)
+ * porte le filet accent. */
+.regie-repli {
+  display: block;
+}
+
+.regie-repli__titre {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-3);
+  min-height: 2.75rem;
+  cursor: pointer;
+  list-style: none;
+}
+
+/* Repli de bloc et « En savoir plus » : même chevron, sans marqueur natif. */
+.regie-repli__titre::-webkit-details-marker,
+.regie-aide__titre::-webkit-details-marker {
+  display: none;
+}
+
+.regie-repli__titre::before,
+.regie-aide__titre::before {
+  content: "▸";
+  color: var(--text-secondary);
+}
+
+.regie-repli[open] > .regie-repli__titre::before,
+.regie-aide[open] > .regie-aide__titre::before {
+  content: "▾";
+}
+
+.regie-repli__resume {
+  font-size: var(--type-small-size);
+  color: var(--text-secondary);
+}
+
+.regie-repli[data-attention="true"] {
+  border-left: var(--border-width-strong) solid var(--accent);
+}
+
+.regie-repli[data-attention="true"] .regie-repli__resume {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+.regie-repli__corps {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+}
+
+/* « En savoir plus » : l'aide longue, repliée, jamais supprimée. */
+.regie-aide {
+  width: 100%;
+}
+
+.regie-aide__titre {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  list-style: none;
+  min-height: 2.75rem;
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-size: var(--type-small-size);
+}
+
+.regie-repli__titre:focus-visible,
+.regie-aide__titre:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.chrome-fenetre .regie-note,
+.chrome-fenetre .regie-alerte {
+  margin: 0;
+  font-size: var(--type-small-size);
+  overflow-wrap: anywhere;
+}
+
+.regie-note {
+  color: var(--text-secondary);
+}
+
+.regie-note--info {
+  padding-left: var(--space-2);
+  border-left: var(--border-width-strong) solid var(--status-info);
+  color: var(--text-primary);
+}
+
+.regie-alerte {
+  grid-column: 1 / -1;
+  padding-left: var(--space-2);
+  border-left: var(--border-width-strong) solid var(--status-critical);
+  color: var(--text-primary);
+}
+
+/* Transcription interrompue : un état du direct à connaître, pas une erreur
+ * de la régie. Filet d'attention, texte courant. */
+.regie-alerte--attention {
+  border-left-color: var(--status-warning);
+}
+
+/* Mise en avant : une ligne par personne sur scène. */
+.regie-scene {
+  display: grid;
+  gap: var(--space-3);
+  justify-items: start;
+}
+
+.regie-liste {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-2);
+  width: 100%;
+}
+
+.regie-liste__item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border: var(--border-width-hairline) solid var(--border);
+  border-radius: var(--radius-interactive);
+  background: var(--surface);
+}
+
+.regie-liste__item[data-featured="true"] {
+  border-color: var(--accent);
+}
+
+.regie-liste__nom {
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.regie-liste__meta {
+  font-family: var(--font-mono);
+  font-size: var(--type-small-size);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.regie-liste__item .regie-bouton {
+  margin-left: auto;
+}
+
+/* Inscrits : l'adresse reste lisible sans majuscules forcées, la présence
+ * se cale à droite. */
+.regie-liste__courriel {
+  text-transform: none;
+  overflow-wrap: anywhere;
+}
+
+.regie-liste__etat {
+  margin-left: auto;
+}
+
+/* Boutons de la régie : cible tactile 44 px (tablette). */
+.regie .regie-bouton {
+  height: auto;
+  min-height: 2.75rem;
+  padding: 0 var(--space-4);
+  font-size: 0.9375rem;
+}
+
+/* Participants : couper le micro, retirer. Les
+ * commandes d'une personne forment un groupe calé à droite ; « Retirer »
+ * porte le filet critique de « Terminer le direct », jamais un aplat rouge
+ * (le rouge signale un écart, il ne remplit pas un fond), et l'anneau
+ * critique une fois armé. */
+.regie-moderation {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-left: auto;
+}
+
+.regie-liste__item .regie-moderation .regie-bouton {
+  margin-left: 0;
+}
+
+.regie .regie-bouton--critique {
+  border-color: var(--status-critical);
+  color: var(--status-critical);
+}
+
+.regie .regie-bouton--critique[data-armed="true"] {
+  color: var(--text-primary);
+  box-shadow: 0 0 0 2px var(--surface-raised), 0 0 0 4px var(--status-critical);
+}
+
+/* Lien intervenants partagé : « Régénérer » se
+ * confirme comme « Retirer » (même filet critique) ; le nouveau lien
+ * s'affiche masqué, comme sur la page du webinaire, avec son bouton
+ * « Copier le lien ». */
+.regie-lien {
+  display: grid;
+  gap: var(--space-2);
+  justify-items: start;
+  width: 100%;
+}
+
+.regie-lien__commandes,
+.regie-lien__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.regie-lien__actions {
+  width: 100%;
+}
+
+.regie .regie-lien__champ {
+  flex: 1 1 16rem;
+  min-width: 0;
+  min-height: 2.75rem;
+  padding: var(--space-2) var(--space-3);
+  border: var(--border-width-hairline) solid var(--border);
+  border-radius: var(--radius-interactive);
+  background: var(--surface);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: var(--type-small-size);
+}
+
+/* Consoles des sondages et des questions du public (polls.css,
+ * application.css) : dans la régie, même cible tactile de 44 px. */
+.regie .poll-console__button,
+.regie .qa-console .btn {
+  min-height: 2.75rem;
+}
+
+/* ---------- Composants repris de la salle ---------- */
+
+.regie .lk-state-control {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.regie .lk-state-button,
+.regie .lk-state-button__cancel,
+.regie .lk-hand-raise-host__button,
+.regie .lk-recording-control button,
+.regie .lk-discussion__send,
+.regie .lk-discussion__action {
+  min-height: 2.75rem;
+  padding: 0 var(--space-4);
+  border: var(--border-width-strong) solid var(--border-color-strong);
+  border-radius: var(--radius-interactive);
+  background: transparent;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Démarrer = l'action positive, seul aplat accent ; terminer = filet
+ * critique, jamais un aplat rouge (le rouge ne remplit pas un fond) ;
+ * armé = anneau critique. */
+.regie .lk-state-button[data-state="draft"],
+.regie .lk-discussion__send {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+
+.regie .lk-state-button[data-state="live"],
+.regie .lk-recording-control.is-recording button {
+  border-color: var(--status-critical);
+  color: var(--status-critical);
+}
+
+.regie .lk-state-button[data-armed="true"] {
+  border-color: var(--status-critical);
+  color: var(--text-primary);
+  box-shadow: 0 0 0 2px var(--surface-raised), 0 0 0 4px var(--status-critical);
+}
+
+.regie button:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.regie button:focus-visible,
+.regie a:focus-visible,
+.regie textarea:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Enregistrement */
+.regie .lk-recording-control {
+  flex-wrap: wrap;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.regie .lk-recording-status {
+  font-family: var(--font-mono);
+  font-size: var(--type-small-size);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--text-primary);
+}
+
+.regie .lk-recording-control.is-recording .lk-recording-status,
+.regie .lk-recording-control.is-failed .lk-recording-status {
+  color: var(--status-critical);
+}
+
+/* La transition se VOIT (« une espèce de clignotement pour
+ * dire qu'il se déconnecte ») : au démarrage la pastille pulse, à l'arrêt
+ * la pastille et le bouton clignotent. */
+.regie .lk-recording-control.is-starting .lk-recording-dot {
+  animation: regie-rec-blink 1.4s ease-in-out infinite;
+}
+
+.regie .lk-recording-control.is-stopping .lk-recording-dot,
+.regie .lk-recording-control.is-stopping button {
+  animation: regie-rec-blink 1s ease-in-out infinite;
+}
+
+.regie .lk-recording-control.is-starting button,
+.regie .lk-recording-control.is-stopping button {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.regie .lk-recording-control.is-failed {
+  padding-left: var(--space-2);
+  border-left: var(--border-width-strong) solid var(--status-critical);
+}
+
+@keyframes regie-rec-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.2; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .regie .lk-recording-control.is-starting .lk-recording-dot,
+  .regie .lk-recording-control.is-stopping .lk-recording-dot,
+  .regie .lk-recording-control.is-stopping button {
+    animation: none;
+    opacity: 0.55;
+  }
+}
+
+.regie .lk-recording-error {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-2);
+  padding-left: var(--space-2);
+  border-left: var(--border-width-strong) solid var(--status-critical);
+}
+
+.regie .lk-recording-error__details code {
+  display: block;
+  max-height: 6rem;
+  overflow-y: auto;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  white-space: pre-wrap;
+}
+
+/* Mains levées */
+.regie .lk-hand-raise-host {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.regie .lk-hand-raise-host__header,
+.regie .lk-hand-raise-host__meta {
+  color: var(--text-secondary);
+  font-size: var(--type-small-size);
+}
+
+.regie .lk-hand-raise-host__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-2);
+}
+
+.regie .lk-hand-raise-host__item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border: var(--border-width-hairline) solid var(--border);
+  border-radius: var(--radius-interactive);
+  background: var(--surface);
+}
+
+/* Venu·e participer, pas encore admis·e : filet accent sur l'entrée et
+ * compteur en tête de file (hand_raise_host.jsx). La personne ne voit pas
+ * qu'elle attend : c'est à la régie de ne pas la faire attendre. */
+.regie .lk-hand-raise-host__item--a-admettre {
+  border-left: var(--border-width-strong) solid var(--accent);
+}
+
+.regie .lk-hand-raise-host__a-admettre {
+  padding-left: var(--space-2);
+  border-left: var(--border-width-strong) solid var(--accent);
+  font-weight: 700;
+}
+
+.regie .lk-hand-raise-host__name {
+  font-weight: 700;
+}
+
+.regie .lk-hand-raise-host__button {
+  margin-left: auto;
+}
+
+.regie .lk-hand-raise-host__alert {
+  color: var(--status-critical);
+  font-size: var(--type-small-size);
+}
+
+/* Discussion : fil borné en hauteur, la page reste lisible sur tablette. */
+.regie .lk-discussion {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.regie .lk-discussion__alert {
+  margin: 0;
+  padding-left: var(--space-2);
+  border-left: var(--border-width-strong) solid var(--status-critical);
+  font-size: var(--type-small-size);
+}
+
+.regie .lk-discussion__notice {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: var(--type-small-size);
+}
+
+.regie .lk-discussion__pinned {
+  max-height: 16rem;
+  overflow-y: auto;
+  padding: var(--space-2) var(--space-3);
+  border: var(--border-width-hairline) solid var(--border);
+  border-left: var(--border-width-strong) solid var(--accent);
+  border-radius: var(--radius-interactive);
+  background: var(--surface);
+}
+
+.regie .lk-discussion__pin {
+  padding: var(--space-2) 0;
+}
+
+.regie .lk-discussion__pin + .lk-discussion__pin {
+  border-top: var(--border-width-hairline) solid var(--border);
+}
+
+.regie .lk-discussion__messages {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 28rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.regie .lk-discussion__message {
+  display: grid;
+  gap: var(--space-1);
+  padding: var(--space-2) 0;
+  border-bottom: var(--border-width-hairline) solid var(--border);
+}
+
+.regie .lk-discussion__message:last-child {
+  border-bottom: 0;
+}
+
+.regie .lk-discussion__message[data-kind="question"] {
+  padding-left: var(--space-2);
+  border-left: var(--border-width-strong) solid var(--accent);
+}
+
+.regie .lk-discussion__empty {
+  color: var(--text-secondary);
+  font-size: var(--type-small-size);
+}
+
+.regie .lk-discussion__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+  font-size: var(--type-small-size);
+  color: var(--text-secondary);
+}
+
+.regie .lk-discussion__author {
+  font-weight: 700;
+  color: var(--text-primary);
+  overflow-wrap: anywhere;
+}
+
+.regie .lk-discussion__role,
+.regie .lk-discussion__tag {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  padding: 0 var(--space-1);
+  border: var(--border-width-hairline) solid var(--border-control);
+}
+
+.regie .lk-discussion__time {
+  font-variant-numeric: tabular-nums;
+}
+
+.regie .lk-discussion__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-left: auto;
+}
+
+.regie .lk-discussion__action {
+  padding: 0 var(--space-3);
+  font-size: var(--type-small-size);
+}
+
+.chrome-fenetre .regie .lk-discussion__body {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.regie .lk-discussion__form {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-2);
+}
+
+.regie .lk-discussion__label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.regie .lk-discussion__input {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 2.75rem;
+  max-height: 8rem;
+  box-sizing: border-box;
+  padding: var(--space-2) var(--space-3);
+  border: var(--border-width-hairline) solid var(--border-control);
+  border-radius: var(--radius-interactive);
+  background: var(--surface);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.9375rem;
+  resize: vertical;
+}

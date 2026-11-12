@@ -1,0 +1,51 @@
+<%# Formulaire création. Slug/state/host_sub/room_name NON exposés.
+    Champs = trousse charte (.champ), CTA = .btn. %>
+<% content_for :title, t("chrome.new_webinar") %>
+<h1><%= t("chrome.new_webinar") %></h1>
+
+<%= form_with model: @webinar, local: true, class: "live-form" do |f| %>
+  <%= render "webinars/errors", webinar: @webinar %>
+
+  <div class="champ">
+    <%= f.label :title, "Titre" %>
+    <%= f.text_field :title, required: true %>
+  </div>
+
+  <div class="champ">
+    <%= f.label :starts_at, "Démarre le" %>
+    <%= f.datetime_local_field :starts_at, required: true %>
+  </div>
+
+  <div class="champ">
+    <%= f.label :description, "Description" %>
+    <%= f.text_area :description, rows: 4 %>
+    <span class="aide">Texte affiché sur la page publique : les sauts de ligne sont conservés, le HTML est filtré (balises sûres seulement).</span>
+  </div>
+
+  <div class="champ">
+    <%= f.label :visibility, "Visibilité" %>
+    <%= f.select :visibility, [ [ "Brouillon", "draft" ], [ "Publié", "published" ] ] %>
+  </div>
+
+  <div class="champ">
+    <%= f.label :kind, "Format" %>
+    <%= f.select :kind, [ [ "Café IA", "cafe_ia" ], [ "Bootcamp", "bootcamp" ] ] %>
+  </div>
+
+  <div class="champ">
+    <%= f.label :price_cents, "Prix (centimes)" %>
+    <%= f.number_field :price_cents, min: 0, step: 1 %>
+    <span class="aide">0 = gratuit. Ignoré si le webinaire est rattaché à un pack.</span>
+  </div>
+
+  <div class="champ">
+    <%= f.label :pack_id, "Pack" %>
+    <%= f.collection_select :pack_id, @packs, :id, :name, { include_blank: "Aucun pack" } %>
+    <span class="aide">Rattache ce webinaire à un pack.</span>
+  </div>
+
+  <div class="live-actions">
+    <%= f.submit "Créer le webinaire", class: "btn" %>
+    <%= link_to "Annuler", webinars_path, class: "btn btn--secondary" %>
+  </div>
+<% end %>

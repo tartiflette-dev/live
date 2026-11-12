@@ -1,0 +1,40 @@
+<%# Résultats d'une recherche dans les replays (ReplaySearchIndex.search) :
+    par café, quelques passages, chacun avec son extrait surligné et un lien
+    qui ouvre le lecteur à l'instant exact. Partagé par /replays et la vue
+    « thèmes » de l'animation. Locaux : `search` (Result), `query`. %>
+<section class="recherche-resultats" aria-labelledby="replay-search-results" data-role="replay-search-results">
+  <h2 id="replay-search-results">
+    <% if search.count.zero? %>
+      Aucun passage pour « <%= query %> »
+    <% else %>
+      <%= pluralize(search.count, "passage", plural: "passages") %> pour « <%= query %> »<% if search.count >= ReplaySearchIndex::MAX_HITS %> (les plus pertinents)<% end %>
+    <% end %>
+  </h2>
+  <% if search.count.zero? %>
+    <p class="etat etat--neutre" data-role="replay-search-empty">
+      Essaie un autre mot, ou un mot plus court : la recherche trouve aussi les mots qui commencent pareil.
+    </p>
+  <% end %>
+  <% search.groups.each do |group| %>
+    <% webinar = group.replay.webinar %>
+    <article class="carte-dossier recherche-cafe" data-role="replay-search-group" data-replay="<%= webinar.slug %>">
+      <h3><%= link_to webinar.title, public_webinar_replay_path(webinar.slug), class: "titre-lien renvoi" %></h3>
+      <p><time datetime="<%= webinar.starts_at.iso8601 %>"><%= l webinar.starts_at, format: :long %></time></p>
+      <ul class="recherche-passages">
+        <% group.hits.each do |hit| %>
+          <li data-role="replay-search-hit">
+            <%= link_to public_webinar_replay_path(webinar.slug, instant: hit.offset.floor), class: "recherche-passage",
+                        data: { role: "replay-search-link" } do %>
+              <span class="recherche-instant"><%= replay_timecode(hit.offset) %></span>
+              <span class="recherche-genre"><%= replay_search_kind(hit.kind) %></span>
+              <span class="recherche-extrait"><%= replay_search_extract(hit.extract) %></span>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+      <% if group.hits_count > group.hits.size %>
+        <p class="aide">et <%= pluralize(group.hits_count - group.hits.size, "autre passage", plural: "autres passages") %> dans ce café.</p>
+      <% end %>
+    </article>
+  <% end %>
+</section>

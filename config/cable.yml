@@ -1,0 +1,15 @@
+development:
+  adapter: async
+
+test:
+  adapter: test
+
+# Action Cable ne sert à rien en production : le temps réel de la salle
+# (discussion, sondages, questions) passe par les data channels LiveKit
+# (MessageBroadcast, PollBroadcast, QaBroadcast), aucune vue n'ouvre de
+# flux Turbo et aucun client ne se connecte à /cable. `async` n'a aucune
+# dépendance : l'ancien adaptateur `redis` visait un Redis qui n'existe pas
+# (REDIS_URL absente, rien sur 6379). Un jour qu'un flux Action Cable sera
+# réellement servi, passer à solid_cable (base `cable`, config/database.yml).
+production:
+  adapter: async

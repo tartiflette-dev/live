@@ -1,0 +1,39 @@
+<p>Salut,</p>
+
+<% if @registrations.any? %>
+  <p>Tu viens à :</p>
+  <ul>
+    <% @registrations.each do |registration| %>
+      <li><strong><%= registration.webinar.title %></strong>, <%= l registration.webinar.starts_at, format: :day_time, locale: :fr %></li>
+    <% end %>
+  </ul>
+<% end %>
+<% if @registration_request.notify_next? %>
+  <p>Tu as demandé qu'on te prévienne du prochain Café IA.</p>
+<% end %>
+
+<% if @registration_request.marketing_choice_offered? %>
+  <p>
+    La case « Ok pour <%= organization_after("que") %> me recontacte au sujet de ses activités. Je peux dire stop quand je veux. » a été
+    cochée lors de cette demande. Sur la page de confirmation, tu choisiras : « Je confirme, et <%= Brand.organization %> peut
+    me recontacter » ou « Je confirme, sans être recontacté·e ». Pour dire stop plus tard, quand tu veux : le lien
+    « ne plus être recontacté·e » de cette page, ou <%= mail_to(Brand.support_email) %>.
+  </p>
+<% end %>
+
+<p>Presque fini ! Il reste un clic pour confirmer :</p>
+
+<p><%= link_to "Je confirme", @confirm_url %></p>
+
+<p>
+  Le bouton ne marche pas ? Copie ce lien dans ton navigateur :<br>
+  <%= @confirm_url %>
+</p>
+
+<% if @registrations.any? %>
+  <p>Garde ce mail : le même lien t'ouvrira le café le jour J. Et on te le renvoie la veille.</p>
+<% end %>
+
+<p>Ce n'est pas toi ? Ignore ce mail : sans confirmation, la demande est effacée sous 30 jours.</p>
+
+<p>À très vite,<br>— Le Café IA · <%= series_host %></p>

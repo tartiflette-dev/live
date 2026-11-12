@@ -1,0 +1,21 @@
+# Présence des animateurs (Webinar::HostPresence) : statut de la date et
+# réponses, affichés en public (catalogue, agenda, page du webinaire) et côté
+# animation.
+fr:
+  host_presence:
+    date_status:
+      confirmed: "Date confirmée"
+      to_confirm: "À confirmer"
+    answers:
+      present: "sera là"
+      absent: "ne sera pas là"
+      none: "pas encore répondu"
+en:
+  host_presence:
+    date_status:
+      confirmed: "Date confirmed"
+      to_confirm: "To be confirmed"
+    answers:
+      present: "will be there"
+      absent: "won't be there"
+      none: "no answer yet"

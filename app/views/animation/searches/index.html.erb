@@ -1,0 +1,53 @@
+<%# Journal des recherches des spectateurs dans les replays
+    (Animation::SearchesController) : requêtes fréquentes, requêtes sans
+    résultat, dernières recherches et leurs auteurs. Animateurs du projet. %>
+<% content_for :title, "Recherches dans les replays" %>
+<h1>Recherches dans les replays</h1>
+<p>
+  <%= link_to "Thèmes des cafés", animation_themes_path, class: "renvoi" %> ·
+  <%= link_to "Replays", replays_path, class: "renvoi" %>
+</p>
+<p class="live-actions" data-role="searches-periods">
+  <% { "30" => "30 jours", "90" => "90 jours", "365" => "12 mois" }.each do |value, label| %>
+    <%= link_to label, animation_searches_path(periode: value), class: "btn btn--secondary",
+                "aria-current": ("page" if value == @period) %>
+  <% end %>
+</p>
+
+<section aria-labelledby="searches-unanswered">
+  <h2 id="searches-unanswered">Sans résultat</h2>
+  <p class="aide">Ce que des spectateurs cherchent et qu'aucun café ne couvre encore : des sujets pour les prochains.</p>
+  <%= render "animation/searches/summaries", summaries: @unanswered, role: "searches-unanswered" %>
+</section>
+
+<section aria-labelledby="searches-frequent">
+  <h2 id="searches-frequent">Les plus fréquentes</h2>
+  <%= render "animation/searches/summaries", summaries: @frequent, role: "searches-frequent" %>
+</section>
+
+<section aria-labelledby="searches-recent">
+  <h2 id="searches-recent">Dernières recherches</h2>
+  <% if @recent.any? %>
+    <div class="conteneur-table">
+      <table class="table-dense" data-role="searches-recent">
+        <thead><tr><th>Quand</th><th>Requête</th><th>Résultats</th><th>Qui</th></tr></thead>
+        <tbody>
+          <% @recent.each do |search| %>
+            <tr>
+              <td><%= l search.created_at, format: :short %></td>
+              <td><%= search.query %></td>
+              <td><%= search.results_count %></td>
+              <td>
+                <% author = search.author %>
+                <%= link_to(author.is_a?(User) ? author.chat_alias : author.name,
+                            animation_person_path(PersonActivity.key_for(author)), class: "renvoi") %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <p class="etat etat--neutre">Aucune recherche sur cette période.</p>
+  <% end %>
+</section>

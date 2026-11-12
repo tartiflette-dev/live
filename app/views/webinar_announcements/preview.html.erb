@@ -1,0 +1,51 @@
+<%# Aperçu : le mail tel qu'il part (objet, texte, pied de la cible), le
+    NOMBRE de destinataires, et la confirmation explicite. Le formulaire de
+    confirmation porte les valeurs de l'aperçu ; « Modifier » les rapporte
+    dans le formulaire de composition. %>
+<% content_for :title, "Aperçu" %>
+<%= render "breadcrumb", webinar: @webinar %>
+<h1>Aperçu avant envoi</h1>
+
+<p class="envoi-nombre" data-role="recipients-count">
+  <strong><%= recipients_label(@recipients_count) %></strong>
+  <span><%= announcement_audience_label(@announcement.audience) %></span>
+</p>
+
+<article class="envoi-apercu" data-role="announcement-preview" aria-label="Aperçu du mail">
+  <p class="envoi-apercu-objet"><span class="aide">Objet :</span> <strong><%= @announcement.subject %></strong></p>
+  <div class="envoi-apercu-corps"><%= @announcement.body %></div>
+  <p class="envoi-apercu-pied" data-role="announcement-footer">
+    <%= @announcement.footer_text %>
+    <br><span class="envoi-apercu-lien"><%= @announcement.footer_link_label %></span>
+    <span class="aide">(lien personnel à chaque destinataire)</span>
+  </p>
+</article>
+
+<% if @recipients_count.positive? %>
+  <%= form_with url: webinar_announcements_path(@webinar), method: :post, local: true,
+                class: "live-form envoi-confirmation", data: { role: "announcement-confirm" } do |f| %>
+    <%= hidden_field_tag "announcement[audience]", @announcement.audience, id: nil %>
+    <%= hidden_field_tag "announcement[subject]", @announcement.subject, id: nil %>
+    <%= hidden_field_tag "announcement[body]", @announcement.body, id: nil %>
+    <%= hidden_field_tag :dispatch_token, @announcement.dispatch_token, id: nil %>
+    <%= hidden_field_tag :expected_count, @recipients_count, id: nil %>
+    <label class="case envoi-case">
+      <%= check_box_tag :confirmed, "1", false, required: true %>
+      <span>Je confirme l'envoi de ce message à <strong><%= recipients_label(@recipients_count) %></strong>.</span>
+    </label>
+    <div class="live-actions">
+      <%= f.submit "Envoyer à #{recipients_label(@recipients_count)}", class: "btn", data: { role: "announcement-send" } %>
+    </div>
+  <% end %>
+<% else %>
+  <p class="etat etat--ecart" data-role="no-recipients">Aucun destinataire pour cette cible : rien ne peut partir.</p>
+<% end %>
+
+<%= form_with url: preview_webinar_announcements_path(@webinar), method: :post, local: true,
+              class: "envoi-modifier", data: { role: "announcement-edit" } do |f| %>
+  <%= hidden_field_tag "announcement[audience]", @announcement.audience, id: nil %>
+  <%= hidden_field_tag "announcement[subject]", @announcement.subject, id: nil %>
+  <%= hidden_field_tag "announcement[body]", @announcement.body, id: nil %>
+  <%= hidden_field_tag :edit, "1", id: nil %>
+  <%= f.submit "Modifier le message", class: "btn btn--secondary" %>
+<% end %>

@@ -1,0 +1,85 @@
+<%# Intervenants en tableau, une ligne par personne : nom, email modifiable
+    en ligne (PATCH speakers#update), lien personnel à copier, menu « … »
+    (Régénérer, Révoquer, avec confirmation). La ligne d'ajout est en bas.
+    Locaux : `webinar`, `speakers`. %>
+<section aria-labelledby="speakers-heading" id="intervenants" data-role="speakers">
+  <h2 id="speakers-heading">Intervenants</h2>
+  <p>Un lien personnel par intervenant, sans compte. L’adresse sert à lui envoyer les fichiers du direct.</p>
+
+  <% if speakers.empty? %>
+    <p class="vide">Aucun intervenant invité.</p>
+  <% else %>
+    <%# Sans .conteneur-table : son défilement horizontal rognerait les
+        menus « … » ; le tableau passe en cartes sur téléphone. %>
+    <table class="table-dense table-intervenants">
+      <thead>
+        <tr>
+          <th scope="col">Nom</th>
+          <th scope="col">Email (fichiers du direct)</th>
+          <th scope="col">Lien personnel</th>
+          <th scope="col"><span class="sr-only">Autres actions</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% speakers.each do |speaker| %>
+          <% active = !speaker.revoked_at? %>
+          <tr data-speaker-id="<%= speaker.id %>">
+            <th scope="row"><%= speaker.name %></th>
+            <td class="table-intervenants__email">
+              <% if active %>
+                <%= form_with model: speaker, url: webinar_speaker_path(webinar, speaker), method: :patch, local: true,
+                              class: "form-ligne", data: { role: "speaker-email-form" } do |f| %>
+                  <div class="champ">
+                    <%= f.label :email, "Email de #{speaker.name}", for: "speaker-email-#{speaker.id}", class: "sr-only" %>
+                    <%= f.email_field :email, id: "speaker-email-#{speaker.id}", maxlength: 254, placeholder: "adresse@exemple.fr" %>
+                  </div>
+                  <%= f.submit "Enregistrer", class: "btn btn--secondary", data: { role: "speaker-email-save" } %>
+                <% end %>
+              <% else %>
+                <%= speaker.email.presence || "—" %>
+              <% end %>
+            </td>
+            <td class="table-intervenants__lien">
+              <% if speaker.replaced_by_id? %>
+                <span class="etat etat--neutre" data-role="speaker-replaced">Remplacé</span>
+              <% elsif !active %>
+                <span class="etat etat--neutre">Lien révoqué</span>
+              <% else %>
+                <% speaker_link = join_webinar_url(slug: webinar.slug, t: speaker.token) %>
+                <%= copy_link_button speaker_link, status_id: "copie-speaker-#{speaker.id}", role: "speaker-copy" %>
+                <%= copy_link_status "copie-speaker-#{speaker.id}" %>
+              <% end %>
+            </td>
+            <td class="table-intervenants__menu">
+              <% if active %>
+                <%= render layout: "webinars/actions_menu",
+                           locals: { label: "Autres actions : #{speaker.name}", role: "speaker-menu" } do %>
+                  <%= button_to "Régénérer (invalide l’ancien)", regenerate_webinar_speaker_path(webinar, speaker),
+                                class: "btn btn--secondary",
+                                form: { data: { confirm: "Régénérer le lien de #{speaker.name} ? L’ancien lien cessera de marcher." } },
+                                data: { role: "speaker-regenerate" } %>
+                  <%= button_to "Révoquer", revoke_webinar_speaker_path(webinar, speaker), class: "btn btn--secondary",
+                                form: { data: { confirm: "Révoquer le lien de #{speaker.name} ? Il ne pourra plus entrer par ce lien." } },
+                                data: { role: "speaker-revoke" } %>
+                <% end %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+
+  <%= form_with url: webinar_speakers_path(webinar), scope: :speaker, local: true, class: "form-ligne form-ligne--ajout",
+                data: { role: "speaker-add-form" } do |f| %>
+    <div class="champ">
+      <%= f.label :name, "Nom de l’intervenant" %>
+      <%= f.text_field :name, required: true, maxlength: 120 %>
+    </div>
+    <div class="champ">
+      <%= f.label :email, "Email (facultatif)" %>
+      <%= f.email_field :email, maxlength: 254 %>
+    </div>
+    <%= f.submit "Ajouter un intervenant", class: "btn" %>
+  <% end %>
+</section>

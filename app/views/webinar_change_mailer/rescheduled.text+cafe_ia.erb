@@ -1,0 +1,16 @@
+Salut <%= @registration.name %>,
+
+Le café change de date : « <%= @webinar.title %> » aura lieu <%= l @starts_at, format: :day_time, locale: :fr %> (heure de Paris).
+
+Tu restes inscrit·e. Ton lien pour entrer ne change pas :
+
+<%= @access_url %>
+
+Le fichier joint déplace le café dans ton agenda. Avec ton lien d'agenda perso, c'est déjà fait.
+
+Pas dispo à cette date ? Pas de souci : les prochaines sont sur <%= series_url %>
+
+Tu reçois ce mail parce que tu as confirmé ton inscription.
+
+À bientôt,
+— Le Café IA · <%= series_host %>

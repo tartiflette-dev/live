@@ -1,0 +1,45 @@
+<%# Champs de composition (écran d'envoi et « Modifier » de l'aperçu).
+    Cibles proposées = celles que l'utilisateur peut viser (droits). %>
+<%= form_with model: announcement, scope: :announcement, url: preview_webinar_announcements_path(webinar),
+              method: :post, local: true, class: "live-form envoi-form", data: { role: "announcement-form" } do |f| %>
+  <% if announcement.errors.any? %>
+    <div class="etat etat--ecart" role="alert">
+      <ul>
+        <% announcement.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <fieldset class="envoi-cibles">
+    <legend>À qui ?</legend>
+    <% audiences.each do |audience| %>
+      <label class="carte-radio" data-audience="<%= audience %>">
+        <%= f.radio_button :audience, audience %>
+        <span class="envoi-cible-texte">
+          <span class="titre"><%= announcement_audience_label(audience) %></span>
+          <% if counts %>
+            <span class="envoi-cible-nombre" data-role="audience-count"><%= recipients_label(counts.fetch(audience)) %></span>
+          <% end %>
+          <span class="detail"><%= announcement_audience_hint(audience) %></span>
+        </span>
+      </label>
+    <% end %>
+  </fieldset>
+
+  <div class="champ">
+    <%= f.label :subject, "Objet" %>
+    <%= f.text_field :subject, required: true, maxlength: Announcement::SUBJECT_MAX_LENGTH %>
+  </div>
+
+  <div class="champ">
+    <%= f.label :body, "Message" %>
+    <%= f.text_area :body, rows: 8, required: true, maxlength: Announcement::BODY_MAX_LENGTH %>
+    <span class="aide">Texte brut, envoyé tel quel. Le pied du mail (accès, retrait) est ajouté d'office.</span>
+  </div>
+
+  <div class="live-actions">
+    <%= f.submit "Voir l'aperçu", class: "btn" %>
+  </div>
+<% end %>

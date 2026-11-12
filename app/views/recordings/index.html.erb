@@ -1,0 +1,115 @@
+<%# Recordings. Vue animateur seule (host_sub scoped).
+    Le formulaire start/stop est ici (endpoint propre : la vue stage
+    n'est PAS un pré-requis). %>
+<% content_for :title, "Enregistrements" %>
+<% content_for :breadcrumb do %>
+  <span class="fil-sep" aria-hidden="true">›</span>
+  <%= link_to @webinar.title, webinar_path(@webinar), class: "fil-niveau" %>
+<% end %>
+<h1>Enregistrements — <%= @webinar.title %></h1>
+
+<section aria-labelledby="rec-controls">
+  <h2 id="rec-controls">Contrôles</h2>
+
+  <% if @webinar.ended? && @active_recording.nil? %>
+    <p class="etat etat--neutre" data-role="recording-closed">
+      Direct terminé : les enregistrements sont arrêtés. Reprenez le direct depuis la scène pour enregistrer de nouveau.
+    </p>
+  <% elsif @active_recording %>
+    <p class="etat etat--en-cours">
+      Enregistrement en cours (statut : <strong><%= @active_recording.status %></strong>,
+      démarré à <%= l(@active_recording.started_at, format: :long) if @active_recording.started_at %>).
+    </p>
+    <div class="live-actions">
+      <%= button_to "Arrêter l'enregistrement",
+                    stop_webinar_recording_path(@webinar, @active_recording),
+                    method: :post,
+                    class: "btn",
+                    form: { data: { turbo: false } },
+                    data: { role: "recording-stop" } %>
+    </div>
+  <% else %>
+    <div class="live-actions">
+      <%= button_to "Démarrer un enregistrement",
+                    webinar_recordings_path(@webinar),
+                    method: :post,
+                    class: "btn",
+                    form: { data: { turbo: false } },
+                    data: { role: "recording-start" } %>
+    </div>
+  <% end %>
+</section>
+
+<section aria-labelledby="rec-list">
+  <h2 id="rec-list">Direct mixé</h2>
+
+  <% if @recordings.any? %>
+    <%= render "recordings/table", recordings: @recordings, source_label: false %>
+  <% else %>
+    <p class="vide"><span class="quoi">Aucun enregistrement du direct mixé pour ce webinaire.</span></p>
+  <% end %>
+</section>
+
+<section aria-labelledby="rec-extraits">
+  <h2 id="rec-extraits">Extraits et shorts</h2>
+  <p>
+    Un extrait ou un short ne montre que des personnes aux extraits autorisés ; l'animation de droit l'est par
+    la politique de confidentialité, un co-animateur invité par son accord. « Accord retiré » : la personne ne doit plus apparaître dans ce qui est
+    publié, replay compris (procédure de dépublication, <code>docs/depublication.md</code>).
+  </p>
+  <% if @excerpt_consents.identities.any? %>
+    <div class="conteneur-table">
+      <table class="table-dense" data-role="excerpt-consents">
+        <thead><tr><th>Personne</th><th>Extraits et shorts</th></tr></thead>
+        <tbody>
+          <% @excerpt_consents.identities.each do |identity| %>
+            <tr data-excerpt-participant="<%= identity %>">
+              <td><%= @participant_names.fetch(identity, identity) %></td>
+              <td><%= excerpt_consent_badge(@excerpt_consents, identity) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <p class="vide"><span class="quoi">Personne n'a encore été enregistré ni n'a donné son accord.</span></p>
+  <% end %>
+</section>
+
+<section aria-labelledby="rec-transcript">
+  <h2 id="rec-transcript">Transcript</h2>
+  <% if @has_transcript %>
+    <p>
+      <%= link_to "Transcript (.txt)",
+                  transcript_webinar_recordings_path(@webinar, format: :txt),
+                  class: "btn btn--secondary",
+                  data: { role: "transcript-download" } %>
+    </p>
+  <% else %>
+    <p class="vide"><span class="quoi">Aucun segment transcrit pour l'instant.</span></p>
+  <% end %>
+</section>
+
+<section aria-labelledby="rec-pistes">
+  <h2 id="rec-pistes">Pistes par personne</h2>
+
+  <% if @tracks_by_participant.any? %>
+    <% @tracks_by_participant.each do |identity, tracks| %>
+      <div class="bloc-pistes" data-participant="<%= identity %>">
+        <h3><%= @participant_names.fetch(identity, identity) %></h3>
+        <p><%= excerpt_consent_badge(@excerpt_consents, identity) %></p>
+        <%= render "recordings/table", recordings: tracks, source_label: true %>
+        <% muxes = @participant_muxes.fetch(identity, []) %>
+        <% if muxes.empty? %>
+          <%= render "recordings/participant_mux", mux: nil, several: false %>
+        <% else %>
+          <% muxes.each do |mux| %>
+            <%= render "recordings/participant_mux", mux: mux, several: muxes.size > 1 %>
+          <% end %>
+        <% end %>
+      </div>
+    <% end %>
+  <% else %>
+    <p class="vide"><span class="quoi">Aucune piste séparée : elles s'enregistrent automatiquement pendant le direct, une par caméra, micro et écran partagé.</span></p>
+  <% end %>
+</section>

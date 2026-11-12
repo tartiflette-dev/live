@@ -1,0 +1,19 @@
+<p>Salut <%= @registration.name %>,</p>
+
+<p>
+  C'est confirmé : tu viens à <strong><%= @webinar.title %></strong>,
+  <%= l @webinar.starts_at, format: :day_time, locale: :fr %>.
+</p>
+
+<p>Ce lien perso t'ouvre le café depuis n'importe quel navigateur :</p>
+
+<p><%= link_to "Rejoindre le café", @access_url %></p>
+
+<p>
+  Le bouton ne marche pas ? Copie ce lien dans ton navigateur :<br>
+  <%= @access_url %>
+</p>
+
+<p>Garde ce mail, et ne fais pas tourner ce lien : il est à toi.</p>
+
+<p>À très vite,<br>— Le Café IA · <%= series_host %></p>

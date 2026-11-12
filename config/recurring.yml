@@ -1,0 +1,84 @@
+# Tâches récurrentes Solid Queue — chargées par le superviseur en prod
+# (config.solid_queue.recurring_tasks).
+#
+# `retention_purge` : RGPD, durées de conservation. Applique les engagements de
+# app/views/legal/confidentialite.html.erb — inscriptions à 12 mois,
+# enregistrements + transcription à 3 ans.
+#
+# Horaire : cron « 17 3 * * * » lu dans Time.zone de l'app (Europe/Paris,
+# config/application.rb). Donc 03:17 Europe/Paris — 01:17 UTC en été
+# (CEST), 02:17 UTC en hiver (CET).
+# Ne PAS lire ce cron comme de l'UTC. Production seulement : un poste
+# de dev ne purge jamais ses données de démonstration.
+# Idempotent : rejouable sans effet secondaire.
+#
+# `episode_publication_sweep` : publication Nextcloud des épisodes :
+# publie un direct public terminé depuis
+# moins de 24 h dès que ses enregistrements sont finalisés. Sans effet
+# tant que le compte Nextcloud n'est pas configuré (NEXTCLOUD_*).
+#
+# `crm_resync` : reprise de la synchro CRM (CrmResyncJob) — ré-enqueue
+# ce qui est dû selon Crm::Backlog (attente doublée après échec, plafonnée à
+# 24 h, jamais de gel) ; la cadence est aussi `Crm::Backlog::RESYNC_PERIOD`
+# (testé). État : GET /internal/crm_status. Sans effet tant que
+# CRM_SYNC_ENABLED != 1.
+#
+# `registration_reminder` : rappel de la veille aux inscrits confirmés
+# (RegistrationReminderJob, docs/registration-reminders.md) — toutes les
+# heures pleines de 09:00 à 20:00 Europe/Paris (fuseau ÉCRIT dans le cron),
+# = RegistrationReminder::SEND_HOURS (testé). Le premier tour sert la
+# veille à 09:00 ; les suivants, les confirmations arrivées depuis.
+# Sans effet tant que REMINDERS_ENABLED != 1.
+#
+# `host_attendance_reminder` : présence des animateurs (HostAttendanceReminderJob,
+# docs/host-presence.md) — chaque jour à 10:00 Europe/Paris (fuseau ÉCRIT dans
+# le cron) : rattrape les demandes manquantes des webinaires publiés à venir,
+# puis relance à J-3 les animateurs sans réponse. Idempotent : une demande et
+# une relance par animateur et par date.
+#
+# `transcriber_sweep` : le transcripteur de chaque captation ouverte (direct en
+# cours, ou composite actif avant le go_live) est vérifié chaque minute et
+# rappelé s'il manque (TranscriberSweepJob, TranscriberPresence) : agent tombé,
+# salle recréée, dispatch perdu. Sans effet tant que TRANSCRIPT_ENABLED != true.
+#
+# `replay_montage_sweep` : adopte les montages de replay rendus hors de
+# l'application par un moteur externe (ReplayMontageSweepJob, ReplayMontage,
+# docs/replays.md) : le montage devient la copie
+# de diffusion du replay. Ne lit que la file `_montages/demandes/`.
+
+default: &default
+  retention_purge:
+    class: RetentionPurgeJob
+    queue: default
+    schedule: "17 3 * * *"
+  episode_publication_sweep:
+    class: EpisodePublicationSweepJob
+    queue: default
+    schedule: every 5 minutes
+  crm_resync:
+    class: CrmResyncJob
+    queue: crm
+    schedule: every 30 minutes
+  registration_reminder:
+    class: RegistrationReminderJob
+    queue: default
+    schedule: "0 9-20 * * * Europe/Paris"
+  host_attendance_reminder:
+    class: HostAttendanceReminderJob
+    queue: default
+    schedule: "0 10 * * * Europe/Paris"
+  transcriber_sweep:
+    class: TranscriberSweepJob
+    queue: default
+    schedule: every minute
+  replay_montage_sweep:
+    class: ReplayMontageSweepJob
+    queue: default
+    schedule: every 10 minutes
+
+development: {}
+
+test: {}
+
+production:
+  <<: *default

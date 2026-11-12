@@ -1,0 +1,27 @@
+<%# Carte d'un webinaire au catalogue. `status` : :live, :starting_late
+    ou nil (à venir, sans pastille). Pastille du direct = .etat--en-cours,
+    même code que la liste animateur (webinars/index) ; retard =
+    .etat--alerte, pour ne pas se confondre avec la pastille prix
+    (.etat--info). %>
+<li class="carte-dossier">
+  <span class="ref"><%= webinar.kind_label %></span>
+  <h3><%= link_to webinar.title, public_webinar_path(slug: webinar.slug), class: "titre-lien renvoi" %></h3>
+  <% if status %>
+    <p>
+      <span class="etat <%= { live: "etat--en-cours", starting_late: "etat--alerte" }.fetch(status) %>"
+            data-role="catalogue-status"><%= t("catalogue.status.#{status}") %></span>
+    </p>
+  <% end %>
+  <p>
+    <time datetime="<%= webinar.starts_at.iso8601 %>"><%= l webinar.starts_at, format: :long %></time>
+    <%= date_status_badge(webinar) %>
+  </p>
+  <p>
+    <span class="etat etat--info"><%= webinar.price_label %></span>
+  </p>
+  <% unless webinar.free? %>
+    <p class="etat etat--neutre" data-role="paid-notice">
+      <%= t("webinars.paid_notice") %>
+    </p>
+  <% end %>
+</li>
