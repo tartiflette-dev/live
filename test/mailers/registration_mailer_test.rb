@@ -35,7 +35,7 @@ class RegistrationMailerTest < ActionMailer::TestCase
     end
   end
 
-  # Case de recontact cochée (politique v1.6) : l'annonce
+  # Case de recontact cochée : l'annonce
   # dit que la case « a été cochée lors de cette demande » (un tiers a pu la
   # cocher) et cite les DEUX boutons de la page, dans la tonalité de la page.
   BOX_CHECKED = /La case « Ok pour que Studio Exemple me recontacte au sujet de ses activités\. Je peux dire stop quand je veux\. » a été\s+cochée lors de cette demande/
@@ -50,7 +50,7 @@ class RegistrationMailerTest < ActionMailer::TestCase
 
       bodies(RegistrationMailer.request_confirmation(request)).each do |body|
         assert_match(BOX_CHECKED, body)
-        assert_no_match(/(Vous avez|Tu as) coché/, body, "la case a pu être cochée par un tiers (B1)")
+        assert_no_match(/(Vous avez|Tu as) coché/, body, "la case a pu être cochée par un tiers")
         choices.each { |choice| assert_match(choice, body, "le mail cite les libellés exacts des boutons") }
         assert_match(/« ne plus être recontacté·e »/, body)
         assert_match(/contact@example\.test/, body)

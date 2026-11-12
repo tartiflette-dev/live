@@ -34,8 +34,8 @@ class WebinarStatesController < ApplicationController
   # sinon le splat capture la valeur par défaut du concern (`{}`) et la
   # garde `:modern` s'applique à TOUTES les actions (dont `show`) — un UA
   # ancien reçoit 406 sur /w/:slug/state.json au lieu du 200 attendu.
-  # Pattern miroir de WebinarsController (bug B1, fix
-  # littéral : déplacer 3 lignes avant include).
+  # Pattern miroir de WebinarsController (correctif : déclarer la méthode
+  # avant l'include).
   def self.animateur_browser_policy_options
     { only: [ :go_live, :end_live, :resume ] }
   end
@@ -65,7 +65,7 @@ class WebinarStatesController < ApplicationController
     respond_with_transition_error(:resume, e)
   end
 
-  # POST /webinars/:id/end — done_when 'end_stops_recordings_fail_loud'.
+  # POST /webinars/:id/end — critère 'end_stops_recordings_fail_loud'.
   #
   # Chemin partagé avec la fin automatique (LiveEnding). La transition est
   # la garde d'entrée : un webinaire draft/ended avec
@@ -92,7 +92,7 @@ class WebinarStatesController < ApplicationController
     respond_with_transition_error(:end_live, e)
   end
 
-  # GET /w/:slug/state.json — done_when 'public_state_endpoint'.
+  # GET /w/:slug/state.json — critère 'public_state_endpoint'.
   # Draft visibility and operational warnings are private to the owning host.
   def show
     webinar = Webinar.find_by(slug: params[:slug])
@@ -159,7 +159,7 @@ class WebinarStatesController < ApplicationController
     Rails.configuration.x.room_service_client_factory.call
   end
 
-  # Ouverture du direct (go_live, reprise) — done_when 'go_live_starts_recording'.
+  # Ouverture du direct (go_live, reprise) — critère 'go_live_starts_recording'.
   #
   # Utilise `ensure_active` : si un Recording actif existe
   # déjà (typique : le host a d'abord visité /stage qui déclenche l'auto-

@@ -243,7 +243,7 @@ class Api::RegistrationsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-  # Politique v1.6 : plus de case d'inscription. Le
+  # Plus de case d'inscription. Le
   # `consent: true` de l'ancienne version du site reste accepté et ignoré.
   test "sans case d'inscription : 202 ; l'ancien `consent: true` est accepté et ignoré" do
     [ @payload, @payload.merge(consent: true), @payload.merge(consent: false) ].each do |payload|
@@ -460,7 +460,7 @@ class Api::RegistrationsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-  # P3 : les variantes +N d'une même boîte ne sont jamais exemptées : elles
+  # Les variantes +N d'une même boîte ne sont jamais exemptées : elles
   # comptent dans :unproven, donc au plus son total.
   test "vingt variantes +N pour un même webinaire : aucune exemptée, le total :unproven est respecté" do
     sent = 0

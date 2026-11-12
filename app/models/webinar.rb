@@ -34,7 +34,7 @@ class Webinar < ApplicationRecord
   # Durée PRÉVUE par format. Le modèle ne porte pas d'heure de fin ;
   # l'agenda en a besoin pour borner un
   # événement de calendrier (DTEND .ics, lien Google Agenda). Bootcamp :
-  # demi-journée par défaut, ni la spec ni les données ne fixant sa durée.
+  # demi-journée par défaut, aucune donnée ne fixant sa durée.
   PLANNED_DURATIONS = { "cafe_ia" => 1.hour, "bootcamp" => 3.hours }.freeze
 
   # Après la fin réelle — ou, si le direct n'a jamais été clos, après la
@@ -404,7 +404,7 @@ class Webinar < ApplicationRecord
   # ActiveRecord::RecordInvalid est capturé par prudence (course perdue
   # → on refuse, l'appel suivant lira la valeur gagnante).
   def guest_role_for(user)
-    # Durcissement sécurité (broken-authentication §1a) :
+    # Durcissement sécurité (broken-authentication) :
     # l'email utilisé pour matcher l'invitation DOIT être celui qui a
     # été vérifié par Pocket ID (claim `email_verified`). Si un flux
     # applicatif latéral modifie `user.email` sans refaire la paire

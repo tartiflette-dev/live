@@ -130,6 +130,8 @@
             hint: voice_t("registrations.not_me.room_hint", name: current_registration.name),
             container_class: "lk-page__pas-moi", button_class: "lk-page__pas-moi-bouton" %>
     <% end %>
-    <a class="lk-page__signature" href="<%= Brand.credit.url %>"><%= Brand.credit.label %><i></i></a>
+    <% if Brand.credit_shown? %>
+      <a class="lk-page__signature" href="<%= Brand.credit.url %>"><%= Brand.credit.label %><i></i></a>
+    <% end %>
   </footer>
 </main>

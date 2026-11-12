@@ -229,7 +229,7 @@ class WebinarsControllerTest < ActionDispatch::IntegrationTest
   # ---- Page SCÈNE (auth animateur, rendu HTML) ----
 
   test "stage_requires_credentials" do
-    # done_when principal : "La page scène exige l'auth ou un lien
+    # critère principal : "La page scène exige l'auth ou un lien
     # intervenant signé". Anonyme → redirect login.
     w = Webinar.create!(title: "démo", starts_at: 1.day.from_now, host_sub: @host.oidc_sub)
     get stage_webinar_path(slug: w.slug)
@@ -654,9 +654,9 @@ class WebinarsControllerTest < ActionDispatch::IntegrationTest
 
   # ---- Page SPECTATEUR (trois rendus : pre_live / room / ended) ----
   #
-  # done_when 1 (public_page_before_live) : hors live → :pre_live sous layout
+  # critère 1 (public_page_before_live) : hors live → :pre_live sous layout
   #   :application, aucun bundle LiveKit monté, compte à rebours branché.
-  # done_when 2 (public_page_live_and_ended) : state=live → :room (layout :room),
+  # critère 2 (public_page_live_and_ended) : state=live → :room (layout :room),
   #   state=ended → :pre_live avec libellé « direct terminé », sans countdown.
   # Visibility=draft : 404 anonyme, 200 host propriétaire (prévisualisation).
 

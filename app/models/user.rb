@@ -61,7 +61,8 @@ class User < ApplicationRecord
   # changement NE RATTACHE JAMAIS un nouveau sub à un user existant
   # — l'index unique `LOWER(email)` fait péter en RecordInvalid si on
   # tentait un `create!` avec un email déjà pris par un autre sub
-  # (défense broken-authentication §1c).
+  # (défense broken-authentication : un sub étranger ne s'empare jamais
+  # d'un compte par son email).
   def self.find_or_create_by_oidc!(sub:, email:, groups: nil, email_verified: nil)
     user = find_by(oidc_sub: sub)
     if user

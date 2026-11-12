@@ -10,7 +10,7 @@ require "open3"
 # hors des tests (publication muette en production).
 class NextcloudClientFactoryTest < ActiveSupport::TestCase
   NEXTCLOUD_VARIABLES = { "NEXTCLOUD_URL" => "https://files.example.invalid",
-                          "NEXTCLOUD_USERNAME" => "compte-live",
+                          "NEXTCLOUD_USERNAME" => "compte-test",
                           "NEXTCLOUD_APP_PASSWORD" => "app-password" }.freeze
 
   test "production : client construit quand les trois variables sont posées, aucun sinon" do

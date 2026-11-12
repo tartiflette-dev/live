@@ -9,7 +9,7 @@ class ApplicationController < ActionController::Base
   # de lui-même un plancher WebRTC bien plus bas que :modern.
 
   # Helpers d'authentification animateur. Les controllers
-  # spectateur (NG-2 spec) N'appellent PAS `authenticate_animateur!`.
+  # spectateur (anonymes par contrat) N'appellent PAS `authenticate_animateur!`.
   include Authenticatable
 
   # Langue : rotation fr → en → fr (partial shared/locale_rotate),

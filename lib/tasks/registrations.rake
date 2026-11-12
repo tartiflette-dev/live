@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Rattrapage du mail d'équipe (docs/registrations-api.md §Inscriptions transmises à l'équipe)
+# Rattrapage du mail d'équipe (docs/registrations-api.md §Inscriptions transmises à l'équipe et à la communauté)
 # pour les demandes confirmées dont le message n'a jamais été transmis :
 #   bin/rails registrations:notify_team_backlog            # simulation
 #   CONFIRM=1 bin/rails registrations:notify_team_backlog  # envoi

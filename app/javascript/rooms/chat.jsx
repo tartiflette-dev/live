@@ -292,7 +292,7 @@ export function DiscussionPanel({ chat, moderationUrl, onEnqueue, visible, close
             />
             <button type="submit" className="lk-discussion__send" disabled={sending || !draft.trim()}>Envoyer</button>
           </form>
-          {/* File Q&R (politique v1.8) : l'analyse des messages est
+          {/* File Q&R : l'analyse des messages est
               annoncée là où on écrit. */}
           <p className="lk-discussion__privacy" data-testid="discussion-privacy">
             Les messages peuvent être analysés par un modèle hébergé chez {organization} pour regrouper les questions

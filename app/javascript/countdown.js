@@ -12,7 +12,7 @@
 //     on stoppe les deux boucles (la page reste sur pre_live avec le
 //     libellé « direct terminé » servi au prochain refresh manuel).
 //
-// Zéro console.* (doctrine fail-loud : la console n'est pas lue par les
+// Zéro console.* (règle fail-loud, en-tête de rooms/room.jsx : la console n'est pas lue par les
 // spectateurs ; les erreurs de fetch sont silencieuses, la prochaine
 // itération du polling ré-essaiera). No-op si aucun élément trouvé —
 // permet de charger ce module inconditionnellement depuis application.js

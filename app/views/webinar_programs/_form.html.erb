@@ -8,7 +8,9 @@
   <div class="champ">
     <%= f.label :topic, "Sujet" %>
     <%= f.text_field :topic, maxlength: Webinar::Program::TOPIC_MAX %>
-    <span class="aide">Un titre court. Affiché sur la page publique, l’agenda, tartiflette.dev et le rappel de la veille.</span>
+    <%# Le site de la série (BRAND_SERIES_URL) lit l'agenda public : nommé s'il est configuré. %>
+    <% series_site = Brand.series.url.presence && URI.parse(Brand.series.url).host %>
+    <span class="aide">Un titre court. Affiché sur la page publique, l’agenda<%= ", #{series_site}" if series_site %> et le rappel de la veille.</span>
   </div>
 
   <div class="champ">

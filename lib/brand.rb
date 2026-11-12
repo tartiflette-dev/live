@@ -25,6 +25,9 @@ module Brand
     def links = values.fetch(:links, {})
     def series = values.fetch(:series)
 
+    # Crédit et liens affichés en bas de page, sauf BRAND_CREDIT_SHOWN=false.
+    def credit_shown? = ActiveModel::Type::Boolean.new.cast(values.fetch(:credit_shown, true)) != false
+
     # « qu' » ou « que » devant le nom de l'organisation (`word` = "que", "de").
     def elision(word, name = organization)
       name.match?(ELIDING_INITIAL) ? "#{word.delete_suffix("e")}'" : "#{word} "

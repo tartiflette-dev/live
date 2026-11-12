@@ -158,7 +158,7 @@ class VoicePagesTest < ActionDispatch::IntegrationTest
     assert_voice "Gardez le mail reçu", cafe: false
   end
 
-  # Case de recontact cochée (politique v1.6) : deux boutons
+  # Case de recontact cochée : deux boutons
   # qui disent ce qu'ils accordent, l'annonce « a été cochée lors de cette
   # demande », et le lien de retrait une fois l'accord donné.
   test "/confirmer Café IA, case cochée : annonce, deux boutons explicites, lien de retrait" do

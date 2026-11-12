@@ -1,6 +1,5 @@
-# Politique de sécurité du contenu, EN MODE BLOQUANT depuis le 11/11/2026.
-# Passée après une semaine d'observation en Report-Only (04/11 → 11/11) :
-# aucun `[csp-report]` inattendu dans les logs de l'instance de staging. Les
+# Politique de sécurité du contenu, EN MODE BLOQUANT, après une période
+# d'observation en Report-Only sans `[csp-report]` inattendu. Les
 # violations continuent d'être rapportées à
 # /csp-reports (CspReportsController, journal `[csp-report]`) — une
 # violation en mode bloquant apparaît donc DEUX fois : rapport + blocage.
@@ -10,8 +9,8 @@
 # Ce qui la rend nécessaire : une XSS future volerait le jeton intervenant
 # présent dans le DOM de la salle, le jeton LiveKit et les actions de régie.
 #
-# Ce qui casse en mode bloquant, connu à l'écriture (inventaire du
-# 04/11/2026 ; mesuré dans Chrome headless sur le catalogue, la connexion, la
+# Ce qui casse en mode bloquant, connu à l'écriture (inventaire mesuré
+# dans Chrome headless sur le catalogue, la connexion, la
 # page spectateur, la scène, la liste et la création de webinaires). L'anti-FOUC
 # n'est plus une violation : `undust_anti_fouc_tag` (gem undust-charte) et le
 # chrome par défaut posent le nonce (app/views/theme/_anti_fouc.html.erb).

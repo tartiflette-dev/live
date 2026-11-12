@@ -1,7 +1,7 @@
 module Internal
-  # File du relais WhatsApp des inscriptions Café IA confirmées, avec ou sans
-  # message — docs/registrations-api.md §Relais WhatsApp. L'app ne joint
-  # aucune API WhatsApp : le relais WhatsApp vient chercher les inscriptions,
+  # File du relais de messagerie (optionnel) des inscriptions confirmées,
+  # avec ou sans message — docs/registrations-api.md §Relais de messagerie.
+  # L'app ne joint aucune messagerie : le relais vient chercher les inscriptions,
   # les poste au groupe des co-organisateurs, puis acquitte chacune. Chemins
   # historiques (`registration_messages`) gardés : le relais les appelle.
   #

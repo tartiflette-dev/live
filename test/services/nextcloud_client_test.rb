@@ -29,7 +29,7 @@ class NextcloudClientTest < ActiveSupport::TestCase
 
   setup do
     @log = StringIO.new
-    @client = NextcloudClient.new(base_url: "https://cloud.test/", username: "compte-live",
+    @client = NextcloudClient.new(base_url: "https://cloud.test/", username: "compte-test",
                                   app_password: "app-secret", chunk_size: 5, logger: Logger.new(@log))
   end
 
@@ -45,10 +45,10 @@ class NextcloudClientTest < ActiveSupport::TestCase
       @client.ensure_folder("Cafe-IA/2030-01-17-cafe-ia-007")
     end
 
-    assert_equal [ "/remote.php/dav/files/compte-live/Cafe-IA", "/remote.php/dav/files/compte-live/Cafe-IA/2030-01-17-cafe-ia-007" ],
+    assert_equal [ "/remote.php/dav/files/compte-test/Cafe-IA", "/remote.php/dav/files/compte-test/Cafe-IA/2030-01-17-cafe-ia-007" ],
                  http.sent.map(&:path)
     assert_equal [ "MKCOL" ], http.sent.map(&:method).uniq
-    assert_equal "Basic #{Base64.strict_encode64('compte-live:app-secret')}", http.sent.first.headers["authorization"]
+    assert_equal "Basic #{Base64.strict_encode64('compte-test:app-secret')}", http.sent.first.headers["authorization"]
   end
 
   test "size_of lit getcontentlength du propstat 200, nil si le fichier n'existe pas" do
@@ -134,8 +134,8 @@ class NextcloudClientTest < ActiveSupport::TestCase
     end
 
     move = http.sent.sole
-    assert_equal [ "MOVE", "/remote.php/dav/files/compte-live/Relecture/Cafe-IA/e/video.mp4" ], [ move.method, move.path ]
-    assert_equal [ "https://cloud.test/remote.php/dav/files/compte-live/Cafe-IA/e/video.mp4", "T" ],
+    assert_equal [ "MOVE", "/remote.php/dav/files/compte-test/Relecture/Cafe-IA/e/video.mp4" ], [ move.method, move.path ]
+    assert_equal [ "https://cloud.test/remote.php/dav/files/compte-test/Cafe-IA/e/video.mp4", "T" ],
                  move.headers.values_at("destination", "overwrite")
 
     stub_http({ [ "MOVE", "/video.mp4" ] => FakeResponse.new("404", "") }) do
@@ -159,7 +159,7 @@ class NextcloudClientTest < ActiveSupport::TestCase
     end
     with_net_http_start(->(*, **, &block) { block.call(http) }) { @client.purge_old_versions("Relecture/a.mp4") }
 
-    assert_equal %w[1793364257 1793364260 1793364262].map { |name| "/remote.php/dav/versions/compte-live/versions/19658/#{name}" },
+    assert_equal %w[1793364257 1793364260 1793364262].map { |name| "/remote.php/dav/versions/compte-test/versions/19658/#{name}" },
                  http.sent.select { |sent| sent.method == "DELETE" }.map(&:path), "y compris l'entrée au nom de la courante"
     assert_equal 2, calls, "relu après la purge"
     assert_equal "bytes=0-0", http.sent.find { |sent| sent.method == "GET" }.headers["range"], "aucun contenu derrière la courante"
@@ -182,13 +182,13 @@ class NextcloudClientTest < ActiveSupport::TestCase
   # Sonde rejouée sur le serveur Nextcloud : première coupe
   # déposée avec la date du brut, une seule entrée « T » à la taille de la
   # coupe, contenu venu du brut.
-  test "P7 : coupe datée comme le brut — l'entrée au nom de la courante est supprimée, puis vérifiée vide" do
+  test "coupe datée comme le brut — l'entrée au nom de la courante est supprimée, puis vérifiée vide" do
     file = multistatus(size: 300, file_id: 19658, modified: "Fri, 30 Oct 2026 12:44:22 GMT")
     routes = { [ "PROPFIND", "/a.mp4" ] => FakeResponse.new("207", file),
                [ "PROPFIND", "/19658" ] => FakeResponse.new("207", versions_listing(19658, %w[1793364262])),
                [ "DELETE", "" ] => FakeResponse.new("204", "") }
     http = stub_http(routes.merge([ "GET", "/19658/1793364262" ] => FakeResponse.new("404", ""))) { @client.purge_old_versions("Relecture/a.mp4") }
-    assert_equal [ "/remote.php/dav/versions/compte-live/versions/19658/1793364262" ], http.sent.select { |sent| sent.method == "DELETE" }.map(&:path)
+    assert_equal [ "/remote.php/dav/versions/compte-test/versions/19658/1793364262" ], http.sent.select { |sent| sent.method == "DELETE" }.map(&:path)
 
     # Contenu toujours servi derrière l'entrée après la purge : erreur.
     stub_http(routes.merge([ "GET", "/19658/1793364262" ] => FakeResponse.new("206", "x"))) do
@@ -213,8 +213,8 @@ class NextcloudClientTest < ActiveSupport::TestCase
 
   test "purge_old_versions : une version sans taille n'est pas tolérée" do
     file = multistatus(size: 300, file_id: 19658, modified: "Fri, 30 Oct 2026 12:44:22 GMT")
-    listing = %(<?xml version="1.0"?><d:multistatus xmlns:d="DAV:"><d:response><d:href>/remote.php/dav/versions/compte-live/versions/19658/</d:href></d:response>) +
-              %(<d:response><d:href>/remote.php/dav/versions/compte-live/versions/19658/1793364262</d:href></d:response></d:multistatus>)
+    listing = %(<?xml version="1.0"?><d:multistatus xmlns:d="DAV:"><d:response><d:href>/remote.php/dav/versions/compte-test/versions/19658/</d:href></d:response>) +
+              %(<d:response><d:href>/remote.php/dav/versions/compte-test/versions/19658/1793364262</d:href></d:response></d:multistatus>)
     stub_http({ [ "PROPFIND", "/a.mp4" ] => FakeResponse.new("207", file), [ "PROPFIND", "/19658" ] => FakeResponse.new("207", listing) }) do
       assert_raises(NextcloudClient::Error) { @client.purge_old_versions("Relecture/a.mp4") }
     end
@@ -225,7 +225,7 @@ class NextcloudClientTest < ActiveSupport::TestCase
       http = stub_http({}) { @client.upload_file("Cafe-IA/pistes/marc micro.ogg", path) }
 
       put = http.sent.sole
-      assert_equal [ "PUT", "/remote.php/dav/files/compte-live/Cafe-IA/pistes/marc micro.ogg", "12345", "5" ],
+      assert_equal [ "PUT", "/remote.php/dav/files/compte-test/Cafe-IA/pistes/marc micro.ogg", "12345", "5" ],
                    [ put.method, put.path, put.body, put.headers["content-length"] ]
     end
   end
@@ -237,11 +237,11 @@ class NextcloudClientTest < ActiveSupport::TestCase
         @client.upload_file("Cafe-IA/v.mp4", path)
       end
 
-      destination = "https://cloud.test/remote.php/dav/files/compte-live/Cafe-IA/v.mp4"
+      destination = "https://cloud.test/remote.php/dav/files/compte-test/Cafe-IA/v.mp4"
       mkcol, *chunks, probe, move = http.sent
-      assert_equal [ "PROPFIND", "/remote.php/dav/files/compte-live/Cafe-IA/v.mp4" ], [ probe.method, probe.path ]
+      assert_equal [ "PROPFIND", "/remote.php/dav/files/compte-test/Cafe-IA/v.mp4" ], [ probe.method, probe.path ]
       assert_equal "MKCOL", mkcol.method
-      assert_match %r{\A/remote.php/dav/uploads/compte-live/undust-live-\h{16}\z}, mkcol.path
+      assert_match %r{\A/remote.php/dav/uploads/compte-test/undust-live-\h{16}\z}, mkcol.path
       assert_equal destination, mkcol.headers["destination"]
       assert_equal [ "#{mkcol.path}/1", "#{mkcol.path}/2", "#{mkcol.path}/3" ], chunks.map(&:path)
       assert_equal %w[abcde fghij kl], chunks.map(&:body)
@@ -271,7 +271,7 @@ class NextcloudClientTest < ActiveSupport::TestCase
     end
 
     assert_equal %w[MKCOL PUT PUT PUT PROPFIND DELETE MOVE], http.sent.map(&:method)
-    assert_equal "/remote.php/dav/files/compte-live/Cafe-IA/v.mp4", http.sent[5].path
+    assert_equal "/remote.php/dav/files/compte-test/Cafe-IA/v.mp4", http.sent[5].path
   end
 
   test "un morceau refusé abandonne le transfert (DELETE du dossier temporaire) et remonte l'erreur" do
@@ -363,7 +363,7 @@ class NextcloudClientTest < ActiveSupport::TestCase
     <<~XML
       <?xml version="1.0"?>
       <d:multistatus xmlns:d="DAV:" xmlns:oc="http://owncloud.org/ns">
-        <d:response><d:href>/remote.php/dav/files/compte-live/x</d:href>
+        <d:response><d:href>/remote.php/dav/files/compte-test/x</d:href>
           <d:propstat><d:prop>#{found}</d:prop><d:status>HTTP/1.1 200 OK</d:status></d:propstat>
           <d:propstat><d:prop><d:getcontentlength/></d:prop><d:status>HTTP/1.1 404 Not Found</d:status></d:propstat>
         </d:response>
@@ -377,7 +377,7 @@ class NextcloudClientTest < ActiveSupport::TestCase
   # paires [nom, taille].
   def versions_listing(file_id, names)
     entries = ([ "" ] + names).map do |name, size = 300|
-      href = "/remote.php/dav/versions/compte-live/versions/#{file_id}/#{name}".chomp("/")
+      href = "/remote.php/dav/versions/compte-test/versions/#{file_id}/#{name}".chomp("/")
       prop = name.empty? ? "" : "<d:propstat><d:prop><d:getcontentlength>#{size}</d:getcontentlength></d:prop>" \
                                 "<d:status>HTTP/1.1 200 OK</d:status></d:propstat>"
       "<d:response><d:href>#{href}#{'/' if name.empty?}</d:href>#{prop}</d:response>"

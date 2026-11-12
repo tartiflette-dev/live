@@ -1,11 +1,11 @@
-"""Client du whisper-adapter (OpenAI-compat), voie TEMPS RÉEL.
+"""Client d'un serveur Whisper compatible OpenAI, voie TEMPS RÉEL.
 
 Pourquoi pas le plugin openai de livekit-agents : il n'envoie ni ``priority``
-ni ``source``. Sans ``priority`` l'adapter route sur le backend ACCURATE
-(large-v3, un seul slot), partagé avec les passes batch : mesuré sur
-3 904 requêtes du transcripteur, 7,8 s en médiane, 14,9 s au p95,
-29 s au pire. ``priority=realtime`` route sur le backend rapide (turbo-q5,
-même VAD silero et même filtre ``--suppress-nst``), quasi inoccupé.
+ni ``source``. Un serveur qui sert plusieurs modèles peut s'en servir pour
+router : sans ``priority``, la requête risque d'attendre derrière des
+traitements longs (modèle précis, partagé avec des passes batch) ;
+``priority=realtime`` demande la voie rapide. Un serveur qui ignore ces
+champs répond normalement.
 """
 from __future__ import annotations
 
@@ -18,7 +18,7 @@ DEFAULT_SOURCE = "live"
 
 
 class WhisperError(Exception):
-    """Réponse inexploitable du whisper-adapter (statut, JSON, réseau)."""
+    """Réponse inexploitable du serveur Whisper (statut, JSON, réseau)."""
 
 
 class WhisperClient:

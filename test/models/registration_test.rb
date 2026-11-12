@@ -4,7 +4,7 @@ require "test_helper"
 
 # Registration.
 #
-# Trois done_when :
+# Trois critères :
 #   • registration_schema     — colonnes + unicité (webinar_id, email)
 #   • registration_lifecycle  — normalisation email, token, confirm!, scope
 #   • registration_lookup     — find_by_token défensif + has_many restrict
@@ -317,7 +317,7 @@ class RegistrationTest < ActiveSupport::TestCase
     assert_nil r.marketing_consent_token_expires_at
     assert_match(/\A[A-Za-z0-9_-]{32}\z/, r.marketing_withdrawal_token)
     assert_equal "Oui, j'accepte d'être recontacté·e", r.marketing_consent_label,
-                 "libellé du bouton /mc affiché, figé à l'accord (politique v1.7)"
+                 "libellé du bouton /mc affiché, figé à l'accord"
     # Rejeu : plus de jeton de consentement → false.
     assert_equal false, r.apply_marketing_consent!
     assert_equal t, r.reload.marketing_consent_at
@@ -432,12 +432,12 @@ class RegistrationTest < ActiveSupport::TestCase
     assert_not r.confirm!, "seconde confirmation : rien ne découle à nouveau"
   end
 
-  test "crm_sync_eligible? : confirmé sous la v1.0 = non ; consentement /mc posé ensuite = oui" do
+  test "crm_sync_eligible? : confirmé sans entrée au CRM = non ; consentement /mc posé ensuite = oui" do
     r = Registration.create!(webinar: @webinar, email: "old@example.org", name: "Old", confirmed_at: 1.month.ago)
     assert_not r.crm_sync_eligible?
     r.request_marketing_consent!
     r.apply_marketing_consent!
-    assert r.reload.crm_sync_eligible?, "un consentement donné sous la v1.1 vaut entrée au CRM"
+    assert r.reload.crm_sync_eligible?, "un consentement /mc vaut entrée au CRM"
   end
 
   test "crm_marketing_consent_pending? : consentement effectif, non retiré, pas encore poussé" do
@@ -492,7 +492,7 @@ class RegistrationTest < ActiveSupport::TestCase
     assert_not_includes pending, pushed
     assert_not_includes pending, withdrawn
     assert_not_includes pending, unconfirmed
-    assert_not_includes pending, legacy_v10, "pas de poussée rétroactive des confirmés v1.0"
+    assert_not_includes pending, legacy_v10, "pas de poussée rétroactive des confirmés sans entrée au CRM"
   end
 
   test "find_or_create_for : crée avec la demande, ne touche JAMAIS une inscription existante" do

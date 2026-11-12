@@ -156,7 +156,7 @@ class CoAnimateursElevationTest < ActionDispatch::IntegrationTest
     assert_response :not_found
   end
 
-  # ---- Révocation immédiate (stale-authorization §2a) ----
+  # ---- Révocation immédiate (stale-authorization) ----
 
   test "revocation_coupe_les_droits_immediatement_au_prochain_hit" do
     # Le co-animateur a une session Pocket ID OUVERTE. On supprime son

@@ -1,11 +1,10 @@
 class Pack < ApplicationRecord
   # Pack : formule payante (paiement MODÉLISÉ,
   # jamais encaissé). Un Pack regroupe N webinaires ; l'accès payant se
-  # débloque manuellement (action sœur, hors périmètre).
+  # débloque manuellement (`Registration#paid_confirmed_at`).
   #
   # `dependent: :nullify` : détruire un Pack laisse ses webinaires en
-  # place, `pack_id` remis à NULL. Cohérent avec NG-3 (pas de destroy
-  # exposé aujourd'hui) : le jour où un destroy sera légitime, aucun
+  # place, `pack_id` remis à NULL. Aucun destroy n'est exposé aujourd'hui : le jour où un destroy sera légitime, aucun
   # webinaire ne sera arraché avec le pack.
   has_many :webinars, dependent: :nullify
 

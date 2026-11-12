@@ -1,4 +1,4 @@
-"""Client whisper-adapter : voie temps réel et erreurs typées."""
+"""Client Whisper : voie temps réel et erreurs typées."""
 from __future__ import annotations
 
 import httpx
@@ -9,7 +9,7 @@ from whisper_client import WhisperClient, WhisperError
 
 def _client(handler) -> WhisperClient:
     return WhisperClient(
-        base_url="http://gt.test:2023/v1/",
+        base_url="http://whisper.test:8000/v1/",
         model="whisper-1",
         language="fr",
         api_key="sk-noop",
@@ -28,7 +28,7 @@ async def test_envoie_la_voie_temps_reel_et_la_source():
     text = await _client(handler).transcribe(b"RIFFfake")
 
     assert text == "Bonjour"
-    assert seen["url"] == "http://gt.test:2023/v1/audio/transcriptions"
+    assert seen["url"] == "http://whisper.test:8000/v1/audio/transcriptions"
     body = seen["body"]
     assert b'name="priority"\r\n\r\nrealtime' in body
     assert b'name="source"\r\n\r\nlive\r\n' in body

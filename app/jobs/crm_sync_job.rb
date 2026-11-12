@@ -5,8 +5,8 @@
 #
 #   1. PARTICIPANT — tout inscrit confirmé entre
 #      au CRM, base légale = intérêt légitime de l'organisation à suivre la relation
-#      avec ses participants (art. 6.1.f, politique v1.6), pour les
-#      confirmations posées depuis la politique v1.1 (`crm_enrolled_at`) :
+#      avec ses participants (RGPD art. 6.1.f), pour les confirmations
+#      qui valent entrée au CRM (`crm_enrolled_at`) :
 #      fiche trouvée par email ou créée (`crm_contact_id` = identifiant
 #      unique de la personne),
 #      segment `participant`, interaction « Inscription webinaire — titre »
@@ -34,7 +34,7 @@ class CrmSyncJob < ApplicationJob
 
   # Choix spectateur / participant : dans les notes, seul
   # champ libre du contrat HTTP du CRM (segment et source_path
-  # figés, docs/registrations-api.md §Format HTTP vers le CRM).
+  # figés, docs/registrations-api.md §Corps émis, exactement).
   PARTICIPATION_NOTES = {
     "spectator" => "Choix : spectateur (regarder, discussion).",
     "participant" => "Choix : participant (intervenir en caméra et micro)."

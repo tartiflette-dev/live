@@ -3,7 +3,7 @@
 require "test_helper"
 require Rails.root.join("db/migrate/20261031090100_enroll_legacy_marketing_consents")
 
-# Reprise au CRM des inscrits v1.0 confirmés au
+# Reprise au CRM des inscrits confirmés sans entrée au CRM, au
 # consentement marketing validé et non retiré. Étape de données de la
 # migration, testée sans changement de schéma.
 class EnrollLegacyMarketingConsentsTest < ActiveSupport::TestCase

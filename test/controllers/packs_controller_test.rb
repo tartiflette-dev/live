@@ -99,9 +99,9 @@ class PacksControllerTest < ActionDispatch::IntegrationTest
     assert_not_includes response.body, "Pack eve"
   end
 
-  # ---- NG-3 : pas de destroy ----
+  # ---- Pas de destroy ----
 
-  test "aucune route destroy sur /packs (NG-3 spec)" do
+  test "aucune route destroy sur /packs" do
     # `resources :packs, only: [:index, :new, :create]` n'expose ni
     # `pack_path` ni verbe DELETE. Inspecter la table de routes directement
     # (plus lisible qu'un rescue NoMethodError sur un helper absent).
@@ -110,10 +110,10 @@ class PacksControllerTest < ActionDispatch::IntegrationTest
     end
     verbs = pack_routes.map { |r| r.verb }.uniq
     assert_not_includes verbs, "DELETE",
-      "aucune route DELETE sur /packs (NG-3 spec)"
+      "aucune route DELETE sur /packs"
   end
 
-  # ---- Formulaire webinar propose le select pack (done_when 2) ----
+  # ---- Formulaire webinar propose le select pack (critère 2) ----
 
   test "GET /webinars/new expose select[pack_id] avec les packs du host" do
     Pack.create!(name: "Bootcamp perso", price_cents: 49000, host_sub: @host.oidc_sub)

@@ -7,7 +7,8 @@
 #   GET  /webinars/:webinar_id/announcements          → journal des envois
 #   POST /webinars/:webinar_id/announcements/:id/resume → reprise (jamais partis, sans nouvelles)
 #
-# Seule voie d'envoi (Announcement, classe D) : un humain connecté, page
+# Seule voie d'envoi (Announcement : envoi irréversible à des tiers) : un
+# humain connecté, page
 # après page. La confirmation exige la case cochée ET le nombre montré à
 # l'aperçu : si la cible a changé entre-temps, l'aperçu revient avec le
 # nouveau nombre. `dispatch_token`, tiré à l'aperçu, rend le POST idempotent

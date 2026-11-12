@@ -33,7 +33,8 @@ links:                           # liens affichés à côté du crédit
 Les URL de `credit` et de `links` doivent être en `http(s)` : toute autre valeur est refusée au
 démarrage. Le nom de l'organisation qui opère l'instance n'appartient pas au pack : chaque instance
 le pose par `BRAND_ORGANIZATION`. `config/brand.yml` puis les variables `BRAND_<CHEMIN>` (`BRAND_HOST`, `BRAND_CREDIT_URL`…)
-priment sur ces valeurs.
+priment sur ces valeurs. `BRAND_CREDIT_SHOWN=false` retire le crédit et ses liens du bas des pages
+(chrome par défaut, connexion, salle) : la mention n'est pas une condition de la licence.
 
 ## `tokens.css` et `chrome.css`
 

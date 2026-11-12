@@ -52,7 +52,7 @@ class StageStateButtonTest < JsSystemTestCase
   # Son affichage dans le StateButton exige une salle LiveKit connectée,
   # injoignable depuis la CI : vérification manuelle sur staging.
 
-  # done_when 'state_button_host_only' — viewer ne voit ni bouton ni
+  # critère 'state_button_host_only' — viewer ne voit ni bouton ni
   # data-attrs host. Un attribut forgé n'obtiendrait rien (les endpoints
   # restent host-only via authenticate_animateur!) — la garde de RENDU
   # est un signal UX ET une propriété testable, pas une sécurité.

@@ -1,7 +1,7 @@
 require "application_system_test_case"
 
 class WebinarCreationTest < ApplicationSystemTestCase
-  # — done_when principal (system test Capybara) :
+  # — critère principal (system test Capybara) :
   # "Un animateur authentifié crée un webinaire et voit 3 liens distincts".
 
   FAKE_KEY    = "APIfake"

@@ -41,13 +41,13 @@ class WebinarHostsController < ApplicationController
   def destroy
     # Scope IDOR-safe : `@webinar.webinar_hosts.find` empêche la
     # suppression d'un WebinarHost appartenant à un AUTRE webinaire par
-    # son id (défense IDOR §2d). `@webinar` est lui-même
+    # son id (défense IDOR). `@webinar` est lui-même
     # scopé `where_managed_by(current_user)` dans set_webinar.
     host = @webinar.webinar_hosts.find(params[:id])
     claimed_sub = host.claimed_sub
     host.destroy!
 
-    # Expulsion LiveKit (defense stale-authorization §2b) : si le
+    # Expulsion LiveKit (défense stale-authorization) : si le
     # co-animateur avait déjà rejoint la salle, son jeton reste valide
     # jusqu'à expiration (TTL 4 h, LivekitTokenService) — on l'éjecte
     # explicitement maintenant. Les requêtes app Rails suivantes

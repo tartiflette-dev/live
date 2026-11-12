@@ -3,11 +3,11 @@ class Registration < ApplicationRecord
   #
   # Gate mail = double opt-in :
   #   1. `Registration.create!` pose un `token` opaque (jamais devinable),
-  #      envoie le mail de confirmation (action sœur W2, hors périmètre ici).
+  #      envoie le mail de confirmation (RegistrationMailer).
   #   2. Le lien `/r/:token` affiche un bouton (GET sans effet) ; le POST
   #      appelle `confirm!` → `confirmed_at` posé.
   #   3. `paid_confirmed_at` est réservé à la confirmation manuelle par
-  #      l'animateur pour les webinaires payants (livrable 12, W7) — jamais
+  #      l'animateur pour les webinaires payants — jamais
   #      posé côté public.
   #
   # `reminder_sent_at` = dictionnaire json de l'état du rappel de la veille
@@ -109,8 +109,7 @@ class Registration < ApplicationRecord
   #
   # Retourne `true` à la PREMIÈRE confirmation seulement : l'appelant
   # n'émet qu'une fois ce qui en découle (CRM). Cette confirmation est un
-  # acte de la personne (POST) : elle vaut entrée au CRM (`crm_enrolled_at`,
-  # politique v1.1).
+  # acte de la personne (POST) : elle vaut entrée au CRM (`crm_enrolled_at`).
   #
   # Jamais une inscription retirée de la salle ni une pierre tombale : sous
   # le verrou de la ligne, un retrait ou une remise concurrents gagnent
@@ -275,7 +274,7 @@ class Registration < ApplicationRecord
   #    remis à NULL ; un retrait ultérieur passe par
   #    `marketing_withdrawal_token` (jeton persistant distinct).
   #
-  # Exception (politique v1.6) : pour une
+  # Exception : pour une
   # demande de l'API dont la case a été cochée, la page de confirmation
   # offre deux boutons explicites, libellés dans la tonalité de la page
   # (Voice) ; seul celui d'accord (`marketing=1`) pose le consentement
@@ -328,7 +327,7 @@ class Registration < ApplicationRecord
   # arrive : `marketing_consent_withdrawn_at.present?` tranche.
   #
   # Le libellé du bouton cliqué est figé dans la preuve, tel que la page
-  # /mc l'a affiché dans la tonalité de l'émission (politique v1.7).
+  # /mc l'a affiché dans la tonalité de l'émission.
   def apply_marketing_consent!(now: Time.current)
     return false if marketing_consent_token.blank?
     return false if marketing_consent_token_expired?(now)
@@ -343,7 +342,7 @@ class Registration < ApplicationRecord
   # version de la politique affichée, demande d'origine, libellé du bouton
   # cliqué. Deux actes y mènent : le POST /mc (`apply_marketing_consent!`)
   # et le bouton d'accord explicite de /confirmer, dans la tonalité de la
-  # page (`RegistrationRequest#confirm!`, politique v1.7). Même garantie 3 :
+  # page (`RegistrationRequest#confirm!`). Même garantie 3 :
   # jamais après un retrait.
   def grant_marketing_consent!(source:, path:, request: nil, label: nil, now: Time.current)
     return false if marketing_consent?
@@ -423,13 +422,14 @@ class Registration < ApplicationRecord
   # double opt-in confirmé suffit — tout inscrit confirmé entre au CRM
   # comme participant (base légale : intérêt légitime de l'organisation à suivre la
   # relation avec ses participants, RGPD art. 6.1.f, avec droit
-  # d'opposition — politique v1.6, cf. /confidentialite). La PROSPECTION reste
+  # d'opposition, cf. /confidentialite). La PROSPECTION reste
   # conditionnée au consentement marketing, poussé à part
   # (`crm_marketing_consent_pending?`) et retirable.
   #
-  # `crm_enrolled_at` exige que cette entrée découle d'un acte posé sous la
-  # politique v1.1 (confirmation POST ou consentement /mc) : pas de poussée
-  # rétroactive des inscrits confirmés sous la v1.0.
+  # `crm_enrolled_at` exige que cette entrée découle d'un acte de la personne
+  # qui valait entrée au CRM (confirmation POST ou consentement /mc) : pas de
+  # poussée rétroactive des inscrits confirmés avant que la confirmation
+  # vaille entrée au CRM.
   def crm_sync_eligible?
     confirmed? && crm_enrolled_at.present? && crm_sync_contact_gone_at.nil?
   end

@@ -149,8 +149,8 @@ class Config:
             livekit_api_key=os.environ["LIVEKIT_API_KEY"],
             livekit_api_secret=os.environ["LIVEKIT_API_SECRET"],
             whisper_base_url=os.environ["WHISPER_BASE_URL"].rstrip("/"),
-            # whisper-adapter ne valide pas la clé : sentinelle visible dans
-            # les logs, jamais un vrai secret.
+            # Serveur Whisper qui ne valide pas la clé : sentinelle visible
+            # dans les logs, jamais un vrai secret.
             whisper_api_key=os.getenv("WHISPER_API_KEY", "sk-whisper-adapter-noop"),
             whisper_model=os.getenv("WHISPER_MODEL", "whisper-1"),
             whisper_language=os.getenv("WHISPER_LANGUAGE", "fr"),
@@ -740,7 +740,7 @@ async def entrypoint(ctx: JobContext) -> None:
 
     if not await transcript_enabled(config):
         # Fail-closed : l'app n'a pas activé le transcript (TRANSCRIPT_ENABLED,
-        # posé par un déploiement kamal sous fenêtre de GO) ou ne répond pas.
+        # posé par la configuration de déploiement) ou ne répond pas.
         LOGGER.warning("transcript non activé par l'app — salle %s ignorée", ctx.room.name)
         ctx.shutdown("transcript non activé")
         return
@@ -822,7 +822,7 @@ def worker_options(memory_limits: dict[str, float]) -> WorkerOptions:
 
     L'auto-dispatch (``agent_name`` vide) n'envoyait l'agent qu'à la
     création de la salle : un direct terminé puis repris dans une salle
-    restée ouverte n'était plus transcrit (Café IA 9, 10/11/2026). Nommé,
+    restée ouverte n'était plus transcrit. Nommé,
     l'agent rejoint chaque salle que l'app lui désigne, autant de fois qu'il
     le faut.
     """

@@ -14,8 +14,8 @@ Rails.application.routes.draw do
   # Sonde de la synchro CRM (supervision, Bearer CRM_STATUS_TOKEN ; fermée
   # sans jeton) — docs/registrations-api.md §Sonde.
   get "/internal/crm_status", to: "internal/crm_status#show", as: :internal_crm_status
-  # Files du relais WhatsApp (jeton REGISTRATION_RELAY_TOKEN en en-tête ; fermées
-  # sans jeton) — docs/registrations-api.md §Relais WhatsApp : inscriptions
+  # Files du relais de messagerie (jeton REGISTRATION_RELAY_TOKEN en en-tête ;
+  # fermées sans jeton) — docs/registrations-api.md §Relais de messagerie : inscriptions
   # au groupe des co-organisateurs (chemins historiques `registration_messages`,
   # appelés tels quels par le relais), annonces à la communauté.
   get  "/internal/registration_messages/pending", to: "internal/registration_messages#pending",
@@ -259,11 +259,11 @@ Rails.application.routes.draw do
   # serait attrapé par `/w/:slug` avec slug="foo/stage").
   #
   #   /w/:slug/stage → scène animateur (auth, token host RE-SIGNÉ à
-  #                    chaque hit — invariant #72)
+  #                    chaque hit : jamais de JWT figé dans un favori)
   #   /w/:slug/join  → intervenant (token signé Rails, purpose :speaker)
   #   /w/:slug       → spectateur public (pas d'auth, canPublish=false)
   # ------------------------------------------------------------
-  # Replays : réservés à un compte undust (tous les replays publiés) ou à
+  # Replays : réservés à un compte connecté (tous les replays publiés) ou à
   # une inscription confirmée (le replay de son webinaire), cf. ReplayAccess.
   # Le lien personnel d'un inscrit est /w/:slug/replay?t=<jeton> : jeton en
   # query (filter_parameters), GET sans effet, accès ouvert au POST du
@@ -337,7 +337,8 @@ Rails.application.routes.draw do
 
   # ------------------------------------------------------------
   # Packs animateur.
-  # index / new / create seulement — pas de destroy (NG-3), pas de show
+  # index / new / create seulement — pas de destroy (hors du périmètre des
+  # packs : un pack n'est jamais supprimé depuis l'app), pas de show
   # (aucun use-case). Isolation par host_sub côté controller.
   # ------------------------------------------------------------
   resources :packs, only: [ :index, :new, :create ]

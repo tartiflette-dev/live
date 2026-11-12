@@ -34,8 +34,8 @@ class RegistrationMailer < ApplicationMailer
   # Demande de l'API cross-origin (docs/registrations-api.md) :
   # UN mail, UN lien `/confirmer?t=` pour tous les cafés créés ensemble et
   # le « préviens-moi du prochain ». Case de recontact cochée lors de la
-  # demande : un paragraphe annonce les deux boutons de la page (politique
-  # v1.6, RegistrationRequest#marketing_choice_offered?), sans second lien.
+  # demande : un paragraphe annonce les deux boutons de la page
+  # (RegistrationRequest#marketing_choice_offered?), sans second lien.
   def request_confirmation(registration_request)
     @registration_request = registration_request
     @registrations = registration_request.published_registrations.to_a

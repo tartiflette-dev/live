@@ -43,7 +43,7 @@ class CatalogueControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "public_index_lists_published" do
-    # done_when 1 : anonyme, 200, cartes triées starts_at asc, titre +
+    # critère 1 : anonyme, 200, cartes triées starts_at asc, titre +
     # date/heure (Europe/Paris via l fr) + kind + prix/Gratuit + lien /w/:slug.
     get root_path
     assert_response :success
@@ -79,7 +79,7 @@ class CatalogueControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "public_index_hides_draft_and_past" do
-    # done_when 2 : draft + passé absents ; GET / ne redirige plus vers /sign_in.
+    # critère 2 : draft + passé absents ; GET / ne redirige plus vers /sign_in.
     get root_path
     assert_response :success
     assert_no_match(/Draft à venir — invisible/, response.body)
@@ -87,12 +87,12 @@ class CatalogueControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "animateur_index_still_protected" do
-    # done_when 3 : /webinars (index animateur) reste derrière authenticate_animateur!.
+    # critère 3 : /webinars (index animateur) reste derrière authenticate_animateur!.
     get webinars_path
     assert_redirected_to sign_in_path
   end
 
-  # ---- done_when 3 : « paid_webinar_shows_notice » ----
+  # ---- critère 3 : « paid_webinar_shows_notice » ----
 
   test "paid_webinar_shows_notice" do
     # Catalogue : un webinaire payant (price_cents > 0) affiche

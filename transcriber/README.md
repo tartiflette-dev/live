@@ -83,7 +83,7 @@ plusieurs minutes, republier les mêmes phrases jusqu'à 5 fois, grossir à
 | Cause | Correctif |
 |---|---|
 | Un pipeline par piste, jamais retiré : 11 démarrés, 10 vivants pour 2 participants | `lifecycle.PipelineRegistry` : UN pipeline par identité, remplacé à la reconnexion, arrêté à `track_unsubscribed`, `track_unpublished` et `participant_disconnected` (par sid de piste / de session, pour ne pas couper le pipeline neuf) |
-| Whisper appelé SANS `priority` : backend ACCURATE partagé, 7,8 s en médiane, 29 s au pire | `whisper_client.WhisperClient` : `priority=realtime` (backend rapide), `source` (`WHISPER_SOURCE`, défaut `live`) |
+| Whisper appelé SANS `priority` : la requête attendait derrière les traitements longs du serveur | `whisper_client.WhisperClient` : `priority=realtime` (backend rapide), `source` (`WHISPER_SOURCE`, défaut `live`) |
 | `StreamAdapter` attend Whisper dans la boucle des événements VAD : file de segments non bornée | file bornée par pipeline (`SEGMENT_QUEUE_MAX`), le plus ancien est abandonné |
 | Horodatages d'archive = heure de publication (le retard était invisible) | `started_at` / `ended_at` = instants de la PAROLE ; un segment de plus de `LIVE_MAX_AGE_SECONDS` n'est plus diffusé mais reste archivé |
 | Audio 48 kHz converti en Python | flux demandé en 16 kHz mono dès la source |

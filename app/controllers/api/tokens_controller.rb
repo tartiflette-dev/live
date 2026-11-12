@@ -14,8 +14,7 @@ module Api
   # Aucun paramètre client (`role`, `host_sub`, `identity` sub…) ne peut
   # promouvoir le rôle. Un attaquant qui POST `{slug, role:"host"}` reçoit
   # un token viewer seulement avec une inscription confirmée, sinon 403.
-  # C'est la propriété DEMANDÉE par la spec, testée en
-  # controller test.
+  # Propriété de sécurité testée en controller test.
   #
   # Format : JSON in, JSON out. CSRF actif (Rails omakase, meta-tag CSRF
   # lu par le composant React et posé en X-CSRF-Token header).

@@ -30,7 +30,7 @@
 //
 // Fail-loud : erreurs réseau, 403 payment_required, 409 conflict et 502
 // permission_update_failed sont affichés en message visible ; jamais
-// console/alert (doctrine room.jsx).
+// console/alert (règle fail-loud, en-tête de room.jsx).
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Track } from "livekit-client";

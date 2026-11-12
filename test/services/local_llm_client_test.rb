@@ -25,7 +25,7 @@ class LocalLlmClientTest < ActiveSupport::TestCase
   end
 
   setup do
-    @client = LocalLlmClient.new(base_url: "http://gt.test:11434/v1/", model: "glm-4-9b")
+    @client = LocalLlmClient.new(base_url: "http://llm.test:11434/v1/", model: "glm-4-9b")
   end
 
   test "from_env : coupé sauf QA_LLM_ENABLED=true avec une QA_LLM_URL ; modèle glm-4-9b par défaut" do
@@ -57,7 +57,7 @@ class LocalLlmClientTest < ActiveSupport::TestCase
     assert_equal({ "type" => "json_object" }, payload["response_format"])
     assert_equal [ "max_tokens", "messages", "model", "response_format", "temperature" ], payload.keys.sort
     assert_equal({ "is_question" => true }, result)
-    assert_equal [ "gt.test", 11434 ], options.first(2)
+    assert_equal [ "llm.test", 11434 ], options.first(2)
     assert_equal LocalLlmClient::TIMEOUT_SECONDS, options.last[:read_timeout]
   end
 
@@ -101,7 +101,7 @@ class LocalLlmClientTest < ActiveSupport::TestCase
     assert_raises(LocalLlmClient::Timeout) { call_with(Net::ReadTimeout.new) }
     assert_raises(LocalLlmClient::Timeout) { call_with(Net::OpenTimeout.new) }
 
-    @client = LocalLlmClient.new(base_url: "http://gt.test:11434/v1", model: "glm-4-9b", timeout: 0.2)
+    @client = LocalLlmClient.new(base_url: "http://llm.test:11434/v1", model: "glm-4-9b", timeout: 0.2)
     slow = Object.new
     def slow.request(_req) = sleep(5)
     started = Process.clock_gettime(Process::CLOCK_MONOTONIC)

@@ -51,7 +51,7 @@ class CrmSyncJobTest < ActiveJob::TestCase
     assert_nil @registration.reload.pushed_to_crm_at
   end
 
-  test "confirmé sous la politique v1.0 (sans entrée CRM) : zéro HTTP, pas de rétroactivité" do
+  test "confirmé sans entrée CRM : zéro HTTP, pas de rétroactivité" do
     @registration.update!(crm_enrolled_at: nil)
     perform_with(@client)
     assert_empty @client.calls

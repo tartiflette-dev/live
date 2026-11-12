@@ -21,7 +21,7 @@ class PublicRegistrationTest < ApplicationSystemTestCase
     assert_link "Politique de confidentialité", href: "https://example.test/privacy"
     fill_in "Nom", with: "Alice"
     fill_in "Adresse email", with: "alice@example.test"
-    # Politique v1.6 : plus de case d'inscription, seule la case marketing reste.
+    # Plus de case d'inscription, seule la case marketing reste.
     assert_no_field "registration_consent"
     # Case marketing : NON cochée par défaut, FACULTATIVE (pas required).
     refute find_field("registration_marketing_consent")[:required]

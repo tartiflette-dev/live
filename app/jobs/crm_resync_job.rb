@@ -9,7 +9,7 @@
 #
 # Invariants : drapeau maître `CRM_SYNC_ENABLED` ; jobs enqueués idempotents
 # et sérialisés par personne ; rien que du déjà éligible (`crm_pending`
-# exige l'entrée v1.1 — aucune rétroactivité) ; journal = compteurs seuls.
+# exige `crm_enrolled_at` — aucune rétroactivité) ; journal = compteurs seuls.
 # État lisible par la supervision : GET /internal/crm_status.
 class CrmResyncJob < ApplicationJob
   queue_as :crm

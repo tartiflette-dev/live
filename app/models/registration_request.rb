@@ -69,9 +69,9 @@ class RegistrationRequest < ApplicationRecord
   # « préviens-moi » seul n'a rien à annoncer. Le groupe est ouvert : jamais
   # une inscription de test de bout en bout (adresse en `+cafe-test-`), ni un
   # prénom retenu à la confirmation (`community_announcement_withheld_at`,
-  # voir ANNOUNCEABLE_FIRST_NAME). Les demandes soumises avant la politique
-  # v2.3, qui n'annonçait pas ce canal, sont marquées par la migration
-  # 20261108100000.
+  # voir ANNOUNCEABLE_FIRST_NAME). Les demandes soumises avant l'ouverture de
+  # ce canal, que la politique d'alors n'annonçait pas, sont marquées par la
+  # migration 20261108100000.
   scope :community_announceable, -> {
     team_signups.where(community_announcement_withheld_at: nil).where.not("email LIKE ?", "%+cafe-test-%")
                 .where(id: Registration.joins(:webinar).merge(Webinar.published).select(:registration_request_id))
@@ -122,7 +122,7 @@ class RegistrationRequest < ApplicationRecord
   # n'émet qu'une fois ce qui en découle (CRM, mail aux co-organisateurs).
   #
   # `marketing_consent: true` = la personne a cliqué « Confirmer et
-  # accepter d'être recontacté·e » (politique v1.6). Défaut `false` : un
+  # accepter d'être recontacté·e ». Défaut `false` : un
   # appel sans choix explicite n'accorde jamais rien.
   # Sans choix offert (`marketing_choice_offered?`), sans effet.
   # L'accord va aux cafés affichés ; sans café, à la demande « préviens-moi ».

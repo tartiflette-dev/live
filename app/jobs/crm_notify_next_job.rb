@@ -8,7 +8,7 @@
 # marqueurs de synchro. `source_path` = `/confirmer`, la page où la
 # demande a été confirmée (aucun café visé).
 #
-# Case de recontact (politique v1.6) : sans café, le
+# Case de recontact : sans café, le
 # consentement est porté par la demande ; ce job pousse aussi
 # l'interaction « Consentement marketing » (preuve figée, marqueur
 # `crm_marketing_consent_pushed_at`) puis, s'il est retiré, son retrait

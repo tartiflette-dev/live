@@ -1,4 +1,4 @@
-# Lien animateur (volet E) : invitation propre à un
+# Lien animateur : invitation propre à un
 # webinaire, qui crée un WebinarHost après connexion Pocket ID avec email
 # vérifié. Additive : une table neuve, aucune colonne existante touchée.
 #

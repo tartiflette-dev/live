@@ -25,7 +25,7 @@ class RegistrationSubmission
   attribute :notify_next, :boolean, default: false
   attribute :profile, :string
   attribute :message, :string
-  # Case « Ok pour que l'organisation me recontacte » (politique v1.6), facultative.
+  # Case « Ok pour que l'organisation me recontacte », facultative.
   # Sans cast : seul un booléen JSON est accepté (ActiveModel castait
   # "no", "oui", 1… en true), et seul `true` vaut accord.
   attribute :marketing_consent

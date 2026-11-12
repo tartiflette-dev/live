@@ -53,7 +53,7 @@ class CrmResyncJobTest < ActiveJob::TestCase
     end
   end
 
-  test "SÉCURITÉ : aucune reprise des confirmés v1.0 (pas de rétroactivité)" do
+  test "SÉCURITÉ : aucune reprise des confirmés sans entrée au CRM (pas de rétroactivité)" do
     @webinar.registrations.create!(name: "Old", email: "old@example.org", confirmed_at: 1.month.ago)
     CrmResyncJob.perform_now
     assert_no_enqueued_jobs

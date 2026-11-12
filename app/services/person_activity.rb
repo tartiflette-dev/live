@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-# Fiche d'une personne pour l'animation du projet (Animation::PeopleController,
-# reste du lot 1 des replays) : tout ce qu'elle a fait sur live, à travers les
+# Fiche d'une personne pour l'animation du projet (Animation::PeopleController) :
+# tout ce qu'elle a fait sur live, à travers les
 # cafés. Une personne = une adresse : toutes ses inscriptions (casse ignorée)
 # et le compte de même adresse s'il existe.
 #

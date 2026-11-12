@@ -47,7 +47,7 @@ Journal : un co-animateur et un propriétaire n'y voient que les envois aux insc
 2. L'envoi exige la case « Je confirme l'envoi de ce message à N destinataires » et le même N : si la cible a changé depuis l'aperçu (nouvel inscrit, retrait), l'aperçu revient avec le nouveau nombre.
 3. Un jeton tiré à l'aperçu (`dispatch_token`, index unique) rend la confirmation idempotente : un double clic, même simultané, ne crée pas un second envoi (« Cet envoi est déjà parti »).
 
-**Seul un humain déclenche un envoi**, depuis cet écran (communication sortante, classe D) : aucune API, aucun job récurrent, aucun agent ne crée ni ne met en file un envoi.
+**Seul un humain déclenche un envoi**, depuis cet écran (communication sortante vers des tiers, irréversible une fois partie) : aucune API, aucun job récurrent, aucun agent ne crée ni ne met en file un envoi.
 
 ## Remise étalée, sans doublon
 

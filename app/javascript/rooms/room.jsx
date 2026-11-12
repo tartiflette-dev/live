@@ -47,11 +47,11 @@
 //       et où PreJoin lui-même n'émet pas d'erreur explicite).
 //
 // BUG HOOKS RÉGÉ (crash "Rendered more hooks than during the previous
-// render" → page /w/<slug>/stage BLANCHE en staging, découvert après merge) : deux `useCallback` étaient déclarés APRÈS les early-returns
+// render" → page /w/<slug>/stage blanche) : deux `useCallback` étaient déclarés APRÈS les early-returns
 // conditionnels loading/error. Règle React : tous les hooks AVANT le
-// premier return conditionnel. Refactor volet 1.
+// premier return conditionnel.
 //
-// Doctrine repo : jamais avaler une panne silencieusement.
+// Règle fail-loud : jamais avaler une panne silencieusement.
 
 import { createRoot } from "react-dom/client";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";

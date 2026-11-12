@@ -55,7 +55,8 @@ class MarketingWithdrawalsController < ApplicationController
   private
 
   # Le jeton désigne une inscription (case /mc ou café d'une demande) ou
-  # une demande « préviens-moi » sans café (politique v1.6). Le droit
+  # une demande « préviens-moi » sans café (la case de recontact y est
+  # portée par la demande). Le droit
   # d'opposition ne dépend pas du café : une inscription à un café dépublié
   # (annulé) se retire comme les autres, sous un titre neutre.
   def consent_holder

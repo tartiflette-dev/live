@@ -2,12 +2,12 @@ class CreateRegistrations < ActiveRecord::Migration[8.1]
   # Inscription à un webinaire (la confirmation par mail ouvre l'accès).
   #
   # Fondation Registration : email normalisé + name + token opaque + double
-  # opt-in (`confirmed_at`) + confirmation payante manuelle (`paid_confirmed_at`,
-  # W7). `reminder_sent_at` json vide par défaut, portera `{"j1": iso, "h1": iso}`
+  # opt-in (`confirmed_at`) + confirmation payante manuelle (`paid_confirmed_at`).
+  # `reminder_sent_at` json vide par défaut, portera `{"j1": iso, "h1": iso}`
   # posé par les jobs solid_queue (hors périmètre ici).
   #
-  # SQLite prod (volume `undust_live_storage`) — migration additive uniquement,
-  # cohérente avec l'invariant spec.
+  # SQLite de production (volume persistant de l'instance) — migration
+  # additive uniquement.
   def change
     create_table :registrations do |t|
       t.references :webinar, null: false, foreign_key: true

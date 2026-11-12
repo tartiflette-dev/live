@@ -37,7 +37,7 @@ class StageRecordingControlTest < ApplicationSystemTestCase
     OmniAuth.config.test_mode = false
   end
 
-  # done_when 'stage_recording_data_attrs_host_only' (rendu). Depuis
+  # critère 'stage_recording_data_attrs_host_only' (rendu). Depuis
   # la régie, la scène ne garde que le statut (indicateur) ; le
   # démarrage est dans la régie.
   test "host stage : statut d'enregistrement présent, démarrage dans la régie seulement" do
@@ -53,7 +53,7 @@ class StageRecordingControlTest < ApplicationSystemTestCase
     assert_selector "#regie[data-recording-status-url][data-recording-start-url]", visible: :all
   end
 
-  # done_when 'stage_recording_data_attrs_host_only' (viewer).
+  # critère 'stage_recording_data_attrs_host_only' (viewer).
   test "viewer public /w/:slug NE reçoit PAS les data-attrs recording" do
     @webinar.update!(state: "live", started_at: 1.minute.ago)
     confirm_viewer_registration(@webinar)
@@ -64,7 +64,7 @@ class StageRecordingControlTest < ApplicationSystemTestCase
     assert_no_selector "#livekit-room[data-recording-start-url]",  visible: :all
   end
 
-  # done_when 'auto_start_on_stage_entry'.
+  # critère 'auto_start_on_stage_entry'.
   test "auto-start : visite stage crée un Recording actif (aucun avant)" do
     assert_equal 0, @webinar.recordings.active.count
     sign_in_as(@host)
@@ -76,7 +76,7 @@ class StageRecordingControlTest < ApplicationSystemTestCase
     assert rec.recording? || rec.starting?, "actif attendu ; vu :#{rec.status}"
   end
 
-  # done_when 'auto_start_idempotent'.
+  # critère 'auto_start_idempotent'.
   test "auto-start idempotent : 2 visites = 1 seul Recording actif" do
     sign_in_as(@host)
     visit stage_webinar_path(slug: @webinar.slug)
@@ -87,7 +87,7 @@ class StageRecordingControlTest < ApplicationSystemTestCase
     assert_equal 1, @webinar.recordings.active.count
   end
 
-  # done_when 'egress_failure_surfaces_in_status_json'.
+  # critère 'egress_failure_surfaces_in_status_json'.
   test "auto-start : échec egress → Recording failed exposé par /recordings/status.json" do
     install_stubs(egress: failing_egress_stub("egress injoignable : refused"),
                   room:   success_room_stub)

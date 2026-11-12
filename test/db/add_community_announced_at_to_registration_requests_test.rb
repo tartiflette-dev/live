@@ -39,7 +39,7 @@ class AddCommunityAnnouncedAtToRegistrationRequestsTest < ActiveSupport::TestCas
     assert_equal @cutoff, @silent.community_announced_at
   end
 
-  test "demande soumise avant la coupure, confirmée après : jamais annoncée (politique v2.2)" do
+  test "demande soumise avant la coupure, confirmée après : jamais annoncée" do
     Step.exclude_existing!(@cutoff)
     webinar = Webinar.create!(title: "Café IA", starts_at: 3.days.from_now, host_sub: "h", visibility: "published")
     Registration.find_or_create_for(webinar, email: @unconfirmed.email, name: "Camille", registration_request: @unconfirmed)

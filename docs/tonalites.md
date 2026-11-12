@@ -4,7 +4,7 @@ L'application a une tonalité **par défaut** (vouvoiement, sobre) et chaque ém
 
 | Émission (`Webinar.kind`) | Tonalité | Référence |
 |---|---|---|
-| `cafe_ia` | tutoiement, phrases courtes, chaleureux, concret | le site [tartiflette.dev](https://tartiflette.dev) (dépôt `tartiflette--site`, `index.html`) : en cas d'écart, il fait foi |
+| `cafe_ia` | tutoiement, phrases courtes, chaleureux, concret | le site [tartiflette.dev](https://tartiflette.dev) : en cas d'écart, il fait foi |
 | `bootcamp` | défaut | aucune référence donnée pour l'instant |
 | hors émission (lien invalide, accueil, agenda, politique de confidentialité, interface animateur) | défaut | — |
 
@@ -17,9 +17,9 @@ Le nom d'une tonalité est le `kind` de l'émission (`Webinar#voice`). Une émis
 - **Demande groupée** (API tartiflette.dev, `/confirmer`) : la tonalité commune à tous ses webinaires ; « préviens-moi du prochain » compte comme un Café IA ; une demande qui mêle des émissions prend le défaut.
 - La copie est en français : les clés se lisent en `fr` même quand le chrome est en anglais.
 
-Les libellés des cases de consentement (« J'accepte… ») sont à la première personne et restent identiques dans toutes les tonalités : le mail de confirmation et la page `/mc` les citent mot pour mot. Le bouton d'accord de `/mc` (« Oui, j'accepte d'être recontacté·e », clé `marketing_consents.show.accept`) suit la même règle que ceux de `/confirmer` : son libellé, affiché dans la tonalité de l'émission, est figé dans la preuve à l'accord (`marketing_consent_label`, politique v1.7) et cité par la note CRM — une tonalité qui réécrit la clé ne change que les accords futurs.
+Les libellés des cases de consentement (« J'accepte… ») sont à la première personne et restent identiques dans toutes les tonalités : le mail de confirmation et la page `/mc` les citent mot pour mot. Le bouton d'accord de `/mc` (« Oui, j'accepte d'être recontacté·e », clé `marketing_consents.show.accept`) suit la même règle que ceux de `/confirmer` : son libellé, affiché dans la tonalité de l'émission, est figé dans la preuve à l'accord (`marketing_consent_label`) et cité par la note CRM — une tonalité qui réécrit la clé ne change que les accords futurs.
 
-Consentement de la demande groupée (politique v1.6, v1.7 cite les libellés café) : dans **chaque** tonalité, l'annonce dit que la case « a été cochée lors de cette demande » (jamais « vous avez / tu as coché » : un tiers a pu la cocher), et chacun des deux boutons dit ce qu'il accorde. Café IA : « Je confirme, et Acme peut me recontacter » (`marketing=1`) / « Je confirme, sans être recontacté·e » (`marketing=0`). Défaut : « Confirmer et accepter d'être recontacté·e » / « Confirmer sans être recontacté·e ». Le mail cite les libellés de la page de sa tonalité ; un test le vérifie. La preuve de l'accord fige le libellé réellement affiché (`marketing_consent_label`), que la note CRM relit : jamais recalculé à l'envoi.
+Consentement de la demande groupée : dans **chaque** tonalité, l'annonce dit que la case « a été cochée lors de cette demande » (jamais « vous avez / tu as coché » : un tiers a pu la cocher), et chacun des deux boutons dit ce qu'il accorde. Café IA : « Je confirme, et Acme peut me recontacter » (`marketing=1`) / « Je confirme, sans être recontacté·e » (`marketing=0`). Défaut : « Confirmer et accepter d'être recontacté·e » / « Confirmer sans être recontacté·e ». Le mail cite les libellés de la page de sa tonalité ; un test le vérifie. La preuve de l'accord fige le libellé réellement affiché (`marketing_consent_label`), que la note CRM relit : jamais recalculé à l'envoi.
 
 ## Donner sa tonalité à une émission
 

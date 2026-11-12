@@ -2,7 +2,7 @@ class SessionsController < ApplicationController
   # Pages animateur (connexion OIDC) : garde navigateur :modern.
   include AnimateurBrowserPolicy
 
-  # N13 — écran de connexion hors-session : layout force (aucun chrome).
+  # Écran de connexion hors-session : layout force (aucun chrome).
   layout "force"
 
   # Auth animateur — OpenID Connect, plus la connexion de développement
@@ -32,8 +32,8 @@ class SessionsController < ApplicationController
 
   def destroy
     reset_session
-    # Pas de root_path défini en V1 (aucune page publique animateur avant
-    # les vues W2) — on rebascule sur l'écran de connexion.
+    # Retour à l'écran de connexion : la déconnexion ne vise aucune page
+    # animateur.
     redirect_to sign_in_path, notice: "Déconnecté."
   end
 

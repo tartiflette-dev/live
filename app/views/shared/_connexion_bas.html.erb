@@ -3,5 +3,7 @@
 <footer class="connexion-bas">
   <%= render "shared/locale_rotate" %>
   <%= render "theme/theme_toggle" %>
-  <a class="chrome-signature" href="<%= Brand.credit.url %>"><%= Brand.credit.label %><i></i></a>
+  <% if Brand.credit_shown? %>
+    <a class="chrome-signature" href="<%= Brand.credit.url %>"><%= Brand.credit.label %><i></i></a>
+  <% end %>
 </footer>

@@ -7,11 +7,12 @@ class CreatePacks < ActiveRecord::Migration[8.1]
   # (`Pack has_many :webinars, dependent: :nullify` + `Webinar belongs_to
   # :pack, optional: true`) : la nullification s'exécute en Ruby et évite
   # d'introduire un `foreign_key` a posteriori sur une colonne qui existe
-  # déjà (migration additive, SQLite prod, doctrine spec §Invariants).
+  # déjà (les migrations restent additives : la base de production est un
+  # SQLite, où ajouter une contrainte réécrit la table).
   #
-  # `host_sub` (écart justifié dans la PR) : la spec mère §Hors scope
-  # impose l'isolation par host_sub sur `webinars` ; répliquer sur
-  # `packs` évite qu'un animateur voie/rattache les packs d'un autre.
+  # `host_sub` sur `packs` : les webinaires sont déjà isolés par
+  # `host_sub` (chaque animateur ne voit que les siens) ; la même colonne
+  # ici évite qu'un animateur voie ou rattache les packs d'un autre.
   def change
     create_table :packs do |t|
       t.string  :name,        null: false

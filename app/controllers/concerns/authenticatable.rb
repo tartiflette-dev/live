@@ -20,7 +20,7 @@ module Authenticatable
   # Compte Pocket ID connecté, animateur ou spectateur des replays
   # (`animateur_signed_in?` les distingue) ; nil sans session valide.
   # N'exécute AUCUN lookup si `session[:user_id]` est absent — sur les pages
-  # de la salle (NG-2 spec : aucune auth requise) le controller ne touche
+  # de la salle (aucune auth requise) le controller ne touche
   # jamais la table `users`. Purge la session si elle dépasse la fenêtre
   # maximale (voir `session_max_age`) — fail-closed.
   def current_user
@@ -68,7 +68,7 @@ module Authenticatable
   end
 
   # À appeler dans un `before_action` sur les controllers animateur.
-  # NG-2 (spec) : ce filtre ne doit JAMAIS être posé sur les controllers
+  # Ce filtre ne doit JAMAIS être posé sur les controllers
   # de la salle — le spectateur du direct est anonyme par contrat.
   #
   # Compte connecté SANS droit d'animation (spectateur des replays, compte
@@ -95,7 +95,7 @@ module Authenticatable
     if request.get? || request.head?
       session[:return_to] = request.fullpath
     end
-    # Redirection VERS LE LOGIN OIDC (spec done_when : "route animateur
+    # Redirection VERS LE LOGIN OIDC (critère : "route animateur
     # sans session redirige vers le login OIDC"). La request phase
     # OmniAuth est en POST (omniauth-rails_csrf_protection) donc on
     # renvoie sur `/sign_in` qui affiche le bouton `button_to /auth/pocket_id`.

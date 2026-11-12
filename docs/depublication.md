@@ -1,6 +1,6 @@
 # Retrait de l'accord à l'image et dépublication
 
-Procédure promise par la politique de confidentialité (v2.2, section « Retrait de votre accord et dépublication »). Délais, comptés depuis le retrait ou la demande : **7 jours** pour les extraits et shorts, **30 jours** pour le replay publié, **30 jours** pour supprimer les fichiers d'origine sur demande d'effacement. Responsable : l'éditeur du service, seul à publier replays et extraits ou à pouvoir le demander aux co-organisateurs de la série (tartiflette.dev).
+Procédure à annoncer dans la politique de confidentialité de l'instance (retrait de l'accord à l'image et dépublication). Délais retenus par l'instance d'origine, comptés depuis le retrait ou la demande : **7 jours** pour les extraits et shorts, **30 jours** pour le replay publié, **30 jours** pour supprimer les fichiers d'origine sur demande d'effacement. Responsable : l'éditeur du service, seul à publier replays et extraits ou à pouvoir le demander aux co-organisateurs de la série (tartiflette.dev).
 
 ## D'où vient un retrait
 

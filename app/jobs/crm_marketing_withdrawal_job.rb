@@ -7,10 +7,9 @@
 # Interaction `kind=form`, `source` dédié — exploitable côté CRM pour
 # filtrer les contacts qui ont retiré leur consentement.
 #
-# Le retrait porte sur la PROSPECTION : depuis la politique v1.6,
-# la fiche du participant reste au CRM (base légale : intérêt
-# légitime, art. 6.1.f, politique v1.6) ; seule l'autorisation de recontact
-# tombe.
+# Le retrait porte sur la PROSPECTION : la fiche du participant reste au
+# CRM (base légale : intérêt légitime, RGPD art. 6.1.f) ; seule
+# l'autorisation de recontact tombe.
 #
 # Invariants :
 # - Rien n'est envoyé si `CRM_SYNC_ENABLED != "1"`.

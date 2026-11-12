@@ -19,7 +19,7 @@ class WebinarHostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   # Stub RoomServiceClient capturant les appels remove_participant —
-  # défense stale-authorization §2b. Le stub réussit par défaut ; les
+  # défense stale-authorization. Le stub réussit par défaut ; les
   # tests qui veulent exercer la branche « expulsion échoue » peuvent
   # poser `raise_on_remove: RoomServiceClient::Error.new(...)`.
   class FakeRoomService
@@ -115,7 +115,7 @@ class WebinarHostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "idor_destroy_webinar_host_d_un_autre_webinaire_renvoie_404" do
-    # Défense IDOR §2d : un WebinarHost appartenant à
+    # Défense IDOR : un WebinarHost appartenant à
     # un AUTRE webinaire ne doit pas être supprimable via son id. Le
     # scope `@webinar.webinar_hosts.find` fait le travail (ActiveRecord
     # restreint à la relation).
@@ -133,7 +133,7 @@ class WebinarHostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "destroy_expulse_le_coanimateur_du_livekit_quand_il_a_deja_claim_et_le_webinaire_est_live" do
-    # Défense stale-authorization §2b : retirer un co-animateur doit
+    # Défense stale-authorization : retirer un co-animateur doit
     # couper ses droits IMMÉDIATEMENT, y compris une session LiveKit
     # ouverte. On expulse via RoomServiceClient#remove_participant.
     fake_room = stub_room_service

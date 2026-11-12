@@ -18,7 +18,7 @@ WORKDIR /rails
 ENV RAILS_ENV="development" \
     BRAND_THEME="tartiflette" \
     BUNDLE_PATH="/usr/local/bundle" \
-    BUNDLE_WITHOUT="theme_undust:test"
+    BUNDLE_WITHOUT="test"
 
 COPY Gemfile Gemfile.lock ./
 RUN bundle install --jobs 4 && \

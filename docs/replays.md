@@ -278,4 +278,5 @@ aboutit. Le marqueur ne porte jamais le nom du fichier en cause. L'application n
   café ne couvre), les plus fréquentes, les dernières avec leur auteur, sur 30 jours, 90 jours
   ou 12 mois.
 - Conservation : 12 mois après la recherche (`RetentionPurgeJob`) ; avant, elles partent avec
-  l'inscription (effacement `crm:erase`, rétention) ou le compte. Politique v2.6.
+  l'inscription (effacement `crm:erase`, rétention) ou le compte. Durée à annoncer dans la
+  politique de confidentialité de l'instance.

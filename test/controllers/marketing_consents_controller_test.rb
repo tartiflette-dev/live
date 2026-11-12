@@ -81,7 +81,7 @@ class MarketingConsentsControllerTest < ActionDispatch::IntegrationTest
                                          :marketing_consent_policy_version, :marketing_consent_request_id),
                  "preuve figée à l'accord"
     assert_equal "Oui, j'accepte d'être recontacté·e", @registration.marketing_consent_label,
-                 "libellé du bouton affiché, figé à l'accord (politique v1.7)"
+                 "libellé du bouton affiché, figé à l'accord"
   end
 
   test "POST /mc fige le libellé du bouton RÉELLEMENT affiché, par tonalité" do

@@ -4,7 +4,7 @@ require "test_helper"
 
 # WebinarStatesController.
 #
-# On assert (3 done_when) :
+# On assert (3 critères) :
 #   • go_live_starts_recording : POST go_live (host) → draft→live +
 #     started_at + Recording composite créé via EgressClient (stubbé) ;
 #     déjà live/ended → 409, aucun changement.
@@ -21,7 +21,7 @@ class WebinarStatesControllerTest < ActionDispatch::IntegrationTest
   # ---- Stub EgressClient (duck-type sur start_room_composite / stop) ----
   # Identique en shape à RecordingsControllerTest::StubClient — dupliqué
   # ici volontairement : les deux suites ont leur propre setup et
-  # partager le stub introduirait un couplage inter-tests (SRP §0.4).
+  # partager le stub introduirait un couplage inter-tests.
 
   class StubClient
     attr_reader :calls, :behavior
@@ -154,7 +154,7 @@ class WebinarStatesControllerTest < ActionDispatch::IntegrationTest
     assert_equal "live", @webinar.reload.state
   end
 
-  # ---- done_when 'go_live_starts_recording' ----
+  # ---- critère 'go_live_starts_recording' ----
 
   test "go_live_starts_recording — draft → live + started_at + Recording composite via egress" do
     stub = StubClient.new(start_result: { egress_id: "EG_go", status: :starting, raw: nil })
@@ -290,7 +290,7 @@ class WebinarStatesControllerTest < ActionDispatch::IntegrationTest
     assert_match(/nope/, rec.error_message)
   end
 
-  # ---- done_when 'end_stops_recordings_fail_loud' ----
+  # ---- critère 'end_stops_recordings_fail_loud' ----
 
   test "end_stops_recordings_fail_loud — live → ended + ended_at, tous les Recordings actifs stoppés" do
     @webinar.update!(state: "live", started_at: 1.minute.ago)
@@ -656,7 +656,7 @@ class WebinarStatesControllerTest < ActionDispatch::IntegrationTest
     assert_equal "ended", @webinar.reload.state
   end
 
-  # ---- done_when 'public_state_endpoint' ----
+  # ---- critère 'public_state_endpoint' ----
 
   test "public_state_endpoint — visibility=draft → 404 (aucune fuite)" do
     # visibility default = draft
@@ -694,7 +694,7 @@ class WebinarStatesControllerTest < ActionDispatch::IntegrationTest
     assert_response :not_found
   end
 
-  # B1 : non-régression du bug d'ordre `include` /
+  # Non-régression du bug d'ordre `include` /
   # `def self.animateur_browser_policy_options`. Un UA legacy (< :modern)
   # DOIT recevoir 200 sur state.json (endpoint public, hors garde animateur).
   # Test rouge avec l'ancien ordre (allow_browser :modern splaté sans

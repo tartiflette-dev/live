@@ -183,7 +183,7 @@ module Api
 
     # ---- INVARIANT : rôle décidé SERVEUR, jamais client ----
 
-    # done_when principal : "L'endpoint token refuse un rôle host à un
+    # critère principal : "L'endpoint token refuse un rôle host à un
     # non-animateur" — un spectateur qui POST `role: host` reçoit un token
     # viewer (jamais host).
     test "token_endpoint_role_enforcement" do

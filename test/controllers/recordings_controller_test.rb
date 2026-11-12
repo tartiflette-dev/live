@@ -6,13 +6,13 @@ require "test_helper"
 #
 # EgressClient MOCKÉ via factory injectée (config.x.egress_client_factory).
 # On assert :
-#   • start/stop pilotent le client mocké et persistent l'egress_id (done_when
+#   • start/stop pilotent le client mocké et persistent l'egress_id (critère
 #     'start_stop_egress')
-#   • listing / start / stop / download refusent un non-host (done_when
+#   • listing / start / stop / download refusent un non-host (critère
 #     'recordings_scoped_to_host', 403 spec = 404 ici : révéler l'existence
 #     d'un webinaire d'un autre = leak, on rend 404 comme WebinarsController)
 #   • un échec egress est visible dans l'UI (flash) + Recording en failed
-#     (done_when 'egress_failure_surfaces', invariant fail-loud)
+#     (critère 'egress_failure_surfaces', invariant fail-loud)
 #   • le téléchargement refuse un path forgé (traversal)
 class RecordingsControllerTest < ActionDispatch::IntegrationTest
   include ActiveJob::TestHelper
@@ -111,7 +111,7 @@ class RecordingsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to sign_in_path
   end
 
-  # ---- done_when 'recordings_scoped_to_host' ----
+  # ---- critère 'recordings_scoped_to_host' ----
 
   test "recordings_scoped_to_host — non-host gets 404 on index" do
     sign_in_as(@other)
@@ -164,7 +164,7 @@ class RecordingsControllerTest < ActionDispatch::IntegrationTest
     ENV["TRACK_EGRESS_ENABLED"] = previous
   end
 
-  # ---- done_when 'start_stop_egress' ----
+  # ---- critère 'start_stop_egress' ----
 
   test "start_stop_egress — start persiste egress_id et transitionne recording" do
     stub = StubClient.new(start_result: { egress_id: "EG_alpha", status: :starting, raw: nil })
@@ -222,7 +222,7 @@ class RecordingsControllerTest < ActionDispatch::IntegrationTest
     assert_match(/déjà en cours/i, flash[:alert])
   end
 
-  # ---- done_when 'egress_failure_surfaces' (fail-loud) ----
+  # ---- critère 'egress_failure_surfaces' (fail-loud) ----
 
   test "egress_failure_surfaces — start échec = Recording failed + flash alert" do
     stub = StubClient.new(start_raise: EgressClient::RemoteError.new("egress start refusé (internal) : nope"))

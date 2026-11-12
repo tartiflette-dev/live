@@ -5,7 +5,7 @@ require "jwt"
 
 # LivekitTokenService.
 #
-# Les done_when de la spec exigent que les grants soient assertés sur le
+# Les critères d'acceptation exigent que les grants soient assertés sur le
 # JWT décodé (jamais sur les attributs internes du service). On décode donc
 # le token avec la même clé factice et on vérifie la structure `video`
 # (contrat LiveKit — cf. https://docs.livekit.io/home/get-started/authentication/).
@@ -25,7 +25,7 @@ class LivekitTokenServiceTest < ActiveSupport::TestCase
     ENV["LIVEKIT_API_SECRET"] = @prev_secret
   end
 
-  # done_when : "Token viewer sans grant canPublish"
+  # critère : "Token viewer sans grant canPublish"
   test "viewer_token_cannot_publish" do
     jwt = LivekitTokenService.new(
       room: "webinaire-alpha",
@@ -68,7 +68,7 @@ class LivekitTokenServiceTest < ActiveSupport::TestCase
     assert_equal %w[camera microphone screen_share screen_share_audio], opened["canPublishSources"]
   end
 
-  # done_when : "Token host avec canPublish + roomAdmin"
+  # critère : "Token host avec canPublish + roomAdmin"
   test "host_token_grants" do
     jwt = LivekitTokenService.new(
       room: "webinaire-alpha",
@@ -90,7 +90,7 @@ class LivekitTokenServiceTest < ActiveSupport::TestCase
     assert_equal "host-marc", payload["sub"]
   end
 
-  # done_when : "Token intervenant avec canPublish sans roomAdmin"
+  # critère : "Token intervenant avec canPublish sans roomAdmin"
   test "speaker_token_grants" do
     jwt = LivekitTokenService.new(
       room: "webinaire-alpha",

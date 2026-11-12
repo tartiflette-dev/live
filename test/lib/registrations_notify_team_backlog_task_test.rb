@@ -4,7 +4,7 @@ require "test_helper"
 require "rake"
 
 # `bin/rails registrations:notify_team_backlog` — rattrapage du mail d'équipe
-# (docs/registrations-api.md §Messages à l'équipe).
+# (docs/registrations-api.md §Inscriptions transmises à l'équipe et à la communauté).
 class RegistrationsNotifyTeamBacklogTaskTest < ActiveSupport::TestCase
   include ActionMailer::TestHelper
 

@@ -29,7 +29,7 @@ class RecordingsController < ApplicationController
   before_action :set_webinar
   before_action :set_recording, only: %i[stop download]
 
-  # done_when : "Le listing n'expose les fichiers qu'à l'animateur du
+  # critère : "Le listing n'expose les fichiers qu'à l'animateur du
   # webinaire" — set_webinar (scope host_sub) fait le travail : un
   # animateur qui GET /webinars/<slug d'un autre>/recordings reçoit un
   # 404 avant même d'atteindre cette action.
@@ -53,7 +53,7 @@ class RecordingsController < ApplicationController
     @has_transcript = @webinar.transcript_segments.exists?
   end
 
-  # done_when 'start_stop_egress' : la première moitié.
+  # critère 'start_stop_egress' : la première moitié.
   # Retour HTML = redirect vers #index (formulaire HTML) ; échec HTML =
   # redirect avec flash[:alert] pour rendre l'erreur visible (invariant
   # fail-loud). Retour JSON = état du recording actif après tentative,
@@ -114,7 +114,7 @@ class RecordingsController < ApplicationController
     end
   end
 
-  # done_when 'recording_status_endpoint' — GET .../recordings/status.json.
+  # critère 'recording_status_endpoint' — GET .../recordings/status.json.
   # Endpoint léger consommé par <RecordingControl> pour le poll côté scène.
   # Toujours 200 : `recording: null` = aucun recording en cours ; sinon
   # le bloc {id, status, error_message, stop_url}. La liste complète
@@ -131,7 +131,7 @@ class RecordingsController < ApplicationController
     render json: recording_status_payload
   end
 
-  # done_when 'start_stop_egress' : la seconde moitié.
+  # critère 'start_stop_egress' : la seconde moitié.
   # POST (jamais GET — action mutative). Route dédiée `stop` par choix :
   # DELETE serait ambigu (on ne supprime PAS le Recording, on l'arrête).
   #

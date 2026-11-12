@@ -33,7 +33,7 @@ class RegistrationRequestTest < ActiveSupport::TestCase
       email: other.email, name: other.name, registration_request: other
     )
     assert other.confirm!, "défaut : confirme"
-    assert_not other_registration.reload.marketing_consent?, "défaut false : aucun accord sans choix explicite (B1)"
+    assert_not other_registration.reload.marketing_consent?, "défaut false : aucun accord sans choix explicite"
 
     assert @request.confirm!(marketing_consent: true)
     assert registration.reload.marketing_consent?

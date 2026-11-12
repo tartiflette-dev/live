@@ -1,5 +1,5 @@
-# Case « Ok pour qu'undust me recontacte » de tartiflette.dev (politique
-# v1.6). `marketing_box_checked` : la case a été cochée lors de la demande
+# Case « Ok pour que l'organisation me recontacte » du formulaire
+# d'inscription cross-origin. `marketing_box_checked` : la case a été cochée lors de la demande
 # — par la personne ou par un tiers, l'API n'est pas authentifiée. Seul le
 # bouton « Confirmer et accepter d'être recontacté·e » vaut accord.
 #

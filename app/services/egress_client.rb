@@ -4,8 +4,6 @@
 # côté egress. `LiveKit::…`
 # n'est nommé QUE ici, jamais ailleurs dans l'app (grep = vérification).
 #
-# Contrat — /
-#
 # Cible : le service `EgressService` twirp exposé par `livekit-server` en
 # INTERNE (`http://livekit:7880`), consommé côté serveur uniquement — jamais
 # depuis le navigateur (grants = clés API secrètes). En dev/test, `LIVEKIT_HOST`
@@ -13,10 +11,13 @@
 #
 # ENV lus :
 #   LIVEKIT_HOST         base URL du twirp EgressService (défaut : http://livekit:7880)
+#   STAGING_LIVEKIT_HOST optionnelle : sur l'instance de pré-production
+#                        (STAGING_HOSTS), seul serveur média accepté ; sans
+#                        elle, la pré-production n'impose aucun serveur média.
 #   LIVEKIT_API_KEY      identité api (partagée avec livekit-server)
 #   LIVEKIT_API_SECRET   secret HS256
 #
-# **Fail-loud** (invariant spec) : toute erreur d'appel ou de configuration
+# **Fail-loud** : toute erreur d'appel ou de configuration
 # est ré-émise en `EgressClient::Error` (ou sous-classe), avec un message
 # lisible pour l'UI. Le controller la persiste dans `Recording#error_message`
 # et affiche via flash — un Recording ne reste JAMAIS en état ambigu.
@@ -161,7 +162,7 @@ class EgressClient
   end
 
   def ensure_credentials!
-    if StagingHost.current? && @host != "http://livekit-staging:7880"
+    if staging_media_mismatch?
       raise Error, "Le staging doit utiliser son serveur média isolé."
     end
 
@@ -173,6 +174,14 @@ class EgressClient
 
     raise MissingCredentials,
       "LIVEKIT_API_KEY / LIVEKIT_API_SECRET absents — voir la documentation de déploiement"
+  end
+
+  # La pré-production qui déclare son serveur média isolé ne pilote jamais
+  # un autre egress : un LIVEKIT_HOST hérité de la prod y enregistrerait (ou
+  # arrêterait) les sessions de la prod.
+  def staging_media_mismatch?
+    isolated_host = ENV["STAGING_LIVEKIT_HOST"].presence
+    isolated_host && StagingHost.current? && @host != isolated_host
   end
 
   # EgressInfo (proto) → Hash simple pour l'appelant : évite de faire

@@ -1,11 +1,11 @@
-# Les inscrits d'avant la
-# politique v1.1 qui ont une inscription CONFIRMÉE avec un consentement
+# Les inscrits d'avant l'entrée au CRM à la confirmation
+# (`crm_enrolled_at` nul) qui ont une inscription CONFIRMÉE avec un consentement
 # marketing VALIDÉ et NON retiré entrent au CRM. On leur pose
 # `crm_enrolled_at = marketing_consent_at` ; CrmResyncJob les pousse quand
 # CRM_SYNC_ENABLED=1. Ni les confirmés sans consentement, ni les retraits.
 #
 # Idempotente : seules les lignes sans `crm_enrolled_at` sont touchées (une
-# ligne v1.1 en a toujours un). `crm_backfilled_at` marque les lignes
+# ligne confirmée depuis en a toujours un). `crm_backfilled_at` marque les lignes
 # reprises ici, pour que `down` défasse exactement cela et rien d'autre.
 class EnrollLegacyMarketingConsents < ActiveRecord::Migration[8.1]
   class Registration < ActiveRecord::Base

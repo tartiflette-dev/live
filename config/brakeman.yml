@@ -2,7 +2,7 @@
 # `bin/brakeman` sans argument supplémentaire : la CI invoque
 # `bin/brakeman --no-pager`, le flag `-i` n'est pas requis).
 #
-# Les warnings motivés par un invariant portabilisable (défense traversal
+# Les warnings écartés par une garde vérifiée dans le code (défense traversal
 # côté Recording#absolute_path, argv Open3 sans shell) sont tracés dans
 # config/brakeman.ignore avec une note par entrée.
 ---

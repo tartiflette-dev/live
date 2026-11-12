@@ -5,7 +5,7 @@ class PublicCatalogueTest < ApplicationSystemTestCase
 
   # Capybara rack_test (pas de
   # JS requis : le catalogue rend HTML pur, aucun composant React ici). Même
-  # driver que WebinarCreationTest — cohérence avec les done_when serveur.
+  # driver que WebinarCreationTest — cohérence avec les critères côté serveur.
 
   test "un visiteur anonyme voit le titre catalogue et le lien /w/<slug>" do
     host_sub = "sub-host-#{SecureRandom.hex(4)}"

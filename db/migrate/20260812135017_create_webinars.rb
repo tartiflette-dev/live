@@ -1,8 +1,8 @@
 class CreateWebinars < ActiveRecord::Migration[8.1]
   # Modèle Webinar.
   #
-  # Colonnes cadrées par la spec, PAS de champ additionnel spéculatif
-  # (NG-3 : ni multi-tenancy ni quotas en v1).
+  # Colonnes minimales, PAS de champ additionnel spéculatif (ni
+  # multi-tenancy ni quotas).
   #
   # `slug`      : segment d'URL (base des 3 liens scène/intervenant/
   #               spectateur). Unicité stricte, collision gérée model-

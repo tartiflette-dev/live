@@ -10,7 +10,7 @@ require "test_helper"
 # On assert :
 #   • le start renvoie egress_id + status normalisé (symbole lisible)
 #   • le stop renvoie même contrat
-#   • une erreur Twirp est ré-émise en RemoteError (fail-loud, invariant spec)
+#   • une erreur Twirp est ré-émise en RemoteError (fail-loud)
 #   • une panne réseau est ré-émise en RemoteError
 #   • absence de creds → MissingCredentials (jamais un appel silencieux)
 class EgressClientTest < ActiveSupport::TestCase
@@ -242,9 +242,10 @@ class EgressClientTest < ActiveSupport::TestCase
   # ---- Contrat stop ----
 
   test "staging rejects production media even when recording is enabled" do
-    previous = ENV.to_h.slice("APP_HOST", "EGRESS_ENABLED", "STAGING_HOSTS")
+    previous = ENV.to_h.slice("APP_HOST", "EGRESS_ENABLED", "STAGING_HOSTS", "STAGING_LIVEKIT_HOST")
     ENV["EGRESS_ENABLED"] = "true"
     ENV["STAGING_HOSTS"] = "edge.live.example.org,old-edge.live.example.org"
+    ENV["STAGING_LIVEKIT_HOST"] = "http://livekit-preprod.example.test:7880"
     # Nom canonique ET ancien nom resté servi : la garde vaut pour les deux.
     %w[edge.live.example.org old-edge.live.example.org].each do |staging_host|
       ENV["APP_HOST"] = staging_host
@@ -256,11 +257,39 @@ class EgressClientTest < ActiveSupport::TestCase
       end
       assert_empty twirp.calls, staging_host
 
-      isolated = EgressClient.new(host: "http://livekit-staging:7880", twirp_client: twirp)
+      isolated = EgressClient.new(host: "http://livekit-preprod.example.test:7880", twirp_client: twirp)
       assert_equal "EG_stub_start", isolated.start_room_composite(room_name: "staging-demo", filepath: "/data/demo/test.mp4")[:egress_id]
     end
   ensure
-    %w[APP_HOST EGRESS_ENABLED STAGING_HOSTS].each { |name| ENV[name] = previous[name] }
+    %w[APP_HOST EGRESS_ENABLED STAGING_HOSTS STAGING_LIVEKIT_HOST].each { |name| ENV[name] = previous[name] }
+  end
+
+  test "staging without a declared isolated media server keeps its LIVEKIT_HOST" do
+    previous = ENV.to_h.slice("APP_HOST", "EGRESS_ENABLED", "STAGING_HOSTS", "STAGING_LIVEKIT_HOST")
+    ENV["EGRESS_ENABLED"] = "true"
+    ENV["STAGING_HOSTS"] = "edge.live.example.org"
+    ENV["APP_HOST"] = "edge.live.example.org"
+    ENV.delete("STAGING_LIVEKIT_HOST")
+    twirp = StubTwirp.new
+    client = EgressClient.new(host: "http://livekit:7880", twirp_client: twirp)
+
+    assert_equal "EG_stub_start", client.start_room_composite(room_name: "demo", filepath: "/data/demo/test.mp4")[:egress_id]
+  ensure
+    %w[APP_HOST EGRESS_ENABLED STAGING_HOSTS STAGING_LIVEKIT_HOST].each { |name| ENV[name] = previous[name] }
+  end
+
+  test "an isolated media server declared outside staging does not restrict production" do
+    previous = ENV.to_h.slice("APP_HOST", "EGRESS_ENABLED", "STAGING_HOSTS", "STAGING_LIVEKIT_HOST")
+    ENV["EGRESS_ENABLED"] = "true"
+    ENV["STAGING_HOSTS"] = "edge.live.example.org"
+    ENV["APP_HOST"] = "live.example.org"
+    ENV["STAGING_LIVEKIT_HOST"] = "http://livekit-preprod.example.test:7880"
+    twirp = StubTwirp.new
+    client = EgressClient.new(host: "http://livekit:7880", twirp_client: twirp)
+
+    assert_equal "EG_stub_start", client.start_room_composite(room_name: "demo", filepath: "/data/demo/test.mp4")[:egress_id]
+  ensure
+    %w[APP_HOST EGRESS_ENABLED STAGING_HOSTS STAGING_LIVEKIT_HOST].each { |name| ENV[name] = previous[name] }
   end
 
   test "stop calls twirp with egress_id and normalizes status" do

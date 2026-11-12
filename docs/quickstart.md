@@ -141,6 +141,7 @@ five:
 | `LIVEKIT_HOST` | LiveKit server API URL, e.g. `https://livekit.example.com` (see [examples/livekit/README.md](../examples/livekit/README.md)) |
 | `SMTP_ADDRESS`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD` | Outgoing mail server, implicit TLS (port `465` by default); a missing credential fails when a mail is sent |
 | `MAIL_FROM` | Sender of the app's emails (default `noreply@<APP_HOST>`) |
+| `BRAND_CREDIT_SHOWN` | `false` removes the theme credit (“Propulsé par …”) and its links from the page footers (default `true`; not a licence condition) |
 | `BRAND_HOST` | Host name shown in emails and pages (default `APP_HOST`) |
 | `REGISTRATION_PRIVACY_URL` | HTTPS URL of your privacy policy; viewer registration stays closed without it |
 | `BRAND_LEGAL_IDENTITY` | Legal identity of the operator, shown after its name on `/confidentialite` (optional) |

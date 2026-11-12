@@ -106,8 +106,8 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
     assert_equal first_body, without_csp_nonce(response.body)
   end
 
-  # Politique v1.6 : l'inscription repose sur la demande (art. 6.1.b), plus
-  # sur une case. Une ancienne soumission `consent: "0"` n'empêche rien.
+  # L'inscription repose sur la demande (RGPD art. 6.1.b), plus sur une
+  # case. Une ancienne soumission `consent: "0"` n'empêche rien.
   test "no registration checkbox: an old consent value is ignored" do
     assert_difference "Registration.count", 1 do
       post public_webinar_registrations_path(@webinar.slug),
@@ -227,7 +227,7 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
     assert_nil response.headers["set-cookie"]
   end
 
-  test "SÉCURITÉ : inscrit confirmé sous la politique v1.0 — revisiter le lien ne l'envoie pas au CRM" do
+  test "SÉCURITÉ : inscrit confirmé sans entrée au CRM — revisiter le lien ne l'envoie pas au CRM" do
     with_crm_sync_enabled do
       legacy = @webinar.registrations.create!(name: "Ana", email: "ana@example.test", confirmed_at: 1.month.ago)
       assert_no_enqueued_jobs(only: CrmSyncJob) do

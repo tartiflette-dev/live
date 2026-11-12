@@ -6,9 +6,8 @@ class AddParticipantKindToRecordings < ActiveRecord::Migration[8.1]
   # Choix : étendre `kind` plutôt que créer un modèle dédié. Les tracks
   # et le participant partagent le même acteur (l'animateur qui veut un
   # fichier téléchargeable) et le même contrat d'accès disque
-  # (`absolute_path`, défense traversal, `recordings_root`). Doctrine
-  # question SRP tranchée — même acteur → pas de duplication
-  # accidentelle à séparer.
+  # (`absolute_path`, défense traversal, `recordings_root`) : même acteur,
+  # donc pas une duplication accidentelle à séparer.
   #
   # Invariant : au plus UN Recording participant par (webinar, identity).
   # Un relancement remplace le précédent (status=failed ou re-done après

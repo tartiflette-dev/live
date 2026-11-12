@@ -10,10 +10,10 @@
 # déjà poussées sous l'ancienne règle (consentement exigé) portaient le
 # consentement dans la note de leur interaction : on les marque poussées.
 #
-# `crm_enrolled_at` : moment où un acte de la personne, sous la politique
-# v1.1 (confirmation POST, consentement /mc), a valu entrée au CRM. AUCUN
-# remplissage des lignes existantes : les inscrits confirmés sous la v1.0
-# (CRM annoncé seulement avec consentement) n'entrent pas au CRM après coup.
+# `crm_enrolled_at` : moment où un acte de la personne (confirmation POST,
+# consentement /mc) a valu entrée au CRM. AUCUN remplissage des lignes
+# existantes : les inscrits confirmés quand le CRM n'était annoncé qu'avec
+# consentement n'entrent pas au CRM après coup.
 class CreateRegistrationRequests < ActiveRecord::Migration[8.1]
   def up
     create_table :registration_requests do |t|

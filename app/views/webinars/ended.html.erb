@@ -62,6 +62,8 @@
   </section>
 
   <footer class="lk-page__pied">
-    <a class="lk-page__signature" href="<%= Brand.credit.url %>"><%= Brand.credit.label %><i></i></a>
+    <% if Brand.credit_shown? %>
+      <a class="lk-page__signature" href="<%= Brand.credit.url %>"><%= Brand.credit.label %><i></i></a>
+    <% end %>
   </footer>
 </main>

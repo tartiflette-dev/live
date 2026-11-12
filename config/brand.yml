@@ -32,6 +32,10 @@ shared:
     # l'accord à l'image (texte figé dans chaque preuve) et dans le mail
     # de retrait. BRAND_SERIES_CO_ORGANIZERS. Absent : l'organisation seule.
     co_organizers: null
+  # Crédit du thème (« Propulsé par … ») et ses liens, en bas de la page de
+  # connexion, de la salle, de la fin de direct et du chrome par défaut.
+  # BRAND_CREDIT_SHOWN=false les retire.
+  credit_shown: true
   # MAIL_FROM (posé par la configuration de déploiement) reste lu ;
   # BRAND_MAILER_FROM prime.
   mailer_from: <%= ENV.fetch("MAIL_FROM") { "noreply@#{ENV.fetch('APP_HOST', 'localhost')}" }.to_json %>

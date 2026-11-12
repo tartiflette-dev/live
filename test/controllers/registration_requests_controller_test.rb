@@ -176,7 +176,7 @@ class RegistrationRequestsControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "on te prévient par mail"
   end
 
-  # ---- Case de recontact (politique v1.6) ----------------
+  # ---- Case de recontact -----------------------------------
 
   test "recontact non coché : aucun consentement marketing après confirmation, ni mention" do
     get registration_request_path(t: @request_record.token)

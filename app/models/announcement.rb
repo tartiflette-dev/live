@@ -4,7 +4,8 @@
 # (docs/announcements.md). La ligne est aussi le journal : cible, objet, corps,
 # auteur, nombre de destinataires, horodatage.
 #
-# Communication sortante vers des tiers (classe D) : AUCUNE autre voie ne
+# Communication sortante vers des tiers, irréversible une fois partie :
+# AUCUNE autre voie ne
 # crée ni ne met en file un envoi — ni API, ni job récurrent, ni agent. Les
 # seuls appelants de `dispatch!` et `enqueue_pending!` sont les actions POST
 # de ce contrôleur, derrière la session Pocket ID et le jeton CSRF. Qui peut

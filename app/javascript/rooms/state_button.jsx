@@ -22,7 +22,7 @@
 // La vérité est donc RELUE côté serveur : après opaqueredirect on GET
 // /w/<slug>/state.json (route publique) et on positionne le rendu
 // sur l'état RÉEL. Si l'état est resté identique → transition refusée →
-// onError visible dans la scène (fail-loud, cf. doctrine room.jsx :
+// onError visible dans la scène (fail-loud, cf. en-tête de room.jsx :
 // pas de console.*, pas d'alert).
 //
 // Bouton `disabled` pendant la requête → pas de second POST tant que le

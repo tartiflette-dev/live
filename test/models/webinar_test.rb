@@ -26,7 +26,7 @@ class WebinarTest < ActiveSupport::TestCase
     assert_equal "ma-demo-live", w.room_name
   end
 
-  # done_when spec : "Slug unique, collision gérée".
+  # critère : "Slug unique, collision gérée".
   test "collision de slug suffixée -2 -3" do
     Webinar.create!(valid_attrs(title: "Rentrée"))
     w2 = Webinar.create!(valid_attrs(title: "Rentrée"))
@@ -66,7 +66,7 @@ class WebinarTest < ActiveSupport::TestCase
     assert w.errors.of_kind?(:slug, :invalid) || w.errors.of_kind?(:slug, :reserved)
   end
 
-  # done_when spec : state machine draft→live→ended.
+  # critère : state machine draft→live→ended.
   test "state par défaut draft, transitions live/ended valides" do
     w = Webinar.create!(valid_attrs)
     assert_equal "draft", w.state

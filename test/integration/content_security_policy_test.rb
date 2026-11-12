@@ -1,6 +1,6 @@
 require "test_helper"
 
-# CSP avec nonce, EN MODE BLOQUANT depuis le 11/11/2026. Ce test fige le
+# CSP avec nonce, EN MODE BLOQUANT. Ce test fige le
 # contrat : en-tête bloquant posé, jamais d'en-tête Report-Only, rapport des
 # violations conservé (config/initializers/content_security_policy.rb).
 class ContentSecurityPolicyTest < ActionDispatch::IntegrationTest

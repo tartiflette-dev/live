@@ -195,8 +195,8 @@ class Recording < ApplicationRecord
     resolved
   end
   # Fichier présent sur disque ET statut terminal → le lien de téléchargement
-  # est légitime. Extrait de la vue (boy-scout § SRP : la vue ne lit plus
-  # le disque, elle décrit). Un seul lecteur = `_table.html.erb`.
+  # est légitime. Extrait de la vue (la vue ne lit plus le disque, elle
+  # décrit). Un seul lecteur = `_table.html.erb`.
   def downloadable?
     return false unless done?
     full = absolute_path

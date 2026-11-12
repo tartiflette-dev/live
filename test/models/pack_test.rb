@@ -43,7 +43,7 @@ class PackTest < ActiveSupport::TestCase
     assert_nil w.reload.pack_id
   end
 
-  # ---- Webinar#free? et #price_label — 3 cas done_when 1 ----
+  # ---- Webinar#free? et #price_label — 3 cas ----
 
   test "price_label — gratuit (price_cents=0, sans pack)" do
     w = Webinar.new(price_cents: 0)

@@ -29,4 +29,28 @@ class BrandSurfacesTest < ActionDispatch::IntegrationTest
     assert_equal [ "contact@example.test" ], mail.to
     assert_match "— live.example.test", mail.text_part.body.to_s
   end
+
+  test "crédit du thème : affiché par défaut, retiré par BRAND_CREDIT_SHOWN=false" do
+    get "/sign_in"
+    assert_select "footer.connexion-bas a.chrome-signature[href=?]", Brand.credit.url, text: Brand.credit.label
+
+    with_brand("BRAND_CREDIT_SHOWN" => "false") do
+      get "/sign_in"
+      assert_select "footer.connexion-bas"
+      assert_select ".chrome-signature", 0
+    end
+  end
+
+  # Page d'erreur du chrome par défaut (la charte undust rend la sienne).
+  test "page d'erreur du chrome par défaut : crédit et liens retirés par BRAND_CREDIT_SHOWN=false" do
+    skip "page d'erreur de la charte undust" if Theme.undust?
+    get erreur_path(code: "404")
+    assert_select ".erreur-pied .theme-credit a.chrome-signature", text: Brand.credit.label
+
+    with_brand("BRAND_CREDIT_SHOWN" => "false") do
+      get erreur_path(code: "404")
+      assert_select ".erreur-pied"
+      assert_select ".theme-credit, .chrome-signature, .theme-lien", 0
+    end
+  end
 end

@@ -23,7 +23,7 @@ class UserTest < ActiveSupport::TestCase
     assert dup.errors.of_kind?(:oidc_sub, :taken)
   end
 
-  # done_when : "Le callback OIDC retrouve/lie l'user par oidc_sub,
+  # critère : "Le callback OIDC retrouve/lie l'user par oidc_sub,
   # jamais par simple email" — cœur de l'invariant côté modèle.
   test "find_or_create_by_oidc_uses_sub_only_never_email" do
     # Un user existe avec sub X et email A. On rappelle avec sub X et
@@ -99,7 +99,7 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test "find_or_create_by_oidc_ne_rattache_jamais_un_sub_different_a_un_email_existant" do
-    # Défense broken-authentication §1c. Un attaquant
+    # Défense broken-authentication. Un attaquant
     # qui contrôle un sub DIFFÉRENT avec le MÊME email ne peut pas
     # usurper le User existant — l'index unique sur LOWER(email) fait
     # péter en RecordInvalid.

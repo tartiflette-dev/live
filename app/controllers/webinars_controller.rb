@@ -172,9 +172,8 @@ class WebinarsController < ApplicationController
   #
   # AUTO-START enregistrement :
   # même geste que sur /stage — l'animateur anime EN PRATIQUE via /join?t=…
-  # (identité `host-<hex>` observée en production). Ne pas
-  # auto-démarrer ici = même incident (2 min perdues, start
-  # via `rails runner`) reproduit sur la route réelle. Idempotence
+  # (identité `host-<hex>`). Ne pas auto-démarrer ici laisserait le
+  # direct sans enregistrement jusqu'à un démarrage manuel. Idempotence
   # empilée : reconcile + garde applicative + validation modèle +
   # index unique partiel DB.
   def join

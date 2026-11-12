@@ -22,16 +22,15 @@
 # COHOST_TTL (accord et parole se retirent en cours de direct).
 #
 # Clés lues d'ENV via `LiveKit::AccessToken` (LIVEKIT_API_KEY /
-# LIVEKIT_API_SECRET). Aucune clé n'est jamais lue depuis un fichier commité
-# (invariant spec §Secrets).
+# LIVEKIT_API_SECRET). Aucune clé n'est jamais lue depuis un fichier commité.
 #
 # TTL courts : viewer/speaker/host ≤ 4h. Décision architecturale :
 # le token est **re-signé à chaque accès** par le controller qui sert la page
 # scène (jamais de JWT figé dans un favori).
 # Ce service ne gère ni le stockage, ni le re-signage : il ne fait qu'émettre.
 #
-# Non-objectifs (spec) : ce service N'expose PAS d'endpoint HTTP (controllers
-# sœurs), NE gère PAS l'egress (action W3 dédiée).
+# Hors de son rôle : ce service N'expose PAS d'endpoint HTTP (les
+# controllers s'en chargent), NE gère PAS l'egress (EgressClient).
 class LivekitTokenService
   # TTL par défaut : 4 heures. Suffisant pour un webinaire, contraint pour
   # limiter l'exploitation d'un token fuité. La re-signature à chaque

@@ -1,7 +1,10 @@
-<%# Crédit et liens de la marque (theme.yml : credit, links). %>
+<%# Crédit et liens de la marque (theme.yml : credit, links), sauf
+    BRAND_CREDIT_SHOWN=false. %>
+<% if Brand.credit_shown? %>
 <span class="theme-credit">
   <%= link_to Brand.credit.label, Brand.credit.url, class: "chrome-signature" %>
   <% Brand.links.each do |reseau, url| %>
     <%= link_to t("theme.links.#{reseau}", default: reseau.to_s), url, class: "theme-lien", rel: "me noopener" %>
   <% end %>
 </span>
+<% end %>

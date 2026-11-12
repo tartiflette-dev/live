@@ -1,6 +1,6 @@
 module Internal
-  # File des annonces au groupe WhatsApp de la communauté Tartiflette —
-  # docs/registrations-api.md §Annonces à la communauté. Le relais WhatsApp
+  # File des annonces au groupe de messagerie de la communauté de l'opérateur —
+  # docs/registrations-api.md §Groupe de la communauté. Le relais (optionnel)
   # vient chercher les inscriptions confirmées, annonce le prénom et les
   # cafés choisis, puis acquitte chacune.
   #

@@ -18,7 +18,7 @@ class Crm::BacklogTest < ActiveSupport::TestCase
     end
   end
 
-  test "B1 : la garde après enqueue couvre le tour de reprise suivant" do
+  test "la garde après enqueue couvre le tour de reprise suivant" do
     assert_operator Crm::Backlog::REQUEUE_HOLD, :>, Crm::Backlog::RESYNC_PERIOD
     yaml = YAML.safe_load(Rails.root.join("config/recurring.yml").read, aliases: true)
     assert_equal "every #{Crm::Backlog::RESYNC_PERIOD.in_minutes.to_i} minutes",

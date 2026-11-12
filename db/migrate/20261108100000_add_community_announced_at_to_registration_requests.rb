@@ -15,7 +15,7 @@
 #   étaient déjà dans la file, le relais les poste ou les a postées ; une
 #   demande en attente partira à sa confirmation, comme une inscription neuve.
 # - communauté : toutes les demandes créées avant la coupure, CONFIRMÉES OU
-#   NON. Soumises sous la politique v2.2, qui n'annonçait pas ce canal, elles
+#   NON. Soumises sous une politique qui n'annonçait pas ce canal, elles
 #   ne sont jamais annoncées, même confirmées plus tard. Les marquer ici
 #   plutôt que filtrer la file sur une date garde la file sans date figée.
 class AddCommunityAnnouncedAtToRegistrationRequests < ActiveRecord::Migration[8.1]

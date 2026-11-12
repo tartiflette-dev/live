@@ -49,6 +49,19 @@ class WebinarProgramsControllerTest < ActionDispatch::IntegrationTest
     assert_equal [ [ "Karim", "Anne" ], "Jean" ], [ @webinar.announced_speakers, @webinar.lead_host_name ]
   end
 
+  test "aide du sujet : le site de la série n'est nommé que s'il est configuré" do
+    sign_in_as(@owner)
+    with_brand("BRAND_SERIES_URL" => "https://serie.example.org") do
+      get webinar_program_path(@webinar)
+      assert_select ".champ .aide", text: "Un titre court. Affiché sur la page publique, l’agenda, serie.example.org et le rappel de la veille."
+    end
+    with_brand("BRAND_SERIES_URL" => "") do
+      Brand.instance_variable_get(:@values).series.then { |series| assert_nil series.url }
+      get webinar_program_path(@webinar)
+      assert_select ".champ .aide", text: "Un titre court. Affiché sur la page publique, l’agenda et le rappel de la veille."
+    end
+  end
+
   test "seul le programme se modifie ici" do
     sign_in_as(@guest)
     patch webinar_program_path(@webinar), params: { webinar: { topic: "Agents IA", title: "Piraté", starts_at: "2026-11-20T18:00",

@@ -42,7 +42,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     assert_select "meta[name='theme-color'][content=?]", Theme.current.theme_color
   end
 
-  # done_when spec (2/2) : "Une route animateur sans session redirige
+  # critère : "Une route animateur sans session redirige
   # vers le login OIDC" — le login OIDC est derrière /sign_in (le bouton
   # POST /auth/pocket_id, cf. omniauth-rails_csrf_protection).
   test "requires_authentication" do
@@ -65,7 +65,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     assert_match(/webinars/i, response.body)
   end
 
-  # done_when spec (1/2) : "Le callback OIDC retrouve/lie l'user par
+  # critère : "Le callback OIDC retrouve/lie l'user par
   # oidc_sub, jamais par simple email". Le point critique : un email
   # existant en base pour un SUB DIFFÉRENT ne doit PAS ouvrir la session
   # sur ce user (sinon un attaquant qui contrôle un Pocket ID avec le

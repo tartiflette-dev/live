@@ -14,7 +14,7 @@ module Api
   class RegistrationsController < ActionController::API
     include RegistrationsHelper
 
-    # `consent` (ancienne case obligatoire, retirée par la politique v1.6)
+    # `consent` (ancienne case d'inscription obligatoire, retirée depuis)
     # n'est plus permis : envoyé par une version antérieure du site, il est
     # ignoré sans erreur.
     PERMITTED = [ :name, :email, :notify_next, :profile, :message, :marketing_consent, :participation, :source, :website ].freeze

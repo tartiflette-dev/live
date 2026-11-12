@@ -74,8 +74,7 @@ class RegistrationsController < ApplicationController
   # GET /r/:token — TOUJOURS sans effet : page à bouton, le POST fait le
   # reste (CSRF).
   #   • non confirmée : les scanners de liens (Outlook Safe Links, antivirus)
-  #     suivent les GET ; depuis la politique v1.6, confirmer fait
-  #     entrer au CRM, un robot ne doit pas le faire à la place de la personne ;
+  #     suivent les GET ; confirmer fait entrer au CRM, un robot ne doit pas le faire à la place de la personne ;
   #   • déjà confirmée : bouton d'accès au direct. Le GET ne pose pas le
   #     cookie d'inscription : un lien envoyé par un tiers ne doit pas imposer
   #     son identité au navigateur qui l'ouvre ;
